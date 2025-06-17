@@ -1,7 +1,7 @@
 import { getCurrentRound } from "@/api/rounds/rounds";
 import type { GetCurrentRoundResponse } from "@/api/rounds/rounds.type";
-import PlayerListInPlay from "@/components/PlayerListInPlay";
-import QuestionSection from "@/components/QuestionSection";
+import PlayerListInPlay from "@/features/components/PlayerListInPlay";
+import QuestionSection from "@/features/components/QuestionSection";
 import { Button } from "@/components/ui/button";
 import WaitForDraw from "@/features/components/WaitForDraw";
 import { useGamePlayers } from "@/features/games/store/game";

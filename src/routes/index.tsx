@@ -1,89 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Users, Crown, Zap, Ghost, ArrowRight } from "lucide-react";
-import HowToPlayButton from "@/components/HowToPlayButton";
-
-type GameState =
-  | "landing"
-  | "create-room"
-  | "join-room"
-  | "room-lobby"
-  | "in-game";
-type Player = {
-  id: string;
-  nickname: string;
-  isHost: boolean;
-  avatar: string;
-};
-
-const CHALLENGE_PROMPTS = [
-  "Everyone must share their most embarrassing moment!",
-  "Take a group selfie making the silliest faces possible!",
-  "Everyone has to do 10 jumping jacks right now!",
-  "Share a secret talent you've never told anyone!",
-  "Everyone must sing happy birthday in a funny voice!",
-  "Do your best impression of a famous person!",
-  "Everyone shares their weirdest food combination they actually enjoy!",
-  "Dance like nobody's watching for 30 seconds!",
-];
+import { Users, Crown } from "lucide-react";
+import HowToPlayButton from "@/features/components/HowToPlayButton";
 
 export const Route = createFileRoute("/")({
   component: JokerGame,
 });
 
 export default function JokerGame() {
-  const [gameState, setGameState] = useState<GameState>("landing");
-  const [nickname, setNickname] = useState("");
-  const [roomCode, setRoomCode] = useState("");
-  const [currentRoomCode, setCurrentRoomCode] = useState("");
-  const [players, setPlayers] = useState<Player[]>([]);
-  const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
-  const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [drawnCard, setDrawnCard] = useState<"normal" | "ghost" | null>(null);
-  const [challengePrompt, setChallengePrompt] = useState("");
-
-  const drawCard = () => {
-    setIsDrawing(true);
-
-    setTimeout(() => {
-      const isGhostCard = Math.random() < 0.3; // 30% chance
-      const card = isGhostCard ? "ghost" : "normal";
-      setDrawnCard(card);
-
-      if (isGhostCard) {
-        const randomPrompt =
-          CHALLENGE_PROMPTS[
-            Math.floor(Math.random() * CHALLENGE_PROMPTS.length)
-          ];
-        setChallengePrompt(randomPrompt);
-      }
-
-      setIsDrawing(false);
-    }, 2000);
-  };
-
-  const nextTurn = () => {
-    setDrawnCard(null);
-    setChallengePrompt("");
-    setCurrentPlayerIndex((prev) => (prev + 1) % players.length);
-  };
-
-  const resetGame = () => {
-    setGameState("landing");
-    setNickname("");
-    setRoomCode("");
-    setCurrentRoomCode("");
-    setPlayers([]);
-    setCurrentPlayer(null);
-    setCurrentPlayerIndex(0);
-    setDrawnCard(null);
-    setChallengePrompt("");
-  };
-
   return (
     <div>
       {/* Animated background */}

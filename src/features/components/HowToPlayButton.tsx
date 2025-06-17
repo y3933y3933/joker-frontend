@@ -1,5 +1,5 @@
 import { Ghost, Zap } from "lucide-react";
-import { Button } from "./ui/button";
+import { Button } from "../../components/ui/button";
 import {
   DialogHeader,
   DialogFooter,
@@ -8,7 +8,7 @@ import {
   DialogClose,
   DialogContent,
   DialogTitle,
-} from "./ui/dialog";
+} from "../../components/ui/dialog";
 
 export default function HowToPlayButton() {
   return (
