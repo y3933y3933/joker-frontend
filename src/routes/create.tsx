@@ -60,7 +60,9 @@ function RouteComponent() {
                 variant="outline"
                 className="flex-1 border-gray-600 text-gray-400 hover:bg-gray-800 hover:text-white"
               >
-                <Link to="/">Back</Link>
+                <Link to="/" className="inline-block w-full">
+                  Back
+                </Link>
               </Button>
               <Button
                 // onClick={createRoom}

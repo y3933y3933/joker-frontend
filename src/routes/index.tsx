@@ -55,7 +55,6 @@ export default function JokerGame() {
   const [drawnCard, setDrawnCard] = useState<"normal" | "ghost" | null>(null);
   const [challengePrompt, setChallengePrompt] = useState("");
   const [copied, setCopied] = useState(false);
-  const [showHowToPlay, setShowHowToPlay] = useState(false);
 
   const generateRoomCode = () => {
     return Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -177,7 +176,10 @@ export default function JokerGame() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
-            <Button className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-bold py-4 px-8 rounded-lg shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-300 transform hover:scale-105 border border-cyan-400/50">
+            <Button
+              asChild
+              className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-bold py-4 px-8 rounded-lg shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 transition-all duration-300 transform hover:scale-105 border border-cyan-400/50"
+            >
               <Link to="/create" className="flex items-center">
                 <Crown className="mr-2 h-5 w-5" />
                 Create Room
@@ -185,73 +187,16 @@ export default function JokerGame() {
             </Button>
 
             <Button
-              onClick={() => setGameState("join-room")}
+              asChild
               className="flex-1 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-400 hover:to-purple-400 text-white font-bold py-4 px-8 rounded-lg shadow-lg shadow-pink-500/25 hover:shadow-pink-500/40 transition-all duration-300 transform hover:scale-105 border border-pink-400/50"
             >
-              <Link to="/create" className="flex items-center">
+              <Link to="/join" className="flex items-center">
                 <Users className="mr-2 h-5 w-5" />
                 Join Room
               </Link>
             </Button>
           </div>
         </div>
-
-        {gameState === "join-room" && (
-          <div className="flex-1 flex flex-col items-center justify-center space-y-8 animate-in slide-in-from-left duration-500">
-            <div className="text-center space-y-4">
-              <h2 className="text-4xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
-                Join Room
-              </h2>
-              <p className="text-gray-400">Enter your nickname and room code</p>
-            </div>
-
-            <Card className="w-full max-w-md bg-gray-900/50 border-pink-500/30 shadow-lg shadow-pink-500/10">
-              <CardContent className="p-6 space-y-6">
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-pink-400">
-                    Nickname
-                  </label>
-                  <Input
-                    value={nickname}
-                    onChange={(e) => setNickname(e.target.value)}
-                    placeholder="Enter your nickname"
-                    className="bg-black/50 border-pink-500/50 text-white placeholder-gray-500 focus:border-pink-400 focus:ring-pink-400/20"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-pink-400">
-                    Room Code
-                  </label>
-                  <Input
-                    value={roomCode}
-                    onChange={(e) => setRoomCode(e.target.value.toUpperCase())}
-                    placeholder="Enter room code"
-                    className="bg-black/50 border-pink-500/50 text-white placeholder-gray-500 focus:border-pink-400 focus:ring-pink-400/20 font-mono"
-                    onKeyPress={(e) => e.key === "Enter" && joinRoom()}
-                  />
-                </div>
-
-                <div className="flex gap-3">
-                  <Button
-                    onClick={() => setGameState("landing")}
-                    variant="outline"
-                    className="flex-1 border-gray-600 text-gray-400 hover:bg-gray-800 hover:text-white"
-                  >
-                    Back
-                  </Button>
-                  <Button
-                    onClick={joinRoom}
-                    disabled={!nickname.trim() || !roomCode.trim()}
-                    className="flex-1 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-400 hover:to-purple-400 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Join
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
 
         {gameState === "room-lobby" && (
           <div className="flex-1 flex flex-col items-center justify-center space-y-8 animate-in zoom-in duration-500">
@@ -476,88 +421,6 @@ export default function JokerGame() {
                 End Game
               </Button>
             </div>
-          </div>
-        )}
-
-        {/* How to Play Modal */}
-        {showHowToPlay && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
-            <Card className="w-full max-w-2xl bg-gray-900/95 border-yellow-500/30 shadow-2xl shadow-yellow-500/20">
-              <CardContent className="p-6 space-y-6">
-                <div className="text-center space-y-2">
-                  <h3 className="text-3xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                    How to Play JOKER
-                  </h3>
-                  <div className="w-16 h-1 bg-gradient-to-r from-yellow-400 to-orange-400 mx-auto rounded-full" />
-                </div>
-
-                <div className="space-y-4 text-gray-300">
-                  <div className="space-y-2">
-                    <h4 className="text-lg font-semibold text-cyan-400 flex items-center gap-2">
-                      <span className="bg-cyan-400 text-black rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
-                        1
-                      </span>
-                      Setup
-                    </h4>
-                    <p>
-                      Create a room or join with a room code. You need at least
-                      2 players to start.
-                    </p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h4 className="text-lg font-semibold text-pink-400 flex items-center gap-2">
-                      <span className="bg-pink-400 text-black rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
-                        2
-                      </span>
-                      Taking Turns
-                    </h4>
-                    <p>
-                      Players take turns drawing cards. When it's your turn,
-                      click "Draw Card" and wait for the dramatic reveal!
-                    </p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h4 className="text-lg font-semibold text-purple-400 flex items-center gap-2">
-                      <span className="bg-purple-400 text-black rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
-                        3
-                      </span>
-                      The Ghost Card
-                    </h4>
-                    <p>
-                      Most cards are safe, but beware the{" "}
-                      <Ghost className="inline h-4 w-4 text-red-400" />{" "}
-                      <strong className="text-red-400">Ghost Card</strong>! When
-                      drawn, ALL players must complete a fun challenge together.
-                    </p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h4 className="text-lg font-semibold text-yellow-400 flex items-center gap-2">
-                      <span className="bg-yellow-400 text-black rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
-                        4
-                      </span>
-                      Have Fun!
-                    </h4>
-                    <p>
-                      The game continues with each player taking turns. The real
-                      fun happens when the ghost card appears and brings
-                      everyone together!
-                    </p>
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-gray-700">
-                  <Button
-                    onClick={() => setShowHowToPlay(false)}
-                    className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-white font-bold py-3"
-                  >
-                    Got it! Let's Play
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
           </div>
         )}
       </div>
