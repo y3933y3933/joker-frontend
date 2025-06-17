@@ -29,3 +29,7 @@ export const getCurrentRound = async ({
 
   return res.data.data;
 };
+
+export const createNextRound = async (code: string): Promise<void> => {
+  await api.post(`/games/${code}/rounds/next`);
+};

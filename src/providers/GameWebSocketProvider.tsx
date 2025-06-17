@@ -30,12 +30,10 @@ export function GameWebSocketProvider({
   const [isConnected, setIsConnected] = useState(false);
 
   useEffect(() => {
-    console.log("gameCode", gameCode);
-    console.log("playerId", playerId);
     if (!gameCode || !playerId) return;
 
     const socket = new WebSocket(
-      `ws://localhost:8080/ws/games/${gameCode}?playerId=${playerId}`,
+      `ws://localhost:8080/ws/games/${gameCode}?player_id=${playerId}`,
     );
     socketRef.current = socket;
 

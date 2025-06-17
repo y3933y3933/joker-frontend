@@ -1,4 +1,4 @@
-import { getCurrentRound } from "@/api/rounds/rounds";
+import { createNextRound, getCurrentRound } from "@/api/rounds/rounds";
 import type { GetCurrentRoundResponse } from "@/api/rounds/rounds.type";
 import PlayerListInPlay from "@/features/components/PlayerListInPlay";
 import QuestionSection from "@/features/components/QuestionSection";
@@ -48,6 +48,25 @@ function RouteComponent() {
     requestFn: ({ code, playerId }) => getCurrentRound({ code, playerId }),
   });
 
+  const nextRoundRequest = useApiRequest<string, void>({
+    requestFn: createNextRound,
+    onError: () => alert("無法開始下一輪，請稍後再試"),
+  });
+
+  async function handleDraw() {
+    if (!round || !code) return;
+    setIsDrawing(true);
+    await drawCardRequest.execute({ code, roundId: round.roundId });
+    setTimeout(() => {
+      setIsDrawing(false);
+    }, 2000);
+  }
+
+  async function handleNextTurn() {
+    if (!code) return;
+    await nextRoundRequest.execute(code);
+  }
+
   useEffect(() => {
     if (!code || playerId == null) return;
 
@@ -61,19 +80,6 @@ function RouteComponent() {
 
     fetchRound();
   }, [code, playerId]);
-
-  async function handleDraw() {
-    if (!round || !code) return;
-    setIsDrawing(true);
-    await drawCardRequest.execute({ code, roundId: round.roundId });
-    setTimeout(() => {
-      setIsDrawing(false);
-    }, 2000);
-  }
-
-  const nextTurn = () => {
-    // setDrawnCard(null);
-  };
 
   const resetGame = () => {
     // setDrawnCard(null);
@@ -221,7 +227,7 @@ function RouteComponent() {
 
             {isMyTurn && drawResult && (
               <Button
-                onClick={nextTurn}
+                onClick={handleNextTurn}
                 className="w-full sm:w-auto bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white font-bold py-4 px-8 rounded-xl shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300 transform hover:scale-105"
               >
                 <ArrowRight className="mr-2 h-5 w-5" />

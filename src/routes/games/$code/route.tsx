@@ -18,7 +18,7 @@ function RouteComponent() {
   const playerId = usePlayerID();
   const { addPlayer, removePlayer } = useGameActions();
   const navigate = useNavigate();
-  const { setDrawResult, setQuestion } = useRoundActions();
+  const { setDrawResult, setQuestion, setRound } = useRoundActions();
 
   return (
     <GameWebSocketProvider
@@ -44,7 +44,17 @@ function RouteComponent() {
             setQuestion(null);
             break;
           case "round_started":
-            // TODO: next round
+            setDrawResult(null);
+            setRound({
+              roundId: msg.data.roundId,
+              currentPlayerId: msg.data.playerId,
+            });
+            if (msg.data.playerId !== playerId) {
+              setQuestion(null);
+            }
+            break;
+          case "round_question":
+            setQuestion(msg.data.question);
             break;
           default:
             console.warn("Unknown WS message:", msg);
