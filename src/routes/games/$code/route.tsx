@@ -1,5 +1,6 @@
 import { useGameActions } from "@/features/games/store/game";
 import { usePlayerID } from "@/features/games/store/player";
+import { useRoundActions } from "@/features/games/store/round";
 import { GameWebSocketProvider } from "@/providers/GameWebSocketProvider";
 import {
   createFileRoute,
@@ -17,6 +18,7 @@ function RouteComponent() {
   const playerId = usePlayerID();
   const { addPlayer, removePlayer } = useGameActions();
   const navigate = useNavigate();
+  const { setDrawResult, setQuestion } = useRoundActions();
 
   return (
     <GameWebSocketProvider
@@ -29,10 +31,20 @@ function RouteComponent() {
             break;
           case "player_left":
             removePlayer(msg.data.id);
-
             break;
           case "game_started":
             navigate({ to: `/games/${code}/play` });
+            break;
+          case "joker_revealed":
+            setDrawResult("joker");
+            setQuestion(msg.data.question);
+            break;
+          case "player_safe":
+            setDrawResult("safe");
+            setQuestion(null);
+            break;
+          case "round_started":
+            // TODO: next round
             break;
           default:
             console.warn("Unknown WS message:", msg);

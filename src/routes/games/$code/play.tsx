@@ -10,6 +10,13 @@ import { useApiRequest } from "@/hooks/useApiRequest";
 import { createFileRoute, useParams } from "@tanstack/react-router";
 import { ArrowRight, Crown, Ghost, Users, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
+import { drawCard } from "@/api/games/games";
+import {
+  useDrawResult,
+  useRound,
+  useRoundActions,
+  useRoundQuestion,
+} from "@/features/games/store/round";
 
 export const Route = createFileRoute("/games/$code/play")({
   component: RouteComponent,
@@ -19,59 +26,57 @@ function RouteComponent() {
   const { code } = useParams({ strict: false });
   const playerId = usePlayerID();
   const players = useGamePlayers();
-
-  const [round, setRound] = useState<GetCurrentRoundResponse | null>(null);
+  const round = useRound();
+  const drawResult = useDrawResult();
+  const question = useRoundQuestion();
   const isMyTurn = round?.currentPlayerId === playerId;
+  const [isDrawing, setIsDrawing] = useState(false);
+
+  const { setRound, setQuestion } = useRoundActions();
+
+  const drawCardRequest = useApiRequest<
+    { code: string; roundId: number },
+    void
+  >({
+    requestFn: drawCard,
+  });
 
   const roundRequest = useApiRequest<
     { code: string; playerId: number },
     GetCurrentRoundResponse
   >({
     requestFn: ({ code, playerId }) => getCurrentRound({ code, playerId }),
-    onSuccess: (data) => {
-      setRound(data);
-    },
   });
 
   useEffect(() => {
     if (!code || playerId == null) return;
 
     const fetchRound = async () => {
-      await roundRequest.execute({ code, playerId });
+      const round = await roundRequest.execute({ code, playerId });
+      if (round) {
+        setRound(round);
+        setQuestion(round.question);
+      }
     };
 
     fetchRound();
   }, [code, playerId]);
 
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [drawnCard, setDrawnCard] = useState<"normal" | "ghost" | null>(null);
-
-  const drawCard = () => {
+  async function handleDraw() {
+    if (!round || !code) return;
     setIsDrawing(true);
-
+    await drawCardRequest.execute({ code, roundId: round.roundId });
     setTimeout(() => {
-      const isGhostCard = Math.random() < 0.3; // 30% chance
-      const card = isGhostCard ? "ghost" : "normal";
-      setDrawnCard(card);
-
-      if (isGhostCard) {
-        // const randomPrompt =
-        //   CHALLENGE_PROMPTS[
-        //     Math.floor(Math.random() * CHALLENGE_PROMPTS.length)
-        //   ];
-        // setChallengePrompt(randomPrompt);
-      }
-
       setIsDrawing(false);
     }, 2000);
-  };
+  }
 
   const nextTurn = () => {
-    setDrawnCard(null);
+    // setDrawnCard(null);
   };
 
   const resetGame = () => {
-    setDrawnCard(null);
+    // setDrawnCard(null);
   };
 
   const currentPlayerNickname = players.find(
@@ -127,23 +132,19 @@ function RouteComponent() {
           {/* Center Content Area */}
           <div className="flex-1 flex flex-col items-center justify-center p-6 space-y-8">
             {/* Question/Challenge Area */}
-            {isMyTurn && round.status === "pending" && (
-              <QuestionSection>{round.question}</QuestionSection>
+            {isMyTurn && drawResult === null && (
+              <QuestionSection>{question}</QuestionSection>
             )}
 
             {/* Card Draw Section */}
             <div className="relative">
-              {!isMyTurn &&
-                round?.status === "pending" &&
-                currentPlayerNickname && (
-                  <div className="text-center space-y-6 animate-in fade-in duration-500">
-                    <WaitForDraw
-                      currentPlayerNickname={currentPlayerNickname}
-                    />
-                  </div>
-                )}
+              {!isMyTurn && drawResult === null && currentPlayerNickname && (
+                <div className="text-center space-y-6 animate-in fade-in duration-500">
+                  <WaitForDraw currentPlayerNickname={currentPlayerNickname} />
+                </div>
+              )}
 
-              {/* {isDrawing && (
+              {isDrawing && (
                 <div className="text-center space-y-6 animate-in zoom-in duration-500">
                   <div className="relative">
                     <div className="w-40 h-56 md:w-48 md:h-64 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl mx-auto animate-bounce shadow-2xl shadow-purple-500/50 border-2 border-purple-400 flex items-center justify-center">
@@ -155,14 +156,14 @@ function RouteComponent() {
                   </div>
                   <div className="space-y-2">
                     <p className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse">
-                      Drawing Card...
+                      抽牌中...
                     </p>
                     <div className="w-32 h-1 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 mx-auto rounded-full animate-pulse" />
                   </div>
                 </div>
-              )} */}
+              )}
 
-              {/* {drawnCard === "normal" && (
+              {!isDrawing && drawResult === "safe" && (
                 <div className="text-center space-y-6 animate-in zoom-in duration-700">
                   <div className="relative">
                     <div className="w-40 h-56 md:w-48 md:h-64 bg-gradient-to-br from-blue-600 to-cyan-600 rounded-2xl mx-auto shadow-2xl shadow-blue-500/50 border-2 border-cyan-400 flex items-center justify-center">
@@ -180,9 +181,9 @@ function RouteComponent() {
                     </p>
                   </div>
                 </div>
-              )} */}
+              )}
 
-              {/* {drawnCard === "ghost" && (
+              {!isDrawing && drawResult === "joker" && (
                 <div className="text-center space-y-6 animate-in zoom-in duration-700">
                   <div className="relative">
                     <div className="w-40 h-56 md:w-48 md:h-64 bg-gradient-to-br from-red-600 via-purple-600 to-red-600 rounded-2xl mx-auto shadow-2xl shadow-red-500/50 border-2 border-red-400 flex items-center justify-center animate-pulse">
@@ -200,7 +201,7 @@ function RouteComponent() {
                     </p>
                   </div>
                 </div>
-              )} */}
+              )}
             </div>
           </div>
         </div>
@@ -208,9 +209,9 @@ function RouteComponent() {
         {/* Footer */}
         <div className="bg-gradient-to-r from-gray-900/50 via-black/50 to-gray-900/50 backdrop-blur-sm border-t border-gray-700/50 p-6">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-2xl mx-auto">
-            {isMyTurn && round.status === "pending" && (
+            {isMyTurn && drawResult === null && (
               <Button
-                onClick={drawCard}
+                onClick={handleDraw}
                 className="w-full sm:w-auto bg-gradient-to-r from-purple-600 via-pink-600 to-cyan-600 hover:from-purple-500 hover:via-pink-500 hover:to-cyan-500 text-white font-bold py-4 px-12 rounded-xl shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transition-all duration-300 transform hover:scale-105 text-xl border border-purple-400/50"
               >
                 <Zap className="mr-3 h-6 w-6 animate-pulse" />
@@ -218,16 +219,15 @@ function RouteComponent() {
               </Button>
             )}
 
-            {isMyTurn &&
-              (round.status === "done" || round.status === "revealed") && (
-                <Button
-                  onClick={nextTurn}
-                  className="w-full sm:w-auto bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white font-bold py-4 px-8 rounded-xl shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300 transform hover:scale-105"
-                >
-                  <ArrowRight className="mr-2 h-5 w-5" />
-                  Next Turn
-                </Button>
-              )}
+            {isMyTurn && drawResult && (
+              <Button
+                onClick={nextTurn}
+                className="w-full sm:w-auto bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white font-bold py-4 px-8 rounded-xl shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300 transform hover:scale-105"
+              >
+                <ArrowRight className="mr-2 h-5 w-5" />
+                Next Turn
+              </Button>
+            )}
 
             {/* {drawnCard === "ghost" && (
               <Button

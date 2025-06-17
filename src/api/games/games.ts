@@ -37,3 +37,13 @@ export const leaveGame = async ({
 }) => {
   await api.delete(`/games/${gameCode}/players/${playerId}`);
 };
+
+export const drawCard = async ({
+  code,
+  roundId,
+}: {
+  code: string;
+  roundId: number;
+}): Promise<void> => {
+  await api.post(`/games/${code}/rounds/${roundId}/draw`);
+};

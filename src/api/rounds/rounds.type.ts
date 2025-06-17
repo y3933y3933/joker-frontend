@@ -22,4 +22,5 @@ export type GetCurrentRoundResponse = {
   isJoker: boolean;
   status: RoundStatus;
   currentPlayerId: number;
+  roundId: number;
 };
