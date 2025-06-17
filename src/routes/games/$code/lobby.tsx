@@ -19,7 +19,6 @@ import {
 } from "@/features/games/store/player";
 import { useApiRequest } from "@/hooks/useApiRequest";
 import useClipboard from "@/hooks/useClipboard";
-import { useGameWebSocket } from "@/hooks/useGameWebSocket";
 import {
   createFileRoute,
   useLoaderData,
@@ -27,7 +26,7 @@ import {
   useParams,
 } from "@tanstack/react-router";
 import { Check, Copy, Users, Crown, Zap } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/games/$code/lobby")({
   loader: async ({ params }) => {
@@ -44,12 +43,7 @@ function RouteComponent() {
   const { copied, copyToClipboard } = useClipboard();
 
   // store
-  const {
-    updatePlayersWithAvatar,
-    reset: resetGame,
-    addPlayer,
-    removePlayer,
-  } = useGameActions();
+  const { updatePlayersWithAvatar, reset: resetGame } = useGameActions();
   const players = useGamePlayers();
   const gameCode = useGameCode();
   const playerId = usePlayerID();
@@ -94,26 +88,6 @@ function RouteComponent() {
       playerId: playerId,
     });
   }
-
-  useGameWebSocket({
-    gameCode: code,
-    playerId: playerId,
-    onMessage: (msg) => {
-      switch (msg.type) {
-        case "player_joined":
-          addPlayer(msg.data);
-          break;
-
-        case "player_left":
-          removePlayer(msg.data.id);
-          break;
-
-        case "game_started":
-          navigate({ to: `/games/${code}/play` });
-          break;
-      }
-    },
-  });
 
   useEffect(() => {
     // 一開始初始化 store
