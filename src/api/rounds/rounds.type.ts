@@ -1,3 +1,5 @@
+import type { RoundStatus } from "@/features/games/constants";
+
 export type CreateRoundResponse = {
   roundId: number;
   playerId: number;
@@ -7,4 +9,17 @@ export type CreateRoundResponse = {
 export type CreateRoundRequest = {
   code: string;
   playerId: number;
+};
+
+export type GetCurrentRoundRequest = {
+  code: string;
+  playerId: number;
+};
+
+export type GetCurrentRoundResponse = {
+  question: string;
+  gameId: string;
+  isJoker: boolean;
+  status: RoundStatus;
+  currentPlayerId: number;
 };

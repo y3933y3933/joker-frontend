@@ -2,11 +2,6 @@ import { create } from "zustand";
 import type { Level, Player, PlayerWithAvatar } from "../types";
 import { generateAvatar } from "@/lib/avatar";
 
-interface Round {
-  roundID: number;
-  playerID: number;
-}
-
 interface GameState {
   gameCode: string | null;
   level: Level | null;

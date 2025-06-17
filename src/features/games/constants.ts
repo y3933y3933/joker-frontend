@@ -13,3 +13,5 @@ export const LevelOptions: {
   value: key as Level,
   label,
 }));
+
+export type RoundStatus = "pending" | "revealed" | "done";
