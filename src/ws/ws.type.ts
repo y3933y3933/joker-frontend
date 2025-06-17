@@ -8,6 +8,6 @@ export type WSMessage =
       };
     }
   | { type: "player_left"; data: { id: number } }
-  | { type: "game_started"; data: { startedAt: string } }
+  | { type: "game_started"; data: { roundId: number; playerId: number } }
   | { type: "new_round"; data: { round: number; currentPlayerId: number } }
   | { type: "ghost_drawn"; data: { playerId: number; question: string } };

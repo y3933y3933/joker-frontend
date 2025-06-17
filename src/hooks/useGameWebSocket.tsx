@@ -4,17 +4,21 @@ import { useEffect, useRef } from "react";
 
 export function useGameWebSocket({
   gameCode,
+  playerId,
   onMessage,
 }: {
-  gameCode: string;
+  gameCode: string | undefined;
+  playerId: number | null;
   onMessage: (data: WSMessage) => void;
 }) {
   const socketRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
-    if (!gameCode) return;
+    if (!gameCode || !playerId) return;
 
-    const socket = new WebSocket(`ws://localhost:8080/ws/games/${gameCode}`);
+    const socket = new WebSocket(
+      `ws://localhost:8080/ws/games/${gameCode}?player_id=${playerId}`,
+    );
 
     socketRef.current = socket;
 

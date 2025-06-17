@@ -1,5 +1,10 @@
 import { getPlayers, leaveGame } from "@/api/games/games";
 import type { PlayerResponse } from "@/api/games/games.type";
+import { createRound } from "@/api/rounds/rounds";
+import type {
+  CreateRoundRequest,
+  CreateRoundResponse,
+} from "@/api/rounds/rounds.type";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -35,26 +40,32 @@ export const Route = createFileRoute("/games/$code/lobby")({
 function RouteComponent() {
   const { code } = useParams({ strict: false });
   const { players: rawPlayers } = useLoaderData({ from: "/games/$code/lobby" });
+  const navigate = useNavigate();
+  const { copied, copyToClipboard } = useClipboard();
 
-  // const playersRef = useRef<PlayerResponse[]>(rawPlayers);
-
+  // store
   const {
     updatePlayersWithAvatar,
     reset: resetGame,
     addPlayer,
     removePlayer,
   } = useGameActions();
-
-  const navigate = useNavigate();
-
-  const { copied, copyToClipboard } = useClipboard();
-
   const players = useGamePlayers();
   const gameCode = useGameCode();
   const playerId = usePlayerID();
   const { reset: resetPlayer } = usePlayerActions();
-
   const isHost = useIsHost();
+
+  // api
+  const createRoundRequest = useApiRequest<
+    CreateRoundRequest,
+    CreateRoundResponse
+  >({
+    requestFn: createRound,
+    onError: () => {
+      alert("無法開始遊戲");
+    },
+  });
 
   const leaveGameRequest = useApiRequest<
     { gameCode: string; playerId: number },
@@ -76,8 +87,17 @@ function RouteComponent() {
     });
   }
 
+  async function handleStartGame() {
+    if (!code || !playerId) return;
+    await createRoundRequest.execute({
+      code,
+      playerId: playerId,
+    });
+  }
+
   useGameWebSocket({
-    gameCode: code || "",
+    gameCode: code,
+    playerId: playerId,
     onMessage: (msg) => {
       switch (msg.type) {
         case "player_joined":
@@ -177,7 +197,7 @@ function RouteComponent() {
 
           {isHost && (
             <Button
-              // onClick={startGame}
+              onClick={handleStartGame}
               disabled={players.length < 2}
               className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 disabled:opacity-50 disabled:cursor-not-allowed px-8"
             >
