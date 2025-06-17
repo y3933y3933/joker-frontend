@@ -169,8 +169,7 @@ export default function JokerGame() {
             </h1>
             <div className="w-32 h-1 bg-gradient-to-r from-cyan-400 to-pink-400 mx-auto rounded-full animate-pulse" />
             <p className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-              A mysterious turn-based party game where one player draws the
-              ghost card and triggers a shared challenge
+              回合制爆料遊戲，每回合只有一人知道題目，按下抽牌後才知道命運！抽到鬼牌就得公開說出答案，否則就能偷偷藏住秘密。
             </p>
             <HowToPlayButton />
           </div>

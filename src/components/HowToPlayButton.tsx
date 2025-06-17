@@ -27,7 +27,7 @@ export default function HowToPlayButton() {
         <DialogHeader>
           <DialogTitle className="text-center space-y-2">
             <h3 className="text-3xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-              How to Play JOKER
+              如何遊玩 JOKER
             </h3>
             <div className="w-16 h-1 bg-gradient-to-r from-yellow-400 to-orange-400 mx-auto rounded-full" />
           </DialogTitle>
@@ -39,12 +39,9 @@ export default function HowToPlayButton() {
               <span className="bg-cyan-400 text-black rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
                 1
               </span>
-              Setup
+              遊戲準備
             </h4>
-            <p>
-              Create a room or join with a room code. You need at least 2
-              players to start.
-            </p>
+            <p>建立房間或輸入代碼加入遊戲。至少需要 2 位玩家才能開始遊戲。</p>
           </div>
 
           <div className="space-y-2">
@@ -52,11 +49,10 @@ export default function HowToPlayButton() {
               <span className="bg-pink-400 text-black rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
                 2
               </span>
-              Taking Turns
+              題目揭示
             </h4>
             <p>
-              Players take turns drawing cards. When it's your turn, click "Draw
-              Card" and wait for the dramatic reveal!
+              每回合會隨機選出一位玩家，該玩家會看到一個提問題目，例如：「你覺得誰最有可能三天不洗澡？」
             </p>
           </div>
 
@@ -65,13 +61,14 @@ export default function HowToPlayButton() {
               <span className="bg-purple-400 text-black rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
                 3
               </span>
-              The Ghost Card
+              抽牌決定是否公開
             </h4>
             <p>
-              Most cards are safe, but beware the{" "}
-              <Ghost className="inline h-4 w-4 text-red-400" />{" "}
-              <strong className="text-red-400">Ghost Card</strong>! When drawn,
-              ALL players must complete a fun challenge together.
+              看到題目後，點擊「抽牌」：
+              <br />
+              抽到 <strong className="text-red-400">鬼牌</strong> 👉
+              你必須公開題目內容，並說出你的真實答案 <br />
+              沒抽到鬼牌 👉 啥事都不用做，換下一位玩家進行下一題！
             </p>
           </div>
 
@@ -80,11 +77,10 @@ export default function HowToPlayButton() {
               <span className="bg-yellow-400 text-black rounded-full w-6 h-6 flex items-center justify-center text-sm font-bold">
                 4
               </span>
-              Have Fun!
+              持續進行
             </h4>
             <p>
-              The game continues with each player taking turns. The real fun
-              happens when the ghost card appears and brings everyone together!
+              遊戲依序進行，讓每個人都體驗心理壓力與爆料的刺激時刻。越後面越緊張，你準備好了嗎？
             </p>
           </div>
         </div>
