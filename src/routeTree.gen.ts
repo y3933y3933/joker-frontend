@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as CreateRouteImport } from './routes/create'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as GamesCodeLobbyRouteImport } from './routes/games/$code/lobby'
 
 const JoinRoute = JoinRouteImport.update({
   id: '/join',
@@ -28,35 +29,44 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GamesCodeLobbyRoute = GamesCodeLobbyRouteImport.update({
+  id: '/games/$code/lobby',
+  path: '/games/$code/lobby',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/create': typeof CreateRoute
   '/join': typeof JoinRoute
+  '/games/$code/lobby': typeof GamesCodeLobbyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/create': typeof CreateRoute
   '/join': typeof JoinRoute
+  '/games/$code/lobby': typeof GamesCodeLobbyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/create': typeof CreateRoute
   '/join': typeof JoinRoute
+  '/games/$code/lobby': typeof GamesCodeLobbyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/create' | '/join'
+  fullPaths: '/' | '/create' | '/join' | '/games/$code/lobby'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/create' | '/join'
-  id: '__root__' | '/' | '/create' | '/join'
+  to: '/' | '/create' | '/join' | '/games/$code/lobby'
+  id: '__root__' | '/' | '/create' | '/join' | '/games/$code/lobby'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CreateRoute: typeof CreateRoute
   JoinRoute: typeof JoinRoute
+  GamesCodeLobbyRoute: typeof GamesCodeLobbyRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +92,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/games/$code/lobby': {
+      id: '/games/$code/lobby'
+      path: '/games/$code/lobby'
+      fullPath: '/games/$code/lobby'
+      preLoaderRoute: typeof GamesCodeLobbyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreateRoute: CreateRoute,
   JoinRoute: JoinRoute,
+  GamesCodeLobbyRoute: GamesCodeLobbyRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
