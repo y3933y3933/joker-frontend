@@ -11,6 +11,7 @@ interface PlayerActions {
   setPlayerID: (id: number) => void;
   setNickname: (nickname: string) => void;
   setIsHost: (isHost: boolean) => void;
+  reset: () => void;
 }
 
 const usePlayerStore = create<PlayerState>()((set) => ({
@@ -21,6 +22,7 @@ const usePlayerStore = create<PlayerState>()((set) => ({
     setPlayerID: (id) => set({ id }),
     setNickname: (nickname) => set({ nickname }),
     setIsHost: (isHost) => set({ isHost }),
+    reset: () => set({ id: null, nickname: "", isHost: false }),
   },
 }));
 

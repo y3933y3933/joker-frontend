@@ -1,12 +1,24 @@
-import { getPlayers } from "@/api/games/games";
+import { getPlayers, leaveGame } from "@/api/games/games";
 import type { PlayerResponse } from "@/api/games/games.type";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useGameActions, useGamePlayers } from "@/features/games/store/game";
-import { useIsHost } from "@/features/games/store/player";
+import {
+  useGameActions,
+  useGameCode,
+  useGamePlayers,
+} from "@/features/games/store/game";
+import {
+  useIsHost,
+  usePlayerActions,
+  usePlayerID,
+} from "@/features/games/store/player";
 import { useApiRequest } from "@/hooks/useApiRequest";
 import useClipboard from "@/hooks/useClipboard";
-import { createFileRoute, useParams } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  useNavigate,
+  useParams,
+} from "@tanstack/react-router";
 import { Check, Copy, Users, Crown, Zap } from "lucide-react";
 import { useEffect } from "react";
 
@@ -16,10 +28,15 @@ export const Route = createFileRoute("/games/$code/lobby")({
 
 function RouteComponent() {
   const { code } = useParams({ strict: false });
+  const navigate = useNavigate();
+
   const { copied, copyToClipboard } = useClipboard();
 
   const players = useGamePlayers();
-  const { updatePlayersWithAvatar } = useGameActions();
+  const { updatePlayersWithAvatar, reset: resetGame } = useGameActions();
+  const gameCode = useGameCode();
+  const playerId = usePlayerID();
+  const { reset: resetPlayer } = usePlayerActions();
 
   const isHost = useIsHost();
 
@@ -29,6 +46,28 @@ function RouteComponent() {
       updatePlayersWithAvatar(players);
     },
   });
+
+  const leaveGameRequest = useApiRequest<
+    { gameCode: string; playerId: number },
+    void
+  >({
+    requestFn: leaveGame,
+    onSuccess: () => {
+      resetGame();
+      resetPlayer();
+      navigate({ to: "/" });
+    },
+  });
+
+  function handleLeave() {
+    console.log("gameCode", gameCode);
+    console.log("playerId", playerId);
+    if (!gameCode || playerId == null) return;
+    leaveGameRequest.execute({
+      gameCode,
+      playerId,
+    });
+  }
 
   useEffect(() => {
     if (code) {
@@ -104,7 +143,7 @@ function RouteComponent() {
 
         <div className="flex gap-4">
           <Button
-            //   onClick={resetGame}
+            onClick={handleLeave}
             variant="outline"
             className="border-gray-600 text-gray-400 hover:bg-gray-800 hover:text-white"
           >

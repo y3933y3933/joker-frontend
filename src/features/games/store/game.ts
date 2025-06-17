@@ -13,7 +13,7 @@ interface GameActions {
   setGameCode: (gameCode: string | null) => void;
   setLevel: (level: Level | null) => void;
   updatePlayersWithAvatar: (players: Player[]) => void;
-  // setPlayers: (players: PlayerWithAvatar[]) => void;
+  reset: () => void;
 }
 
 const useGameStore = create<GameState>()((set) => ({
@@ -32,6 +32,7 @@ const useGameStore = create<GameState>()((set) => ({
       });
       set({ players: newPlayers });
     },
+    reset: () => set({ gameCode: null, level: null, players: [] }),
   },
 }));
 

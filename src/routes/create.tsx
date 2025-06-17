@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { LevelOptions } from "@/features/games/constants";
 import { useGameActions } from "@/features/games/store/game";
 import { usePlayerActions } from "@/features/games/store/player";
-import type { Level } from "@/features/games/types";
+import type { Level, Player } from "@/features/games/types";
 import { useApiRequest } from "@/hooks/useApiRequest";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
@@ -34,7 +34,7 @@ function RouteComponent() {
 
   const joinGameRequest = useApiRequest<
     { code: string; nickname: string },
-    { id: number; name: string }
+    Player
   >({
     requestFn: ({ code, nickname }) => joinGame(code, nickname),
   });
