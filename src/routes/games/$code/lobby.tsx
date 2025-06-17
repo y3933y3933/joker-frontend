@@ -59,17 +59,19 @@ function RouteComponent() {
     },
   });
 
-  function handleLeave() {
+  async function handleLeave() {
     if (!gameCode || playerId == null) return;
-    leaveGameRequest.execute({
+    await leaveGameRequest.execute({
       gameCode,
       playerId,
     });
   }
 
   useEffect(() => {
+    const fetchPlayers = async (code: string) =>
+      await playersQuery.execute(code);
     if (code) {
-      playersQuery.execute(code);
+      fetchPlayers(code);
     }
   }, [code]);
 

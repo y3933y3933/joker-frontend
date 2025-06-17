@@ -1,9 +1,10 @@
+import { getErrorMessage } from "@/lib/error";
 import { useState } from "react";
 
 type ApiRequestOptions<TArgs, TData> = {
   requestFn: (args: TArgs) => Promise<TData>;
   onSuccess?: (data: TData) => void;
-  onError?: (error: unknown) => void;
+  onError?: (error: string) => void;
 };
 
 export function useApiRequest<TArgs, TData>(
@@ -22,8 +23,8 @@ export function useApiRequest<TArgs, TData>(
       options.onSuccess?.(result);
       return result;
     } catch (err) {
-      setError(err);
-      options.onError?.(err);
+      setError(getErrorMessage(err));
+      options.onError?.(getErrorMessage(err));
       return null;
     } finally {
       setIsLoading(false);
