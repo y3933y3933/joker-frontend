@@ -142,6 +142,10 @@ function RouteComponent() {
               <QuestionSection>{question}</QuestionSection>
             )}
 
+            {!isMyTurn && drawResult === "joker" && (
+              <QuestionSection>{question}</QuestionSection>
+            )}
+
             {/* Card Draw Section */}
             <div className="relative">
               {!isMyTurn && drawResult === null && currentPlayerNickname && (
