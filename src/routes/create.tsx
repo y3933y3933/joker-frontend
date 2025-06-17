@@ -1,10 +1,15 @@
+import { createGame, joinGame } from "@/api/games/games";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { LevelOptions } from "@/features/games/constants";
+import { useGameActions } from "@/features/games/store/game";
+import { usePlayerActions } from "@/features/games/store/player";
 import type { Level } from "@/features/games/types";
+import { useApiRequest } from "@/hooks/useApiRequest";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/create")({
   component: RouteComponent,
@@ -13,6 +18,42 @@ export const Route = createFileRoute("/create")({
 function RouteComponent() {
   const [nickname, setNickname] = useState("");
   const [level, setLevel] = useState<Level>("easy");
+  const navigate = useNavigate();
+  const {
+    setPlayerID,
+    setNickname: setPlayerNickname,
+    setIsHost,
+  } = usePlayerActions();
+
+  const { setGameCode, setLevel: setGameLevel } = useGameActions();
+
+  const createGameRequest = useApiRequest<Level, { code: string }>({
+    requestFn: createGame,
+  });
+
+  const joinGameRequest = useApiRequest<
+    { code: string; nickname: string },
+    { id: number; name: string }
+  >({
+    requestFn: ({ code, nickname }) => joinGame(code, nickname),
+  });
+
+  async function handleCreate() {
+    const game = await createGameRequest.execute(level);
+    if (!game) return;
+
+    const player = await joinGameRequest.execute({ code: game.code, nickname });
+    if (!player) return;
+
+    // 設定狀態
+    setPlayerNickname(nickname);
+    setPlayerID(player.id);
+    setIsHost(true);
+    setGameCode(game.code);
+    setGameLevel(level);
+
+    navigate({ to: `/games/${game.code}/lobby` });
+  }
 
   return (
     <div className="relative z-10 container mx-auto px-4 py-8 min-h-screen flex flex-col">
@@ -71,7 +112,7 @@ function RouteComponent() {
                 </Link>
               </Button>
               <Button
-                // onClick={createRoom}
+                onClick={handleCreate}
                 disabled={!nickname.trim()}
                 className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
               >
