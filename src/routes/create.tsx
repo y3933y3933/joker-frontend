@@ -10,6 +10,7 @@ import { useApiRequest } from "@/hooks/useApiRequest";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import type { CreateGameResponse } from "@/api/games/games.type";
 
 export const Route = createFileRoute("/create")({
   component: RouteComponent,
@@ -27,7 +28,7 @@ function RouteComponent() {
 
   const { setGameCode, setLevel: setGameLevel } = useGameActions();
 
-  const createGameRequest = useApiRequest<Level, { code: string }>({
+  const createGameRequest = useApiRequest<Level, CreateGameResponse>({
     requestFn: createGame,
   });
 

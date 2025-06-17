@@ -1,17 +1,19 @@
 import { create } from "zustand";
-import type { Level, Player } from "../types";
+import type { Level, Player, PlayerWithAvatar } from "../types";
+import { generateAvatar } from "@/lib/avatar";
 
 interface GameState {
   gameCode: string | null;
   level: Level | null;
-  players: Player[];
+  players: PlayerWithAvatar[];
   actions: GameActions;
 }
 
 interface GameActions {
   setGameCode: (gameCode: string | null) => void;
   setLevel: (level: Level | null) => void;
-  setPlayers: (players: Player[]) => void;
+  updatePlayersWithAvatar: (players: Player[]) => void;
+  // setPlayers: (players: PlayerWithAvatar[]) => void;
 }
 
 const useGameStore = create<GameState>()((set) => ({
@@ -21,7 +23,15 @@ const useGameStore = create<GameState>()((set) => ({
   actions: {
     setGameCode: (gameCode) => set({ gameCode }),
     setLevel: (level) => set({ level }),
-    setPlayers: (players) => set({ players }),
+    updatePlayersWithAvatar: (players) => {
+      const newPlayers = players.map((player) => {
+        return {
+          ...player,
+          avatar: generateAvatar(),
+        };
+      });
+      set({ players: newPlayers });
+    },
   },
 }));
 

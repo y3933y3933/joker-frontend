@@ -5,3 +5,5 @@ export type Player = {
   nickname: string;
   isHost: boolean;
 };
+
+export type PlayerWithAvatar = Player & { avatar: string };

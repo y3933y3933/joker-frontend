@@ -4,3 +4,9 @@ export type CreateGameResponse = {
   level: string;
   createdAt: string;
 };
+
+export type PlayerResponse = {
+  id: number;
+  nickname: string;
+  isHost: boolean;
+};
