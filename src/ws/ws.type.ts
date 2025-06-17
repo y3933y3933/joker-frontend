@@ -1,13 +1,13 @@
 export type WSMessage =
   | {
       type: "player_joined";
-      payload: {
+      data: {
         id: number;
         nickname: string;
         isHost: boolean;
       };
     }
-  | { type: "player_left"; payload: { id: number } }
-  | { type: "game_started"; payload: { startedAt: string } }
-  | { type: "new_round"; payload: { round: number; currentPlayerId: number } }
-  | { type: "ghost_drawn"; payload: { playerId: number; question: string } };
+  | { type: "player_left"; data: { id: number } }
+  | { type: "game_started"; data: { startedAt: string } }
+  | { type: "new_round"; data: { round: number; currentPlayerId: number } }
+  | { type: "ghost_drawn"; data: { playerId: number; question: string } };

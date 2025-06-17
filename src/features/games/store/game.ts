@@ -13,6 +13,8 @@ interface GameActions {
   setGameCode: (gameCode: string | null) => void;
   setLevel: (level: Level | null) => void;
   updatePlayersWithAvatar: (players: Player[]) => void;
+  addPlayer: (player: Player) => void;
+  removePlayer: (id: number) => void;
   reset: () => void;
 }
 
@@ -32,6 +34,20 @@ const useGameStore = create<GameState>()((set) => ({
       });
       set({ players: newPlayers });
     },
+    addPlayer: (player) =>
+      set((state) => ({
+        players: [
+          ...state.players,
+          {
+            ...player,
+            avatar: generateAvatar(),
+          },
+        ],
+      })),
+    removePlayer: (id) =>
+      set((state) => ({
+        players: state.players.filter((p) => p.id !== id),
+      })),
     reset: () => set({ gameCode: null, level: null, players: [] }),
   },
 }));

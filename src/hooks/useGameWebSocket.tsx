@@ -24,7 +24,6 @@ export function useGameWebSocket({
 
     socket.onmessage = (event) => {
       const message = JSON.parse(event.data);
-      console.log("message", message);
       onMessage(message);
     };
 

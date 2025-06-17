@@ -14,38 +14,47 @@ import {
 } from "@/features/games/store/player";
 import { useApiRequest } from "@/hooks/useApiRequest";
 import useClipboard from "@/hooks/useClipboard";
+import { useGameWebSocket } from "@/hooks/useGameWebSocket";
 import {
   createFileRoute,
+  useLoaderData,
   useNavigate,
   useParams,
 } from "@tanstack/react-router";
 import { Check, Copy, Users, Crown, Zap } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 export const Route = createFileRoute("/games/$code/lobby")({
+  loader: async ({ params }) => {
+    const players = await getPlayers(params.code);
+    return { players };
+  },
   component: RouteComponent,
 });
 
 function RouteComponent() {
   const { code } = useParams({ strict: false });
+  const { players: rawPlayers } = useLoaderData({ from: "/games/$code/lobby" });
+
+  // const playersRef = useRef<PlayerResponse[]>(rawPlayers);
+
+  const {
+    updatePlayersWithAvatar,
+    reset: resetGame,
+    addPlayer,
+    removePlayer,
+  } = useGameActions();
+
   const navigate = useNavigate();
 
   const { copied, copyToClipboard } = useClipboard();
 
   const players = useGamePlayers();
-  const { updatePlayersWithAvatar, reset: resetGame } = useGameActions();
   const gameCode = useGameCode();
   const playerId = usePlayerID();
   const { reset: resetPlayer } = usePlayerActions();
 
   const isHost = useIsHost();
-
-  const playersQuery = useApiRequest<string, PlayerResponse[]>({
-    requestFn: getPlayers,
-    onSuccess: (players) => {
-      updatePlayersWithAvatar(players);
-    },
-  });
 
   const leaveGameRequest = useApiRequest<
     { gameCode: string; playerId: number },
@@ -67,13 +76,29 @@ function RouteComponent() {
     });
   }
 
+  useGameWebSocket({
+    gameCode: code || "",
+    onMessage: (msg) => {
+      switch (msg.type) {
+        case "player_joined":
+          addPlayer(msg.data);
+          break;
+
+        case "player_left":
+          removePlayer(msg.data.id);
+          break;
+
+        case "game_started":
+          navigate({ to: `/games/${code}/play` });
+          break;
+      }
+    },
+  });
+
   useEffect(() => {
-    const fetchPlayers = async (code: string) =>
-      await playersQuery.execute(code);
-    if (code) {
-      fetchPlayers(code);
-    }
-  }, [code]);
+    // 一開始初始化 store
+    updatePlayersWithAvatar(rawPlayers);
+  }, [rawPlayers]);
 
   return (
     <div className="relative z-10 container mx-auto px-4 py-8 min-h-screen flex flex-col">
