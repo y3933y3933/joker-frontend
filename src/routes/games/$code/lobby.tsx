@@ -60,8 +60,6 @@ function RouteComponent() {
   });
 
   function handleLeave() {
-    console.log("gameCode", gameCode);
-    console.log("playerId", playerId);
     if (!gameCode || playerId == null) return;
     leaveGameRequest.execute({
       gameCode,
