@@ -44,6 +44,9 @@ dependencies:
   tailwindcss:
     specifier: ^4.0.6
     version: 4.1.10
+  zustand:
+    specifier: ^5.0.5
+    version: 5.0.5(@types/react@19.1.8)(react@19.1.0)
 
 devDependencies:
   '@testing-library/dom':
@@ -2929,4 +2932,26 @@ packages:
 
   /zod@3.25.64:
     resolution: {integrity: sha512-hbP9FpSZf7pkS7hRVUrOjhwKJNyampPgtXKc3AN6DsWtoHsg2Sb4SQaS4Tcay380zSwd2VPo9G9180emBACp5g==}
+    dev: false
+
+  /zustand@5.0.5(@types/react@19.1.8)(react@19.1.0):
+    resolution: {integrity: sha512-mILtRfKW9xM47hqxGIxCv12gXusoY/xTSHBYApXozR0HmQv299whhBeeAcRy+KrPPybzosvJBCOmVjq6x12fCg==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      immer: '>=9.0.6'
+      react: '>=18.0.0'
+      use-sync-external-store: '>=1.2.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+      use-sync-external-store:
+        optional: true
+    dependencies:
+      '@types/react': 19.1.8
+      react: 19.1.0
     dev: false
