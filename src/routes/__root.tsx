@@ -1,11 +1,13 @@
-import { Outlet, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
+import { Outlet, createRootRoute } from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 
 export const Route = createRootRoute({
   component: () => (
     <>
-      <Outlet />
+      <div className="min-h-screen bg-black text-white overflow-hidden relative">
+        <Outlet />
+      </div>
       <TanStackRouterDevtools />
     </>
   ),
-})
+});
