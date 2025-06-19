@@ -5,7 +5,6 @@ import type {
   CreateRoundResponse,
 } from "@/api/rounds/rounds.type";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { GAME, LevelColorClassMap } from "@/features/games/constants";
 import {
   useGameActions,
@@ -18,8 +17,7 @@ import {
   usePlayerActions,
   usePlayerID,
 } from "@/features/games/store/player";
-import EmptyPlayerSlot from "@/features/players/components/EmptySlotPlayer";
-import PlayerCardInLobby from "@/features/players/components/PlayerCardInLobby";
+import PlayersSectionInLobby from "@/features/players/components/PlyersSectionInLobby";
 import { useApiRequest } from "@/hooks/useApiRequest";
 import useClipboard from "@/hooks/useClipboard";
 import { cn } from "@/lib/utils";
@@ -29,7 +27,7 @@ import {
   useNavigate,
   useParams,
 } from "@tanstack/react-router";
-import { Check, Copy, Users, Zap } from "lucide-react";
+import { Check, Copy, Play, Users, Zap } from "lucide-react";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/games/$code/lobby")({
@@ -136,41 +134,7 @@ function RouteComponent() {
           </div>
         </div>
 
-        <Card className="w-full max-w-4xl bg-gray-900/50 border-yellow-500/30 shadow-lg shadow-yellow-500/10">
-          <CardContent className="">
-            <div className="space-y-4">
-              <h3 className="text-xl font-semibold text-yellow-400 flex items-center gap-2">
-                <Users className="h-5 w-5" />
-                Players ( {players.length} / {GAME.MAX_PLAYER_NUM} )
-              </h3>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                {players.map((player) => (
-                  <PlayerCardInLobby
-                    key={player.id}
-                    isHost={player.isHost}
-                    nickname={player.nickname}
-                    avatar={player.avatar}
-                  />
-                ))}
-
-                {/* Empty slots */}
-                {Array.from({
-                  length: Math.max(0, GAME.MAX_PLAYER_NUM - players.length),
-                }).map((_, index) => (
-                  <EmptyPlayerSlot key={`empty-${index}`} />
-                ))}
-              </div>
-
-              {players.length && (
-                <p className="text-center text-gray-400 text-sm">
-                  Waiting for more players to join... (minimum{" "}
-                  {GAME.MIN_PLAYER_NUM} players)
-                </p>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+        <PlayersSectionInLobby players={players} />
 
         <div className="flex gap-4">
           <Button
@@ -184,10 +148,10 @@ function RouteComponent() {
           {isHost && (
             <Button
               onClick={handleStartGame}
-              disabled={players.length < 2}
-              className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 disabled:opacity-50 disabled:cursor-not-allowed px-8"
+              disabled={players.length < GAME.MIN_PLAYER_NUM}
+              className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white font-bold py-4 px-8 rounded-lg shadow-lg shadow-green-500/25 border border-green-400 transition-all duration-300 hover:shadow-green-400/50 hover:scale-105 disabled:opacity-50"
             >
-              <Zap className="mr-2 h-4 w-4" />
+              <Play className="mr-2 h-5 w-5" />
               Start Game
             </Button>
           )}

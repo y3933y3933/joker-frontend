@@ -12,7 +12,7 @@ export default function PlayerCardInLobby({
   nickname,
 }: PlayerCardInLobbyProps) {
   return (
-    <div className="flex items-center gap-3 p-3 bg-black/30 rounded-lg border border-gray-700/50 animate-pulse">
+    <div className="flex items-center gap-3 p-3 bg-black/30 rounded-lg border border-gray-700/50 ">
       <div
         className="w-10 h-10 rounded-full flex items-center justify-center text-black font-bold text-sm"
         style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
