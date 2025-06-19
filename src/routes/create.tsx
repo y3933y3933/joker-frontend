@@ -2,8 +2,7 @@ import { createGame, joinGame } from "@/api/games/games";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { LevelColorClassMap, LevelOptions } from "@/features/games/constants";
-import { useGameActions } from "@/features/games/store/game";
+import { LevelOptions } from "@/features/games/constants";
 import { usePlayerActions } from "@/features/games/store/player";
 import type { Level, Player } from "@/features/games/types";
 import { useApiRequest } from "@/hooks/useApiRequest";
@@ -11,6 +10,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import type { CreateGameResponse } from "@/api/games/games.type";
+import LevelRadio from "@/features/games/components/LevelRadio";
 
 export const Route = createFileRoute("/create")({
   component: RouteComponent,
@@ -25,8 +25,6 @@ function RouteComponent() {
     setNickname: setPlayerNickname,
     setIsHost,
   } = usePlayerActions();
-
-  const { setGameCode, setLevel: setGameLevel } = useGameActions();
 
   const createGameRequest = useApiRequest<Level, CreateGameResponse>({
     requestFn: createGame,
@@ -50,8 +48,6 @@ function RouteComponent() {
     setPlayerNickname(nickname);
     setPlayerID(player.id);
     setIsHost(true);
-    setGameCode(game.code);
-    setGameLevel(level);
 
     navigate({ to: `/games/${game.code}/lobby` });
   }
@@ -88,39 +84,19 @@ function RouteComponent() {
               <label className="text-sm font-medium text-cyan-400">Level</label>
               <div className="space-y-3">
                 {LevelOptions.map((option) => (
-                  <label
+                  <LevelRadio
                     key={option.value}
-                    className={`block p-4 border rounded-lg cursor-pointer transition-all duration-300  ${
-                      level === option.value
-                        ? `${LevelColorClassMap[option.value].bg} ${LevelColorClassMap[option.value].border}`
-                        : "border-gray-600 hover:border-gray-400"
-                    }`}
-                  >
-                    <input
-                      type="radio"
-                      value={option.value}
-                      checked={level === option.value}
-                      onChange={(e) => setLevel(e.target.value as Level)}
-                      className="sr-only"
-                    />
-                    <div className="flex justify-between items-center">
-                      <span
-                        className={`font-bold text-sm ${LevelColorClassMap[option.value].text}`}
-                      >
-                        {option.label}
-                      </span>
-                      <span className="text-sm text-gray-400">
-                        {option.description}
-                      </span>
-                    </div>
-                  </label>
+                    option={option}
+                    selectedLevel={level}
+                    onChange={setLevel}
+                  />
                 ))}
               </div>
             </div>
             <div className="flex gap-3">
               <Button
                 variant="outline"
-                className="flex-1 border-gray-600 text-gray-400 hover:bg-gray-800 hover:text-white"
+                className="flex-1 border-gray-600 text-white bg-gray-800 hover:bg-white hover:text-gray-800 "
               >
                 <Link to="/" className="inline-block w-full">
                   Back
@@ -128,7 +104,11 @@ function RouteComponent() {
               </Button>
               <Button
                 onClick={handleCreate}
-                disabled={!nickname.trim()}
+                disabled={
+                  !nickname.trim() ||
+                  createGameRequest.isLoading ||
+                  joinGameRequest.isLoading
+                }
                 className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Create

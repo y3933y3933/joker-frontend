@@ -7,6 +7,7 @@ import { usePlayerActions } from "@/features/games/store/player";
 import { useApiRequest } from "@/hooks/useApiRequest";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/join")({
   component: RouteComponent,
@@ -35,7 +36,10 @@ function RouteComponent() {
       setIsHost(false);
     },
     onError: (error) => {
-      alert(error);
+      console.error(error);
+      toast.error("加入房間失敗", {
+        description: error,
+      });
     },
   });
 
@@ -92,7 +96,7 @@ function RouteComponent() {
             <div className="flex gap-3">
               <Button
                 variant="outline"
-                className="flex-1 border-gray-600 text-gray-400 hover:bg-gray-800 hover:text-white"
+                className="flex-1 border-gray-600  bg-gray-800 text-white"
               >
                 <Link to="/" className="inline-block w-full">
                   Back

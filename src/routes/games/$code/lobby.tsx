@@ -1,4 +1,4 @@
-import { getPlayers, leaveGame } from "@/api/games/games";
+import { getGame, getPlayers, leaveGame } from "@/api/games/games";
 import { createRound } from "@/api/rounds/rounds";
 import type {
   CreateRoundRequest,
@@ -8,12 +8,7 @@ import { Button } from "@/components/ui/button";
 import GameRules from "@/features/games/components/GameRules";
 import LobbyHeader from "@/features/games/components/LobbyHeader";
 import { GAME } from "@/features/games/constants";
-import {
-  useGameActions,
-  useGameCode,
-  useGameLevel,
-  useGamePlayers,
-} from "@/features/games/store/game";
+import { useGameActions, useGamePlayers } from "@/features/games/store/game";
 import {
   useIsHost,
   usePlayerActions,
@@ -30,25 +25,28 @@ import {
 } from "@tanstack/react-router";
 import { Play } from "lucide-react";
 import { useEffect } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/games/$code/lobby")({
   loader: async ({ params }) => {
+    const game = await getGame(params.code);
     const players = await getPlayers(params.code);
-    return { players };
+
+    return { game, players };
   },
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { code } = useParams({ strict: false });
-  const { players: rawPlayers } = useLoaderData({ from: "/games/$code/lobby" });
+  const { game, players: rawPlayers } = useLoaderData({
+    from: "/games/$code/lobby",
+  });
+
   const navigate = useNavigate();
 
   // store
   const { updatePlayersWithAvatar, reset: resetGame } = useGameActions();
   const players = useGamePlayers();
-  const level = useGameLevel();
-  const gameCode = useGameCode();
   const playerId = usePlayerID();
   const { reset: resetPlayer } = usePlayerActions();
   const isHost = useIsHost();
@@ -72,22 +70,23 @@ function RouteComponent() {
     onSuccess: () => {
       resetGame();
       resetPlayer();
+      toast.success("離開房間");
       navigate({ to: "/" });
     },
   });
 
   async function handleLeave() {
-    if (!gameCode || playerId == null) return;
+    if (!game.code || playerId == null) return;
     await leaveGameRequest.execute({
-      gameCode,
+      gameCode: game.code,
       playerId,
     });
   }
 
   async function handleStartGame() {
-    if (!code || !playerId) return;
+    if (!game.code || !playerId) return;
     await createRoundRequest.execute({
-      code,
+      code: game.code,
       playerId: playerId,
     });
   }
@@ -100,7 +99,7 @@ function RouteComponent() {
   return (
     <div className="relative z-10 container mx-auto px-4 py-8 min-h-screen flex flex-col">
       <div className="flex-1 flex flex-col items-center justify-center space-y-8 animate-in zoom-in duration-500">
-        {code && level && <LobbyHeader gameCode={code} level={level} />}
+        <LobbyHeader gameCode={game.code} level={game.level} />
 
         <GameRules />
 
@@ -110,7 +109,7 @@ function RouteComponent() {
           <Button
             onClick={handleLeave}
             variant="outline"
-            className="border-gray-600 text-gray-400 hover:bg-gray-800 hover:text-white"
+            className="border-gray-600  bg-gray-800 text-white"
           >
             Leave Room
           </Button>

@@ -10,3 +10,11 @@ export type PlayerResponse = {
   nickname: string;
   isHost: boolean;
 };
+
+export type GetGameResponse = {
+  id: number;
+  code: string;
+  level: "easy" | "normal" | "spicy";
+  status: "waiting" | "playing" | "ended";
+  createdAt: string;
+};

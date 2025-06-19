@@ -1,6 +1,10 @@
 import type { Level } from "@/features/games/types";
 import api from "../instance";
-import type { CreateGameResponse, PlayerResponse } from "./games.type";
+import type {
+  CreateGameResponse,
+  GetGameResponse,
+  PlayerResponse,
+} from "./games.type";
 import type { APISuccessResponse } from "../api.type";
 
 export const createGame = async (level: Level): Promise<CreateGameResponse> => {
@@ -47,3 +51,11 @@ export const drawCard = async ({
 }): Promise<void> => {
   await api.post(`/games/${code}/rounds/${roundId}/draw`);
 };
+
+export async function getGame(code: string): Promise<GetGameResponse> {
+  const res = await api.get<APISuccessResponse<GetGameResponse>>(
+    `/games/${code}`,
+  );
+
+  return res.data.data;
+}
