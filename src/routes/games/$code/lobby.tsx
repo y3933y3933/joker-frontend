@@ -5,6 +5,7 @@ import type {
   CreateRoundResponse,
 } from "@/api/rounds/rounds.type";
 import { Button } from "@/components/ui/button";
+import GameRules from "@/features/games/components/GameRules";
 import LobbyHeader from "@/features/games/components/LobbyHeader";
 import { GAME } from "@/features/games/constants";
 import {
@@ -100,6 +101,8 @@ function RouteComponent() {
     <div className="relative z-10 container mx-auto px-4 py-8 min-h-screen flex flex-col">
       <div className="flex-1 flex flex-col items-center justify-center space-y-8 animate-in zoom-in duration-500">
         {code && level && <LobbyHeader gameCode={code} level={level} />}
+
+        <GameRules />
 
         <PlayersSectionInLobby players={players} />
 
