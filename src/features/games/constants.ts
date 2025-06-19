@@ -1,17 +1,40 @@
-import type { Level } from "./types";
+import type { Level, LevelOption } from "./types";
 
-const levelLabels: Record<Level, string> = {
-  easy: "入門新手場",
-  normal: "友情試煉場",
-  spicy: "禁忌爆料場",
+export const LevelOptions: LevelOption[] = [
+  {
+    value: "easy",
+    label: "EASY",
+    description: "Light & fun questions",
+  },
+  {
+    value: "normal",
+    label: "NORMAL",
+    description: "Balanced mix of topics",
+  },
+  {
+    value: "spicy",
+    label: "SPICY",
+    description: "Bold & revealing questions",
+  },
+];
+
+export const LevelColorClassMap: Record<
+  Level,
+  { bg: string; text: string; border: string }
+> = {
+  easy: {
+    border: "border-neon-green",
+    bg: "bg-neon-green/10",
+    text: "text-neon-green",
+  },
+  normal: {
+    border: "border-neon-cyan",
+    bg: "bg-neon-cyan/10",
+    text: "text-neon-cyan",
+  },
+  spicy: {
+    border: "border-neon-magenta",
+    bg: "bg-neon-magenta/10",
+    text: "text-neon-magenta",
+  },
 };
-
-export const LevelOptions: {
-  value: Level;
-  label: string;
-}[] = Object.entries(levelLabels).map(([key, label]) => ({
-  value: key as Level,
-  label,
-}));
-
-export type RoundStatus = "pending" | "revealed" | "done";

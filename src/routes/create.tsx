@@ -2,7 +2,7 @@ import { createGame, joinGame } from "@/api/games/games";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { LevelOptions } from "@/features/games/constants";
+import { LevelColorClassMap, LevelOptions } from "@/features/games/constants";
 import { useGameActions } from "@/features/games/store/game";
 import { usePlayerActions } from "@/features/games/store/player";
 import type { Level, Player } from "@/features/games/types";
@@ -86,23 +86,37 @@ function RouteComponent() {
 
             <div className="flex flex-col space-y-2">
               <label className="text-sm font-medium text-cyan-400">Level</label>
-              <select
-                value={level}
-                onChange={(e) => setLevel(e.target.value as Level)}
-                className="w-full bg-black/50 border border-cyan-500/50 text-white rounded-md px-3 py-2 focus:border-cyan-400 focus:ring-cyan-400/20 focus:outline-none"
-              >
-                {LevelOptions.map((opt) => (
-                  <option
-                    key={opt.value}
-                    value={opt.value}
-                    className="bg-gray-900"
+              <div className="space-y-3">
+                {LevelOptions.map((option) => (
+                  <label
+                    key={option.value}
+                    className={`block p-4 border rounded-lg cursor-pointer transition-all duration-300  ${
+                      level === option.value
+                        ? `${LevelColorClassMap[option.value].bg} ${LevelColorClassMap[option.value].border}`
+                        : "border-gray-600 hover:border-gray-400"
+                    }`}
                   >
-                    {opt.label}
-                  </option>
+                    <input
+                      type="radio"
+                      value={option.value}
+                      checked={level === option.value}
+                      onChange={(e) => setLevel(e.target.value as Level)}
+                      className="sr-only"
+                    />
+                    <div className="flex justify-between items-center">
+                      <span
+                        className={`font-bold text-sm ${LevelColorClassMap[option.value].text}`}
+                      >
+                        {option.label}
+                      </span>
+                      <span className="text-sm text-gray-400">
+                        {option.description}
+                      </span>
+                    </div>
+                  </label>
                 ))}
-              </select>
+              </div>
             </div>
-
             <div className="flex gap-3">
               <Button
                 variant="outline"

@@ -1,4 +1,9 @@
 export type Level = "easy" | "normal" | "spicy";
+export type LevelOption = {
+  value: Level;
+  label: string;
+  description: string;
+};
 
 export type Player = {
   id: number;
@@ -7,3 +12,5 @@ export type Player = {
 };
 
 export type PlayerWithAvatar = Player & { avatar: string };
+
+export type RoundStatus = "pending" | "revealed" | "done";
