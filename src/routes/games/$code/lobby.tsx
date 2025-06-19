@@ -5,7 +5,8 @@ import type {
   CreateRoundResponse,
 } from "@/api/rounds/rounds.type";
 import { Button } from "@/components/ui/button";
-import { GAME, LevelColorClassMap } from "@/features/games/constants";
+import LobbyHeader from "@/features/games/components/LobbyHeader";
+import { GAME } from "@/features/games/constants";
 import {
   useGameActions,
   useGameCode,
@@ -19,15 +20,14 @@ import {
 } from "@/features/games/store/player";
 import PlayersSectionInLobby from "@/features/players/components/PlyersSectionInLobby";
 import { useApiRequest } from "@/hooks/useApiRequest";
-import useClipboard from "@/hooks/useClipboard";
-import { cn } from "@/lib/utils";
+
 import {
   createFileRoute,
   useLoaderData,
   useNavigate,
   useParams,
 } from "@tanstack/react-router";
-import { Check, Copy, Play, Users, Zap } from "lucide-react";
+import { Play } from "lucide-react";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/games/$code/lobby")({
@@ -42,7 +42,6 @@ function RouteComponent() {
   const { code } = useParams({ strict: false });
   const { players: rawPlayers } = useLoaderData({ from: "/games/$code/lobby" });
   const navigate = useNavigate();
-  const { copied, copyToClipboard } = useClipboard();
 
   // store
   const { updatePlayersWithAvatar, reset: resetGame } = useGameActions();
@@ -100,39 +99,7 @@ function RouteComponent() {
   return (
     <div className="relative z-10 container mx-auto px-4 py-8 min-h-screen flex flex-col">
       <div className="flex-1 flex flex-col items-center justify-center space-y-8 animate-in zoom-in duration-500">
-        <div className="text-center space-y-4">
-          <h2 className="text-4xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-            遊戲大廳
-          </h2>
-          <div className="flex items-center justify-center gap-2">
-            <span className="text-gray-400">房間代碼:</span>
-            <code className="text-2xl font-mono bg-gray-800 px-4 py-2 rounded-lg border border-yellow-500/30 text-yellow-400">
-              {code}
-            </code>
-            <Button
-              onClick={() => copyToClipboard(code || "")}
-              size="sm"
-              variant="ghost"
-              className="text-yellow-400 hover:bg-yellow-400/10 hover:text-white"
-            >
-              {copied ? (
-                <Check className="h-4 w-4" />
-              ) : (
-                <Copy className="h-4 w-4" />
-              )}
-            </Button>
-
-            <div
-              className={cn(
-                "text-2xl font-mono bg-gray-800 px-4 py-2 rounded-lg border",
-                level &&
-                  `${LevelColorClassMap[level].border} ${LevelColorClassMap[level].text}`,
-              )}
-            >
-              {level && level[0].toUpperCase() + level.slice(1)}
-            </div>
-          </div>
-        </div>
+        {code && level && <LobbyHeader gameCode={code} level={level} />}
 
         <PlayersSectionInLobby players={players} />
 
