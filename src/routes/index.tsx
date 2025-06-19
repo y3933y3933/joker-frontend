@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Users, Crown } from "lucide-react";
-import HowToPlayButton from "@/features/components/HowToPlayButton";
 
 export const Route = createFileRoute("/")({
   component: JokerGame,
@@ -20,14 +19,13 @@ export default function JokerGame() {
       <div className="relative z-10 container mx-auto px-4 py-8 min-h-screen flex flex-col">
         <div className="flex-1 flex flex-col items-center justify-center space-y-8 animate-in fade-in duration-1000">
           <div className="text-center space-y-4">
-            <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-cyan-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent animate-pulse">
+            <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse">
               JOKER
             </h1>
             <div className="w-32 h-1 bg-gradient-to-r from-cyan-400 to-pink-400 mx-auto rounded-full animate-pulse" />
             <p className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
               回合制爆料遊戲，每回合只有一人知道題目，按下抽牌後才知道命運！抽到鬼牌就得公開說出答案，否則就能偷偷藏住秘密。
             </p>
-            <HowToPlayButton />
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md">
