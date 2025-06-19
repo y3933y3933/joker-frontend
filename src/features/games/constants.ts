@@ -38,3 +38,9 @@ export const LevelColorClassMap: Record<
     text: "text-neon-magenta",
   },
 };
+
+export const GAME = {
+  APP_NAME: "Joker",
+  MAX_PLAYER_NUM: 8,
+  MIN_PLAYER_NUM: 4,
+};

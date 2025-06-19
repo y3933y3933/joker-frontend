@@ -1,5 +1,4 @@
 import { getPlayers, leaveGame } from "@/api/games/games";
-import type { PlayerResponse } from "@/api/games/games.type";
 import { createRound } from "@/api/rounds/rounds";
 import type {
   CreateRoundRequest,
@@ -7,9 +6,11 @@ import type {
 } from "@/api/rounds/rounds.type";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { GAME, LevelColorClassMap } from "@/features/games/constants";
 import {
   useGameActions,
   useGameCode,
+  useGameLevel,
   useGamePlayers,
 } from "@/features/games/store/game";
 import {
@@ -17,15 +18,18 @@ import {
   usePlayerActions,
   usePlayerID,
 } from "@/features/games/store/player";
+import EmptyPlayerSlot from "@/features/players/components/EmptySlotPlayer";
+import PlayerCardInLobby from "@/features/players/components/PlayerCardInLobby";
 import { useApiRequest } from "@/hooks/useApiRequest";
 import useClipboard from "@/hooks/useClipboard";
+import { cn } from "@/lib/utils";
 import {
   createFileRoute,
   useLoaderData,
   useNavigate,
   useParams,
 } from "@tanstack/react-router";
-import { Check, Copy, Users, Crown, Zap } from "lucide-react";
+import { Check, Copy, Users, Zap } from "lucide-react";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/games/$code/lobby")({
@@ -45,6 +49,7 @@ function RouteComponent() {
   // store
   const { updatePlayersWithAvatar, reset: resetGame } = useGameActions();
   const players = useGamePlayers();
+  const level = useGameLevel();
   const gameCode = useGameCode();
   const playerId = usePlayerID();
   const { reset: resetPlayer } = usePlayerActions();
@@ -99,7 +104,7 @@ function RouteComponent() {
       <div className="flex-1 flex flex-col items-center justify-center space-y-8 animate-in zoom-in duration-500">
         <div className="text-center space-y-4">
           <h2 className="text-4xl font-bold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-            等待玩家加入...
+            遊戲大廳
           </h2>
           <div className="flex items-center justify-center gap-2">
             <span className="text-gray-400">房間代碼:</span>
@@ -118,42 +123,49 @@ function RouteComponent() {
                 <Copy className="h-4 w-4" />
               )}
             </Button>
+
+            <div
+              className={cn(
+                "text-2xl font-mono bg-gray-800 px-4 py-2 rounded-lg border",
+                level &&
+                  `${LevelColorClassMap[level].border} ${LevelColorClassMap[level].text}`,
+              )}
+            >
+              {level && level[0].toUpperCase() + level.slice(1)}
+            </div>
           </div>
         </div>
 
-        <Card className="w-full max-w-2xl bg-gray-900/50 border-yellow-500/30 shadow-lg shadow-yellow-500/10">
-          <CardContent className="p-6">
+        <Card className="w-full max-w-4xl bg-gray-900/50 border-yellow-500/30 shadow-lg shadow-yellow-500/10">
+          <CardContent className="">
             <div className="space-y-4">
               <h3 className="text-xl font-semibold text-yellow-400 flex items-center gap-2">
                 <Users className="h-5 w-5" />
-                Players ({players.length})
+                Players ( {players.length} / {GAME.MAX_PLAYER_NUM} )
               </h3>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
                 {players.map((player) => (
-                  <div
+                  <PlayerCardInLobby
                     key={player.id}
-                    className="flex items-center gap-3 p-3 bg-black/30 rounded-lg border border-gray-700/50 animate-pulse"
-                  >
-                    <div
-                      className="w-10 h-10 rounded-full flex items-center justify-center text-black font-bold text-sm"
-                      style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
-                    >
-                      {player.avatar}
-                    </div>
-                    <span className="flex-1 text-white font-medium">
-                      {player.nickname}
-                    </span>
-                    {player.isHost && (
-                      <Crown className="h-4 w-4 text-yellow-400" />
-                    )}
-                  </div>
+                    isHost={player.isHost}
+                    nickname={player.nickname}
+                    avatar={player.avatar}
+                  />
+                ))}
+
+                {/* Empty slots */}
+                {Array.from({
+                  length: Math.max(0, GAME.MAX_PLAYER_NUM - players.length),
+                }).map((_, index) => (
+                  <EmptyPlayerSlot key={`empty-${index}`} />
                 ))}
               </div>
 
               {players.length && (
                 <p className="text-center text-gray-400 text-sm">
-                  Waiting for more players to join... (minimum 2 players)
+                  Waiting for more players to join... (minimum{" "}
+                  {GAME.MIN_PLAYER_NUM} players)
                 </p>
               )}
             </div>
