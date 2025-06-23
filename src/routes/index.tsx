@@ -21,11 +21,11 @@ function App() {
         <div className="flex-1 flex flex-col items-center justify-center space-y-8 animate-in fade-in duration-1000">
           <div className="text-center space-y-4">
             <h1 className="text-6xl md:text-8xl font-bold bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent animate-pulse">
-              {APP.name}
+              {APP.NAME}
             </h1>
             <div className="w-32 h-1 bg-gradient-to-r from-cyan-400 to-pink-400 mx-auto rounded-full animate-pulse" />
             <p className="text-xl md:text-2xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
-              {APP.description}
+              {APP.DESCRIPTION}
             </p>
           </div>
 
