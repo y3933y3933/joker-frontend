@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import useJoinGame from "@/integrations/tanstack-query/games/useJoinGame";
+import { useUserActions } from "@/integrations/zustand/store/user.store";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/join")({
   component: RouteComponent,
@@ -11,11 +14,18 @@ export const Route = createFileRoute("/join")({
 function RouteComponent() {
   const [nickname, setNickname] = useState("");
   const [gameCode, setGameCode] = useState("");
+  const navigate = useNavigate();
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter" && nickname.trim() && gameCode.trim()) {
-      // do sth
-    }
+  const { mutateAsync: joinGame, isLoading } = useJoinGame();
+  const { setIsHost, setUserID, setUserNickname } = useUserActions();
+
+  async function handleJoin() {
+    const res = await joinGame({ nickname, code: gameCode });
+    setIsHost(res.isHost);
+    setUserID(res.id);
+    setUserNickname(res.nickname);
+    toast.success("加入房間成功");
+    navigate({ to: `/games/${gameCode}/lobby` });
   }
 
   return (
@@ -39,7 +49,6 @@ function RouteComponent() {
                 onChange={(e) => setNickname(e.target.value)}
                 placeholder="Enter your nickname"
                 className="bg-black/50 border-pink-500/50 text-white placeholder-gray-500 focus:border-pink-400 focus:ring-pink-400/20"
-                onKeyDown={handleKeyDown}
               />
             </div>
 
@@ -52,7 +61,6 @@ function RouteComponent() {
                 onChange={(e) => setGameCode(e.target.value.toUpperCase())}
                 placeholder="Enter room code"
                 className="bg-black/50 border-pink-500/50 text-white placeholder-gray-500 focus:border-pink-400 focus:ring-pink-400/20 font-mono"
-                onKeyDown={handleKeyDown}
               />
             </div>
 
@@ -66,12 +74,12 @@ function RouteComponent() {
                 </Link>
               </Button>
               <Button
-                disabled={!nickname.trim() || !gameCode.trim()}
-                // onClick={handleJoin}
-
+                disabled={!nickname.trim() || !gameCode.trim() || isLoading}
+                onClick={handleJoin}
                 className="flex-1 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-400 hover:to-purple-400 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Join
+                {isLoading && "Joining..."}
+                {!isLoading && "Join"}
               </Button>
             </div>
           </CardContent>

@@ -2,6 +2,7 @@ import type { Level } from "@/types";
 import api from "../axios-instance";
 import {
   CreateGameResponseSchema,
+  GameSchema,
   PlayerSchema,
   PlayersSchema,
 } from "./game.schema";
@@ -19,4 +20,9 @@ export const joinGame = async (code: string, nickname: string) => {
 export const getPlayers = async (code: string) => {
   const res = await api.get(`/games/${code}/players`);
   return PlayersSchema.parse(res.data.data);
+};
+
+export const getGame = async (code: string) => {
+  const res = await api.get(`/games/${code}`);
+  return GameSchema.parse(res.data.data);
 };

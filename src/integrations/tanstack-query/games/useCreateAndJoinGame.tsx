@@ -1,5 +1,6 @@
-import { createGame, joinGame } from "@/integrations/axios/games/games";
+import { createGame } from "@/integrations/axios/games/games";
 import { useMutation } from "@tanstack/react-query";
+import useJoinGame from "./useJoinGame";
 
 type CreateGameParams = Parameters<typeof createGame>[0];
 
@@ -8,10 +9,12 @@ export function useCreateAndJoinGame() {
     mutationFn: createGame,
   });
 
-  const joinGameMutation = useMutation({
-    mutationFn: ({ code, nickname }: { code: string; nickname: string }) =>
-      joinGame(code, nickname),
-  });
+  const {
+    mutateAsync: joinGameMutateAsync,
+    isError: joinGameIsError,
+    isLoading: joinGameIsLoading,
+    error: joinGameError,
+  } = useJoinGame();
 
   const createAndJoin = async (
     createParams: CreateGameParams,
@@ -20,7 +23,7 @@ export function useCreateAndJoinGame() {
     try {
       const gameData = await createGameMutation.mutateAsync(createParams);
 
-      const joinedData = await joinGameMutation.mutateAsync({
+      const joinedData = await joinGameMutateAsync({
         code: gameData.code,
         nickname,
       });
@@ -33,8 +36,8 @@ export function useCreateAndJoinGame() {
 
   return {
     createAndJoin,
-    isLoading: createGameMutation.isPending || joinGameMutation.isPending,
-    isError: createGameMutation.isError || joinGameMutation.isError,
-    error: createGameMutation.error || joinGameMutation.error,
+    isLoading: createGameMutation.isPending || joinGameIsLoading,
+    isError: createGameMutation.isError || joinGameIsError,
+    error: createGameMutation.error || joinGameError,
   };
 }

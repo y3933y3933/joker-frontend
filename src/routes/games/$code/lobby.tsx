@@ -4,10 +4,15 @@ import PlayerListInLobby from "@/components/PlayerListInLobby";
 import { Button } from "@/components/ui/button";
 import { APP } from "@/constants";
 import { getPlayers } from "@/integrations/axios/games/games";
-import { useGameLevel } from "@/integrations/zustand/store/game.store";
+import {
+  useGameActions,
+  useGameLevel,
+  useGamePlayers,
+} from "@/integrations/zustand/store/game.store";
 import { useUserIsHost } from "@/integrations/zustand/store/user.store";
 import { createFileRoute } from "@tanstack/react-router";
 import { Play } from "lucide-react";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/games/$code/lobby")({
   component: RouteComponent,
@@ -20,7 +25,14 @@ function RouteComponent() {
   const { code } = Route.useParams();
   const isHost = useUserIsHost();
   const level = useGameLevel();
-  const players = Route.useLoaderData();
+  const initialPlayers = Route.useLoaderData();
+  const players = useGamePlayers();
+
+  const { setPlayers } = useGameActions();
+
+  useEffect(() => {
+    setPlayers(initialPlayers);
+  }, [initialPlayers]);
 
   return (
     <div className="relative z-10 container mx-auto px-4 py-8 min-h-screen flex flex-col">

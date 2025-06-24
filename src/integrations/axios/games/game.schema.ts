@@ -17,3 +17,11 @@ export const CreateGameResponseSchema = z.object({
 export type CreateGameResponse = z.infer<typeof CreateGameResponseSchema>;
 
 export const PlayersSchema = z.array(PlayerSchema);
+
+export const GameSchema = z.object({
+  id: z.int().positive(),
+  code: z.string(),
+  level: z.literal(["easy", "normal", "spicy"]),
+});
+
+export type Game = z.infer<typeof GameSchema>;
