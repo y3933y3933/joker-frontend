@@ -1,5 +1,13 @@
 import * as z from "zod/v4";
 
+export const PlayerSchema = z.object({
+  id: z.int().positive(),
+  nickname: z.string(),
+  isHost: z.boolean(),
+});
+
+export type Player = z.infer<typeof PlayerSchema>;
+
 export const CreateGameResponseSchema = z.object({
   id: z.int().positive(),
   code: z.string(),
@@ -8,10 +16,4 @@ export const CreateGameResponseSchema = z.object({
 
 export type CreateGameResponse = z.infer<typeof CreateGameResponseSchema>;
 
-export const JoinGameResponseSchema = z.object({
-  id: z.int().positive(),
-  nickname: z.string(),
-  isHost: z.boolean(),
-});
-
-export type JoinGameResponseResponse = z.infer<typeof JoinGameResponseSchema>;
+export const PlayersSchema = z.array(PlayerSchema);

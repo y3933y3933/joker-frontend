@@ -1,4 +1,4 @@
-import type { LevelOption } from "./types";
+import type { Level, LevelOption } from "./types";
 
 export const APP = {
   NAME: "Joker",
@@ -8,32 +8,41 @@ export const APP = {
   MIN_PLAYER_NUM: 2,
 } as const;
 
+export const LevelStyle: Record<
+  Level,
+  { border: string; bg: string; text: string }
+> = {
+  easy: {
+    border: "border-neon-green",
+    bg: "bg-neon-green/10",
+    text: "text-neon-green",
+  },
+  normal: {
+    border: "border-neon-cyan",
+    bg: "bg-neon-cyan/10",
+    text: "text-neon-cyan",
+  },
+  spicy: {
+    border: "border-neon-magenta",
+    bg: "bg-neon-magenta/10",
+    text: "text-neon-magenta",
+  },
+};
+
 export const LevelOptions: LevelOption[] = [
   {
     value: "easy",
     description: "Light & fun questions",
-    style: {
-      border: "border-neon-green",
-      bg: "bg-neon-green/10",
-      text: "text-neon-green",
-    },
+    style: LevelStyle["easy"],
   },
   {
     value: "normal",
     description: "Balanced mix of topics",
-    style: {
-      border: "border-neon-cyan",
-      bg: "bg-neon-cyan/10",
-      text: "text-neon-cyan",
-    },
+    style: LevelStyle["normal"],
   },
   {
     value: "spicy",
     description: "Bold & revealing questions",
-    style: {
-      border: "border-neon-magenta",
-      bg: "bg-neon-magenta/10",
-      text: "text-neon-magenta",
-    },
+    style: LevelStyle["spicy"],
   },
 ];
