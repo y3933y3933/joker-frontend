@@ -7,10 +7,10 @@ import {
 
 export const createGame = async (level: Level) => {
   const res = await api.post("/games", { level });
-  return CreateGameResponseSchema.parse(res.data);
+  return CreateGameResponseSchema.parse(res.data.data);
 };
 
 export const joinGame = async (code: string, nickname: string) => {
   const res = await api.post(`/games/${code}/join`, { nickname });
-  return JoinGameResponseSchema.parse(res.data);
+  return JoinGameResponseSchema.parse(res.data.data);
 };

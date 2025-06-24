@@ -7,8 +7,9 @@ import { useCreateAndJoinGame } from "@/integrations/tanstack-query/games/useCre
 import { useGameActions } from "@/integrations/zustand/store/game.store";
 import { useUserActions } from "@/integrations/zustand/store/user.store";
 import type { Level } from "@/types";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/create")({
   component: RouteComponent,
@@ -17,6 +18,7 @@ export const Route = createFileRoute("/create")({
 function RouteComponent() {
   const [nickname, setNickname] = useState("");
   const [level, setLevel] = useState<Level>("easy");
+  const navigate = useNavigate();
 
   const { createAndJoin, isLoading } = useCreateAndJoinGame();
   const { setGameLevel } = useGameActions();
@@ -27,8 +29,11 @@ function RouteComponent() {
       const { game, joined } = await createAndJoin(level, nickname);
       updateGameStore({ level: game.level });
       updateUserStore(joined);
+      toast.success("建立遊戲成功");
+      navigate({ to: `/games/${game.code}/lobby` });
     } catch (err) {
       console.error("建立或加入遊戲失敗", err);
+      toast.error("建立遊戲失敗");
     }
   }
 
