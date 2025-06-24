@@ -1,0 +1,41 @@
+import { create } from "zustand";
+
+interface UserState {
+  id: number | null;
+  nickname: string;
+  isHost: boolean;
+  actions: UserActions;
+}
+
+interface UserActions {
+  setUserID: (id: number) => void;
+  setUserNickname: (name: string) => void;
+  setIsHost: (isHost: boolean) => void;
+  reset: () => void;
+}
+
+const useUserStore = create<UserState>((set) => ({
+  id: null,
+  nickname: "",
+  isHost: false,
+  actions: {
+    setUserID: (id: number) => {
+      set({ id });
+    },
+    setUserNickname: (name: string) => {
+      set({ nickname: name });
+    },
+    setIsHost: (isHost: boolean) => {
+      set({ isHost });
+    },
+    reset: () => {
+      set({ nickname: "", id: null });
+    },
+  },
+}));
+
+export const useUserID = () => useUserStore((state) => state.id);
+export const useUserNickname = () => useUserStore((state) => state.nickname);
+export const useUserIsHost = () => useUserStore((state) => state.isHost);
+
+export const useUserActions = () => useUserStore((state) => state.actions);

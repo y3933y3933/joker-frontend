@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { LevelOptions } from "@/constants";
+import { useCreateAndJoinGame } from "@/integrations/tanstack-query/games/useCreateAndJoinGame";
+import { useGameActions } from "@/integrations/zustand/store/game.store";
+import { useUserActions } from "@/integrations/zustand/store/user.store";
 import type { Level } from "@/types";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
@@ -15,10 +18,36 @@ function RouteComponent() {
   const [nickname, setNickname] = useState("");
   const [level, setLevel] = useState<Level>("easy");
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter" && nickname.trim() && level) {
-      // do sth
+  const { createAndJoin, isLoading } = useCreateAndJoinGame();
+  const { setGameLevel } = useGameActions();
+  const { setUserNickname, setUserID, setIsHost } = useUserActions();
+
+  async function createGame() {
+    try {
+      const { game, joined } = await createAndJoin(level, nickname);
+      updateGameStore({ level: game.level });
+      updateUserStore(joined);
+    } catch (err) {
+      console.error("建立或加入遊戲失敗", err);
     }
+  }
+
+  function updateGameStore({ level }: { level: Level }) {
+    setGameLevel(level);
+  }
+
+  function updateUserStore({
+    id,
+    nickname,
+    isHost,
+  }: {
+    id: number;
+    nickname: string;
+    isHost: boolean;
+  }) {
+    setIsHost(isHost);
+    setUserNickname(nickname);
+    setUserID(id);
   }
 
   return (
@@ -45,7 +74,6 @@ function RouteComponent() {
                 onChange={(e) => setNickname(e.target.value)}
                 placeholder="Enter your nickname"
                 className="bg-black/50 border-cyan-500/50 text-white placeholder-gray-500 focus:border-cyan-400 focus:ring-cyan-400/20"
-                onKeyDown={handleKeyDown}
               />
             </div>
 
@@ -72,16 +100,12 @@ function RouteComponent() {
                 </Link>
               </Button>
               <Button
-                // onClick={handleCreate}
-                // disabled={
-                //   !nickname.trim() ||
-                //   createGameRequest.isLoading ||
-                //   joinGameRequest.isLoading
-                // }
-                disabled={!nickname.trim()}
+                disabled={!nickname.trim() || isLoading}
+                onClick={createGame}
                 className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Create
+                {isLoading && "Creating..."}
+                {!isLoading && "Create"}
               </Button>
             </div>
           </CardContent>
