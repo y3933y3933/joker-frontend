@@ -12,4 +12,4 @@ export type LevelOption = {
 
 export type UserRole = "question" | "answer" | "normal";
 
-export type RoundStatus = "question" | "answer" | "draw" | "done";
+export type RoundStatus = "question" | "answer" | "draw" | "revealed" | "safe";

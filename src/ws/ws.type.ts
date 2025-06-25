@@ -1,4 +1,11 @@
-export type WSMessage = PlayerJoined | GameStarted | RoundQuestion | AnswerTime;
+export type WSMessage =
+  | PlayerJoined
+  | GameStarted
+  | RoundQuestion
+  | AnswerTime
+  | AnswerSubmitted
+  | JokerRevealed
+  | PlayerSafe;
 
 type PlayerJoined = {
   type: "player_joined";
@@ -27,4 +34,23 @@ type RoundQuestion = {
 
 type AnswerTime = {
   type: "answer_time";
+};
+
+type AnswerSubmitted = {
+  type: "answer_submitted";
+  data: {
+    roundId: number;
+    answer: string;
+  };
+};
+
+type JokerRevealed = {
+  type: "joker_revealed";
+  data: {
+    question: string;
+  };
+};
+
+type PlayerSafe = {
+  type: "player_safe";
 };

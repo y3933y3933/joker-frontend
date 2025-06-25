@@ -2,6 +2,7 @@ import type { Level } from "@/types";
 import api from "../axios-instance";
 import {
   CreateGameResponseSchema,
+  DrawCardResSchema,
   GameSchema,
   PlayerSchema,
   PlayersSchema,
@@ -29,7 +30,7 @@ export const getGame = async (code: string) => {
 };
 
 export const startGame = async (code: string) => {
-  const res = await api.post(`/games/${code}/start`);
+  await api.post(`/games/${code}/start`);
 };
 
 export const getQuestions = async (code: string) => {
@@ -42,7 +43,33 @@ export const submitQuestion = async (
   roundID: number,
   questionId: number,
 ) => {
-  const res = await api.post(`/games/${code}/rounds/${roundID}/question`, {
+  await api.post(`/games/${code}/rounds/${roundID}/question`, {
     questionId,
   });
+};
+
+export const submitAnswer = async (
+  code: string,
+  roundID: number,
+  answer: string,
+) => {
+  await api.post(`/games/${code}/rounds/${roundID}/answer`, { answer });
+};
+
+export const drawCard = async ({
+  code,
+  roundId,
+  playerId,
+  index,
+}: {
+  code: string;
+  roundId: number;
+  playerId: number;
+  index: number;
+}) => {
+  const res = await api.post(`/games/${code}/rounds/${roundId}/draw`, {
+    index,
+    playerId,
+  });
+  return DrawCardResSchema.parse(res.data.data);
 };

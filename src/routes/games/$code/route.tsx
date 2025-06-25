@@ -30,6 +30,7 @@ function RouteComponent() {
     setAnswerPlayerID,
     setRoundStatus,
     setQuestion,
+    setAnswer,
   } = useRoundActions();
   const { setUserRoleAnswer, setUserRoleNormal, setUserRoleQuestion } =
     useUserActions();
@@ -63,9 +64,7 @@ function RouteComponent() {
       },
       game_started: (msg) => {
         if (msg.type === "game_started") {
-          console.log("game_started", msg.data);
           setRoundID(msg.data.roundId);
-
           setAnswerPlayerID(msg.data.answererId);
           setQuestionPlayerID(msg.data.questionerId);
           updateUserRole({
@@ -84,6 +83,20 @@ function RouteComponent() {
       },
       answer_time: (_) => {
         setRoundStatus("answer");
+      },
+      answer_submitted: (msg) => {
+        if (msg.type === "answer_submitted") {
+          setAnswer(msg.data.answer);
+          setRoundStatus("draw");
+        }
+      },
+      joker_revealed: (msg) => {
+        if (msg.type === "joker_revealed") {
+          setRoundStatus("revealed");
+        }
+      },
+      player_safe: (_) => {
+        setRoundStatus("safe");
       },
     };
   return (

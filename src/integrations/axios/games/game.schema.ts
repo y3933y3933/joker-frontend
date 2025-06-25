@@ -34,3 +34,7 @@ export const QuestionSchema = z.object({
 export type Question = z.infer<typeof QuestionSchema>;
 
 export const QuestionsSchema = z.array(QuestionSchema);
+
+export const DrawCardResSchema = z.object({
+  isJoker: z.boolean(),
+});
