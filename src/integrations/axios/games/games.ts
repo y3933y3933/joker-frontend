@@ -5,6 +5,7 @@ import {
   GameSchema,
   PlayerSchema,
   PlayersSchema,
+  QuestionsSchema,
 } from "./game.schema";
 
 export const createGame = async (level: Level) => {
@@ -25,4 +26,23 @@ export const getPlayers = async (code: string) => {
 export const getGame = async (code: string) => {
   const res = await api.get(`/games/${code}`);
   return GameSchema.parse(res.data.data);
+};
+
+export const startGame = async (code: string) => {
+  const res = await api.post(`/games/${code}/start`);
+};
+
+export const getQuestions = async (code: string) => {
+  const res = await api.get(`/games/${code}/questions`);
+  return QuestionsSchema.parse(res.data.data);
+};
+
+export const submitQuestion = async (
+  code: string,
+  roundID: number,
+  questionId: number,
+) => {
+  const res = await api.post(`/games/${code}/rounds/${roundID}/question`, {
+    questionId,
+  });
 };

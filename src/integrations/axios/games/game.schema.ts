@@ -25,3 +25,12 @@ export const GameSchema = z.object({
 });
 
 export type Game = z.infer<typeof GameSchema>;
+
+export const QuestionSchema = z.object({
+  id: z.int().positive(),
+  content: z.string(),
+});
+
+export type Question = z.infer<typeof QuestionSchema>;
+
+export const QuestionsSchema = z.array(QuestionSchema);

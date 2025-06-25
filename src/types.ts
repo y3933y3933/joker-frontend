@@ -9,3 +9,7 @@ export type LevelOption = {
     text: string;
   };
 };
+
+export type UserRole = "question" | "answer" | "normal";
+
+export type RoundStatus = "question" | "answer" | "draw" | "done";
