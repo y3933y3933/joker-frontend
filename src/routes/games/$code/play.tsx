@@ -10,6 +10,7 @@ import { useCards } from "@/hooks/useCards";
 import useRoundPlayer from "@/hooks/useRoundPlayer";
 import useDrawCard from "@/integrations/tanstack-query/games/useDrawCard";
 import useGetQuestions from "@/integrations/tanstack-query/games/useGetQuestions";
+import useNextRound from "@/integrations/tanstack-query/games/useNextRound";
 import useSubmitAnswer from "@/integrations/tanstack-query/games/useSubmitAnswer";
 import useSubmitQuestion from "@/integrations/tanstack-query/games/useSubmitQuestion";
 import {
@@ -28,8 +29,7 @@ import {
   useUserRole,
 } from "@/integrations/zustand/store/user.store";
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 export const Route = createFileRoute("/games/$code/play")({
   component: RouteComponent,
@@ -51,27 +51,34 @@ function RouteComponent() {
   const isHost = useUserIsHost();
   const { mutateAsync: submitQuestion } = useSubmitQuestion();
   const { mutateAsync: submitAnswer } = useSubmitAnswer();
+  const { mutateAsync: nextRound, isLoading: nextRoundLoading } =
+    useNextRound();
 
   const { data: questions } = useGetQuestions(code, roundID);
   const { mutateAsync: drawCard } = useDrawCard();
 
-  const { flippingCard, flippedCards, selectedCard, handleCardSelect } =
-    useCards({
-      drawCardAPI: async (index: number) => {
-        if (!code || !roundID || !playerID) {
-          console.error("something went wrong");
-          return "safe";
-        }
-        const data = await drawCard({
-          code,
-          roundId: roundID,
-          playerId: playerID,
-          index,
-        });
+  const {
+    flippingCard,
+    flippedCards,
+    selectedCard,
+    handleCardSelect,
+    resetCardState,
+  } = useCards({
+    drawCardAPI: async (index: number) => {
+      if (!code || !roundID || !playerID) {
+        console.error("something went wrong");
+        return "safe";
+      }
+      const data = await drawCard({
+        code,
+        roundId: roundID,
+        playerId: playerID,
+        index,
+      });
 
-        return data.isJoker ? "joker" : "safe";
-      },
-    });
+      return data.isJoker ? "joker" : "safe";
+    },
+  });
 
   const answerOptions = useMemo(() => {
     return players
@@ -88,6 +95,20 @@ function RouteComponent() {
     if (!code || !roundID) return;
     await submitAnswer({ code, roundId: roundID, answer });
   }
+
+  async function handlerNextRound() {
+    if (!code || !roundID || !playerID) {
+      console.error("參數有誤");
+      return;
+    }
+    await nextRound({ code, currentRoundId: roundID, hostId: playerID });
+  }
+
+  useEffect(() => {
+    if (roundStatus === "question") {
+      resetCardState();
+    }
+  }, [roundStatus]);
 
   return (
     <div className="relative z-10 container mx-auto px-4 py-8 min-h-screen flex flex-col">
@@ -227,7 +248,11 @@ function RouteComponent() {
             </Button>
             {(roundStatus === "revealed" || roundStatus === "safe") &&
               isHost && (
-                <Button className="w-full sm:w-auto bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white font-bold   shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300 transform hover:scale-105">
+                <Button
+                  onClick={handlerNextRound}
+                  disabled={nextRoundLoading}
+                  className="w-full sm:w-auto bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white font-bold   shadow-lg shadow-green-500/30 hover:shadow-green-500/50 transition-all duration-300 transform hover:scale-105"
+                >
                   下一回合
                 </Button>
               )}

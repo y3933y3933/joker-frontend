@@ -41,10 +41,17 @@ export function useCards({ drawCardAPI }: UseDrawCardOptions) {
     }
   };
 
+  const resetCardState = () => {
+    setFlippedCards({});
+    setFlippingCard(null);
+    setSelectedCard(null);
+  };
+
   return {
     flippingCard,
     flippedCards,
     selectedCard,
     handleCardSelect,
+    resetCardState,
   };
 }

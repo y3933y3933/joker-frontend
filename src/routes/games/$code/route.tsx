@@ -92,11 +92,26 @@ function RouteComponent() {
       },
       joker_revealed: (msg) => {
         if (msg.type === "joker_revealed") {
+          setQuestion(msg.data.question);
           setRoundStatus("revealed");
         }
       },
       player_safe: (_) => {
         setRoundStatus("safe");
+      },
+      round_started: (msg) => {
+        if (msg.type === "round_started") {
+          setRoundID(msg.data.roundId);
+          setAnswerPlayerID(msg.data.answererId);
+          setQuestionPlayerID(msg.data.questionerId);
+          updateUserRole({
+            questionID: msg.data.questionerId,
+            answerID: msg.data.answererId,
+          });
+          setRoundStatus("question");
+          setQuestion("");
+          setAnswer("");
+        }
       },
     };
   return (

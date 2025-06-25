@@ -46,6 +46,7 @@ function RouteComponent() {
               </label>
               <Input
                 value={nickname}
+                maxLength={15}
                 onChange={(e) => setNickname(e.target.value)}
                 placeholder="Enter your nickname"
                 className="bg-black/50 border-pink-500/50 text-white placeholder-gray-500 focus:border-pink-400 focus:ring-pink-400/20"

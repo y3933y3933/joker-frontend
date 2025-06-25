@@ -19,10 +19,6 @@ export default function SideBarInPlay({
   roundStatus,
   currentPlayer,
 }: SideBarInPlayProps) {
-  const isCurrentPlayer =
-    (role === "answer" && roundStatus === "answer") ||
-    (role === "question" && roundStatus === "question");
-
   return (
     <div className="lg:w-80 bg-gradient-to-b from-gray-900/50 to-black/50 backdrop-blur-sm border-r border-gray-700/50 p-4">
       <div className="space-y-4">
@@ -37,22 +33,24 @@ export default function SideBarInPlay({
           <PlayerListInPlay
             players={players}
             currentPlayerID={currentPlayer.id}
-            // isCurrentPlayer={isCurrentPlayer}
           />
         </div>
 
         {/* Turn indicator */}
-        <div className="mt-6 p-3 bg-gradient-to-r from-purple-900/30 to-pink-900/30 rounded-xl border border-purple-500/30">
+        {/* <div className="mt-6 p-3 bg-gradient-to-r from-purple-900/30 to-pink-900/30 rounded-xl border border-purple-500/30">
           <div className="text-center">
             <div className="text-sm text-gray-400 mb-1">
-              {roundStatus === "answer" && "作答中"}
               {roundStatus === "question" && "選題中"}
+              {roundStatus === "answer" && "作答中"}
+              {roundStatus === "draw" && "抽牌中"}
+              {(roundStatus === "revealed" || roundStatus === "safe") &&
+                "揭曉結果"}
             </div>
             <div className="text-lg font-bold bg-gradient-to-r from-pink-400 to-cyan-400 bg-clip-text text-transparent">
               {currentPlayer.nickname}
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

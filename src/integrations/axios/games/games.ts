@@ -73,3 +73,18 @@ export const drawCard = async ({
   });
   return DrawCardResSchema.parse(res.data.data);
 };
+
+export const nextRound = async ({
+  code,
+  hostId,
+  currentRoundId,
+}: {
+  code: string;
+  hostId: number;
+  currentRoundId: number;
+}) => {
+  await api.post(`/games/${code}/rounds/next`, {
+    hostId,
+    currentRoundId,
+  });
+};
