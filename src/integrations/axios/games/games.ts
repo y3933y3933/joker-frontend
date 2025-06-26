@@ -88,3 +88,19 @@ export const nextRound = async ({
     currentRoundId,
   });
 };
+
+export const endGame = async ({
+  code,
+  playerID,
+}: {
+  code: string;
+  playerID: number;
+}) => {
+  await api.post(
+    `/games/${code}/end`,
+    {},
+    {
+      headers: { "X-Player-ID": playerID },
+    },
+  );
+};

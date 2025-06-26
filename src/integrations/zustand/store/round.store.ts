@@ -54,6 +54,7 @@ const useRoundStore = create<RoundStore>((set) => ({
         questionPlayerID: null,
         answerPlayerID: null,
         answer: null,
+        status: "question",
       });
     },
   },

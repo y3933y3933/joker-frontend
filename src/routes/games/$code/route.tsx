@@ -23,7 +23,7 @@ function RouteComponent() {
   const game = Route.useLoaderData();
   const navigate = useNavigate();
 
-  const { setGameLevel, addPlayer } = useGameActions();
+  const { setGameLevel, addPlayer, reset: resetGame } = useGameActions();
   const {
     setRoundID,
     setQuestionPlayerID,
@@ -31,9 +31,14 @@ function RouteComponent() {
     setRoundStatus,
     setQuestion,
     setAnswer,
+    reset: resetRound,
   } = useRoundActions();
-  const { setUserRoleAnswer, setUserRoleNormal, setUserRoleQuestion } =
-    useUserActions();
+  const {
+    setUserRoleAnswer,
+    setUserRoleNormal,
+    setUserRoleQuestion,
+    reset: resetUser,
+  } = useUserActions();
 
   useEffect(() => {
     setGameLevel(game.level);
@@ -53,6 +58,12 @@ function RouteComponent() {
     } else {
       setUserRoleNormal();
     }
+  }
+
+  function reset() {
+    resetGame();
+    resetUser();
+    resetRound();
   }
 
   const handleMessageMap: Record<WSMessage["type"], (msg: WSMessage) => void> =
@@ -111,6 +122,13 @@ function RouteComponent() {
           setRoundStatus("question");
           setQuestion("");
           setAnswer("");
+        }
+      },
+
+      game_ended: (msg) => {
+        if (msg.type === "game_ended") {
+          navigate({ to: `/games/${msg.data.gameCode}/summary` });
+          reset();
         }
       },
     };

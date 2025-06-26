@@ -6,7 +6,8 @@ export type WSMessage =
   | AnswerSubmitted
   | JokerRevealed
   | PlayerSafe
-  | RoundStarted;
+  | RoundStarted
+  | GameEnded;
 
 type PlayerJoined = {
   type: "player_joined";
@@ -62,5 +63,12 @@ type RoundStarted = {
     roundId: number;
     answererId: number;
     questionerId: number;
+  };
+};
+
+type GameEnded = {
+  type: "game_ended";
+  data: {
+    gameCode: number;
   };
 };

@@ -1,5 +1,6 @@
 import AnswerSection from "@/components/AnswerSection";
 import DrawCardSection from "@/components/DrawCardSection";
+import EndGameButton from "@/components/EndGameButton";
 import JokerCard from "@/components/JokerCard";
 import QuestionSection from "@/components/QuestionSection";
 import SafeCard from "@/components/SafeCard";
@@ -9,6 +10,7 @@ import { Card } from "@/components/ui/card";
 import { useCards } from "@/hooks/useCards";
 import useRoundPlayer from "@/hooks/useRoundPlayer";
 import useDrawCard from "@/integrations/tanstack-query/games/useDrawCard";
+import useEndGame from "@/integrations/tanstack-query/games/useEndGame";
 import useGetQuestions from "@/integrations/tanstack-query/games/useGetQuestions";
 import useNextRound from "@/integrations/tanstack-query/games/useNextRound";
 import useSubmitAnswer from "@/integrations/tanstack-query/games/useSubmitAnswer";
@@ -53,6 +55,7 @@ function RouteComponent() {
   const { mutateAsync: submitAnswer } = useSubmitAnswer();
   const { mutateAsync: nextRound, isLoading: nextRoundLoading } =
     useNextRound();
+  const { mutateAsync: endGame, isLoading: endGameLoading } = useEndGame();
 
   const { data: questions } = useGetQuestions(code, roundID);
   const { mutateAsync: drawCard } = useDrawCard();
@@ -102,6 +105,14 @@ function RouteComponent() {
       return;
     }
     await nextRound({ code, currentRoundId: roundID, hostId: playerID });
+  }
+
+  async function handlerEndGame() {
+    if (!code || !playerID) {
+      console.error("參數有誤");
+      return;
+    }
+    await endGame({ code, playerID });
   }
 
   useEffect(() => {
@@ -240,12 +251,13 @@ function RouteComponent() {
         {/* Footer */}
         <div className="bg-gradient-to-r from-gray-900/50 via-black/50 to-gray-900/50 backdrop-blur-sm border-t border-gray-700/50 p-6">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-2xl mx-auto">
-            <Button
-              variant="outline"
-              className="w-full sm:w-auto border-gray-600 text-gray-400 hover:bg-gray-800 hover:text-white hover:border-gray-500 transition-all duration-300"
-            >
-              結束遊戲
-            </Button>
+            {isHost && (
+              <EndGameButton
+                onConfirm={handlerEndGame}
+                disabled={endGameLoading}
+              />
+            )}
+
             {(roundStatus === "revealed" || roundStatus === "safe") &&
               isHost && (
                 <Button

@@ -45,7 +45,7 @@ const useUserStore = create<UserState>((set) => ({
       set({ role: "question" });
     },
     reset: () => {
-      set({ nickname: "", id: null, role: "normal" });
+      set({ nickname: "", id: null, role: "normal", isHost: false });
     },
   },
 }));
