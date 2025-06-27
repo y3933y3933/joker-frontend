@@ -4,6 +4,7 @@ import {
   CreateGameResponseSchema,
   DrawCardResSchema,
   GameSchema,
+  GameSummaryResponseSchema,
   PlayerSchema,
   PlayersSchema,
   QuestionsSchema,
@@ -103,4 +104,9 @@ export const endGame = async ({
       headers: { "X-Player-ID": playerID },
     },
   );
+};
+
+export const getGameSummary = async (code: string) => {
+  const res = await api.get(`/games/${code}/summary`);
+  return GameSummaryResponseSchema.parse(res.data.data);
 };

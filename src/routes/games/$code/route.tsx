@@ -127,7 +127,9 @@ function RouteComponent() {
 
       game_ended: (msg) => {
         if (msg.type === "game_ended") {
-          navigate({ to: `/games/${msg.data.gameCode}/summary` });
+          navigate({
+            to: `/games/${msg.data.gameCode}/summary?playerID=${playerID}`,
+          });
           reset();
         }
       },

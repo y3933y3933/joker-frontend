@@ -251,3 +251,21 @@ code {
 .card-flipped .card-front {
   transform: rotateY(0deg);
 }
+
+/* Cyberpunk grid pattern */
+.cyber-grid {
+  background-image:
+    linear-gradient(rgba(34, 211, 238, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 211, 238, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Neon border glow */
+.neon-border {
+  border: 2px solid;
+  border-image: linear-gradient(45deg, #00ffff, #ff00ff, #ffff00, #00ffff) 1;
+  box-shadow:
+    0 0 10px rgba(34, 211, 238, 0.5),
+    0 0 20px rgba(236, 72, 153, 0.3),
+    0 0 30px rgba(255, 255, 0, 0.2);
+}
