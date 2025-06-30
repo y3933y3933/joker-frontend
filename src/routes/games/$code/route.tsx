@@ -62,19 +62,19 @@ function RouteComponent() {
       player_joined: (msg) => {
         if (msg.type === "player_joined") {
           addPlayer(msg.data);
-          toast.success(msg.data.nickname);
+          toast.success(`${msg.data.nickname} 加入遊戲`);
         }
       },
       game_started: (msg) => {
         if (msg.type === "game_started") {
           setRoundID(msg.data.roundId);
-          setAnswerPlayerID(msg.data.answererId);
-          setQuestionPlayerID(msg.data.questionerId);
+          setAnswerPlayerID(msg.data.answererID);
+          setQuestionPlayerID(msg.data.questionPlayerID);
           updateUserRole({
-            questionID: msg.data.questionerId,
-            answerID: msg.data.answererId,
+            questionID: msg.data.questionPlayerID,
+            answerID: msg.data.answererID,
           });
-          setRoundStatus("question");
+          setRoundStatus("waiting_for_question");
           navigate({ to: `/games/${code}/play` });
         }
       },
@@ -85,12 +85,12 @@ function RouteComponent() {
         }
       },
       answer_time: (_) => {
-        setRoundStatus("answer");
+        setRoundStatus("waiting_for_answer");
       },
       answer_submitted: (msg) => {
         if (msg.type === "answer_submitted") {
           setAnswer(msg.data.answer);
-          setRoundStatus("draw");
+          setRoundStatus("waiting_for_draw");
         }
       },
       joker_revealed: (msg) => {
@@ -100,7 +100,7 @@ function RouteComponent() {
         }
       },
       player_safe: (_) => {
-        setRoundStatus("safe");
+        setRoundStatus("done");
       },
       round_started: (msg) => {
         if (msg.type === "round_started") {
@@ -111,7 +111,7 @@ function RouteComponent() {
             questionID: msg.data.questionerId,
             answerID: msg.data.answererId,
           });
-          setRoundStatus("question");
+          setRoundStatus("waiting_for_question");
           setQuestion("");
           setAnswer("");
         }

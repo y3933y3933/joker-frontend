@@ -22,8 +22,8 @@ type GameStarted = {
   type: "game_started";
   data: {
     roundId: number;
-    answererId: number;
-    questionerId: number;
+    answererID: number;
+    questionPlayerID: number;
   };
 };
 

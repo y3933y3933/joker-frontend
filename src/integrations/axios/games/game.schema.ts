@@ -9,6 +9,8 @@ export const PlayerSchema = z.object({
 
 export type Player = z.infer<typeof PlayerSchema>;
 
+export type PlayWithoutGameID = Omit<Player, "gameID">;
+
 export const CreateGameResponseSchema = z.object({
   id: z.int().positive(),
   code: z.string(),

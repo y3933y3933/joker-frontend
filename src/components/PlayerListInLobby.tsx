@@ -1,10 +1,10 @@
 import { Crown, User2Icon, Users } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
-import type { Player } from "@/integrations/axios/games/game.schema";
 import { APP } from "@/constants";
+import type { PlayWithoutGameID } from "@/integrations/axios/games/game.schema";
 
 interface PlayerListInLobbyProps {
-  players: Player[];
+  players: PlayWithoutGameID[];
 }
 
 export default function PlayerListInLobby({ players }: PlayerListInLobbyProps) {

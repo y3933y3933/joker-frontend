@@ -27,7 +27,7 @@ const useRoundStore = create<RoundStore>((set) => ({
   questionPlayerID: null,
   answerPlayerID: null,
   answer: null,
-  status: "question",
+  status: "waiting_for_question",
   actions: {
     setRoundID: (id: number) => {
       set({ id });
@@ -54,7 +54,7 @@ const useRoundStore = create<RoundStore>((set) => ({
         questionPlayerID: null,
         answerPlayerID: null,
         answer: null,
-        status: "question",
+        status: "waiting_for_question",
       });
     },
   },

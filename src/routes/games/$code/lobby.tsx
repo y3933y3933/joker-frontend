@@ -13,6 +13,7 @@ import { useUserIsHost } from "@/integrations/zustand/store/user.store";
 import { createFileRoute } from "@tanstack/react-router";
 import { Play } from "lucide-react";
 import { useEffect } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/games/$code/lobby")({
   component: RouteComponent,
@@ -30,6 +31,18 @@ function RouteComponent() {
   const { mutate, isLoading } = useStartGame();
 
   const { setPlayers } = useGameActions();
+
+  const handleStartGame = () => {
+    mutate(code, {
+      onSuccess: () => {
+        toast.success("遊戲開始！");
+      },
+      onError: (error) => {
+        const msg = error instanceof Error ? error.message : "發生未知錯誤";
+        toast.error(`無法開始遊戲：${msg}`);
+      },
+    });
+  };
 
   useEffect(() => {
     setPlayers(initialPlayers);
@@ -55,7 +68,7 @@ function RouteComponent() {
 
           {isHost && (
             <Button
-              onClick={() => mutate(code)}
+              onClick={handleStartGame}
               disabled={players.length < APP.MIN_PLAYER_NUM || isLoading}
               className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-400 hover:to-emerald-400 text-white font-bold py-4 px-8 rounded-lg shadow-lg shadow-green-500/25 border border-green-400 transition-all duration-300 hover:shadow-green-400/50 hover:scale-105 disabled:opacity-50"
             >
