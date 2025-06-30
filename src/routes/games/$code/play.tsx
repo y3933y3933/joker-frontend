@@ -47,7 +47,8 @@ function RouteComponent() {
   const { currentPlayerID, currentPlayerName } = useRoundPlayer();
   const answer = useRoundAnswer();
   const isHost = useUserIsHost();
-  const { mutateAsync: submitQuestion } = useSubmitQuestion();
+  const { mutateAsync: submitQuestion, isLoading: submitQuestionLoading } =
+    useSubmitQuestion();
   const { mutateAsync: submitAnswer } = useSubmitAnswer();
   const { mutateAsync: nextRound, isLoading: nextRoundLoading } =
     useNextRound();
@@ -85,10 +86,12 @@ function RouteComponent() {
       .map((item) => item.nickname);
   }, [players]);
 
-  async function handlerSelectQuestion(questionId: number) {
-    console.log(roundID);
-    if (!code || !roundID) return;
-    await submitQuestion({ code, roundId: roundID, questionId });
+  async function handlerSelectQuestion(questionID: number) {
+    if (!code || !roundID || !playerID) {
+      console.error("參數有誤");
+      return;
+    }
+    await submitQuestion({ code, roundID, questionID, playerID });
   }
 
   async function handlerSubmitAnswer(answer: string) {
@@ -156,6 +159,7 @@ function RouteComponent() {
                     <QuestionSection
                       questions={questions || []}
                       selectQuestion={handlerSelectQuestion}
+                      loading={submitQuestionLoading}
                     />
                   </>
                 )}

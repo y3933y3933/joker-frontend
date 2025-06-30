@@ -5,13 +5,15 @@ export default function useSubmitQuestion() {
   const { mutateAsync, isPending, isError, error } = useMutation({
     mutationFn: ({
       code,
-      roundId,
-      questionId,
+      roundID,
+      questionID,
+      playerID,
     }: {
       code: string;
-      roundId: number;
-      questionId: number;
-    }) => submitQuestion(code, roundId, questionId),
+      roundID: number;
+      questionID: number;
+      playerID: number;
+    }) => submitQuestion({ code, roundID, questionID, playerID }),
   });
 
   return {

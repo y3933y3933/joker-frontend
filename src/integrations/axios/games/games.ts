@@ -34,14 +34,27 @@ export const getQuestions = async (code: string) => {
   return QuestionsSchema.parse(res.data.data);
 };
 
-export const submitQuestion = async (
-  code: string,
-  roundID: number,
-  questionId: number,
-) => {
-  await api.post(`/games/${code}/rounds/${roundID}/question`, {
-    questionId,
-  });
+export const submitQuestion = async ({
+  code,
+  roundID,
+  questionID,
+  playerID,
+}: {
+  code: string;
+  roundID: number;
+  questionID: number;
+  playerID: number;
+}) => {
+  const res = await api.post(
+    `/games/${code}/rounds/${roundID}/question`,
+    {
+      questionID,
+    },
+    {
+      headers: { "X-Player-ID": playerID },
+    },
+  );
+  return res.data;
 };
 
 export const submitAnswer = async (

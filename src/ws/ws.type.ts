@@ -23,7 +23,7 @@ type PlayerJoined = {
 type GameStarted = {
   type: "game_started";
   data: {
-    roundId: number;
+    roundID: number;
     answererID: number;
     questionPlayerID: number;
   };

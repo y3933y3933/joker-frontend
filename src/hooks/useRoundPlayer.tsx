@@ -12,7 +12,7 @@ export default function useRoundPlayer() {
   const questionPlayerId = useRoundQuestionPlayerID();
 
   const currentPlayerID =
-    roundStatus === "question" ? questionPlayerId : answerID;
+    roundStatus === "waiting_for_question" ? questionPlayerId : answerID;
 
   const currentPlayerName =
     players.find((player) => player.id === currentPlayerID)?.nickname || "";
