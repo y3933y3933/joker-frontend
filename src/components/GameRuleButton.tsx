@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRightIcon, Zap } from "lucide-react";
+import { ArrowRightIcon, Gamepad2, Zap } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -66,7 +66,7 @@ export default function GameRuleButton() {
     >
       <DialogTrigger asChild>
         <Button className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-white font-bold py-3 px-6 rounded-lg shadow-lg shadow-yellow-500/25 hover:shadow-yellow-500/40 transition-all duration-300 transform hover:scale-105 border border-yellow-400/50">
-          <Zap className="mr-2 h-4 w-4" />
+          <Gamepad2 className="mr-2 h-4 w-4" />
           How to Play
         </Button>
       </DialogTrigger>

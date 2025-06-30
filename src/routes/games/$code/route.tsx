@@ -7,6 +7,7 @@ import {
 import { WebSocketProvider } from "@/ws/websocketProvider";
 import type { WSMessage } from "@/ws/ws.type";
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/games/$code")({
   component: RouteComponent,
@@ -15,7 +16,6 @@ export const Route = createFileRoute("/games/$code")({
 function RouteComponent() {
   const { code } = Route.useParams();
   const playerID = useUserID();
-  // const game = Route.useLoaderData();
   const navigate = useNavigate();
 
   const { addPlayer, reset: resetGame } = useGameActions();
@@ -61,7 +61,8 @@ function RouteComponent() {
     {
       player_joined: (msg) => {
         if (msg.type === "player_joined") {
-          // addPlayer(msg.data);
+          addPlayer(msg.data);
+          toast.success(msg.data.nickname);
         }
       },
       game_started: (msg) => {

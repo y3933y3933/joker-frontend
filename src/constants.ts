@@ -5,18 +5,13 @@ export const APP = {
   DESCRIPTION:
     "回合制爆料遊戲，每回合只有一人知道題目，按下抽牌後才知道命運！抽到鬼牌就得公開題目。",
   MAX_PLAYER_NUM: 8,
-  MIN_PLAYER_NUM: 2,
+  MIN_PLAYER_NUM: 3,
 } as const;
 
 export const LevelStyle: Record<
   Level,
   { border: string; bg: string; text: string }
 > = {
-  easy: {
-    border: "border-neon-green",
-    bg: "bg-neon-green/10",
-    text: "text-neon-green",
-  },
   normal: {
     border: "border-neon-cyan",
     bg: "bg-neon-cyan/10",
@@ -30,11 +25,6 @@ export const LevelStyle: Record<
 };
 
 export const LevelOptions: LevelOption[] = [
-  {
-    value: "easy",
-    description: "Light & fun questions",
-    style: LevelStyle["easy"],
-  },
   {
     value: "normal",
     description: "Balanced mix of topics",

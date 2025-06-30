@@ -1,14 +1,16 @@
 import type { Player } from "@/integrations/axios/games/game.schema";
 import { create } from "zustand";
 
+type PlayWithoutGameID = Omit<Player, "gameID">;
+
 interface GameStore {
-  players: Player[];
+  players: PlayWithoutGameID[];
   actions: GameActions;
 }
 
 interface GameActions {
   setPlayers: (players: Player[]) => void;
-  addPlayer: (player: Player) => void;
+  addPlayer: (player: PlayWithoutGameID) => void;
   removePlayer: (id: number) => void;
   reset: () => void;
 }
@@ -19,7 +21,7 @@ const useGameStore = create<GameStore>((set) => ({
     setPlayers: (players: Player[]) => {
       set({ players });
     },
-    addPlayer: (player: Player) => {
+    addPlayer: (player: PlayWithoutGameID) => {
       set((state) => ({
         players: [...state.players, player],
       }));
