@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { useAnimatedStats } from "@/hooks/useAnimatedStats";
 import { getGameSummary } from "@/integrations/axios/games/games";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/games/$code/summary")({
   component: RouteComponent,
@@ -27,6 +27,22 @@ function RouteComponent() {
   const unluckiestPlayer = playerStats.reduce((prev, current) =>
     prev.jokerCardsDrawn > current.jokerCardsDrawn ? prev : current,
   );
+
+  function handleShare() {
+    if (navigator.share) {
+      navigator.share({
+        title: "Joker Game Results",
+        text: `Just played Joker Game! ${jokerCards} secrets were revealed! 🃏`,
+        url: window.location.href,
+      });
+    } else {
+      // Fallback for browsers that don't support Web Share API
+      navigator.clipboard.writeText(
+        `Just played Joker Game! ${jokerCards} secrets were revealed! 🃏 ${window.location.href}`,
+      );
+      alert("Results copied to clipboard! 📋");
+    }
+  }
 
   return (
     <div className="flex-1 flex flex-col items-center justify-start space-y-8 max-w-5xl mx-auto py-8">
@@ -123,36 +139,21 @@ function RouteComponent() {
       {/* Action Buttons */}
       <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 w-full max-w-2xl mt-8">
         <Button
-          // onClick={onPlayAgain}
+          asChild
           className="flex-1 py-4 text-lg bg-gradient-to-r from-green-500 to-cyan-500 hover:from-green-400 hover:to-cyan-400 border-2 border-green-400 shadow-[0_0_20px_rgba(34,197,94,0.5)] hover:shadow-[0_0_30px_rgba(34,197,94,0.8)] transition-all duration-300 transform hover:scale-105"
         >
-          🔄 Play Again
+          <Link to="/create">🔄 Play Again</Link>
         </Button>
 
         <Button
-          // onClick={onBackToLanding}
+          asChild
           className="flex-1 py-4 text-lg bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 border-2 border-purple-400 shadow-[0_0_20px_rgba(168,85,247,0.5)] hover:shadow-[0_0_30px_rgba(168,85,247,0.8)] transition-all duration-300 transform hover:scale-105"
         >
-          🏠 Back to Menu
+          <Link to="/">🏠 Back to Menu</Link>
         </Button>
 
         <Button
-          onClick={() => {
-            // Mock share functionality
-            if (navigator.share) {
-              navigator.share({
-                title: "Joker Game Results",
-                text: `Just played Joker Game! ${jokerCards} secrets were revealed! 🃏`,
-                url: window.location.href,
-              });
-            } else {
-              // Fallback for browsers that don't support Web Share API
-              navigator.clipboard.writeText(
-                `Just played Joker Game! ${jokerCards} secrets were revealed! 🃏 ${window.location.href}`,
-              );
-              alert("Results copied to clipboard! 📋");
-            }
-          }}
+          onClick={handleShare}
           className="flex-1 py-4 text-lg bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 border-2 border-yellow-400 shadow-[0_0_20px_rgba(255,255,0,0.5)] hover:shadow-[0_0_30px_rgba(255,255,0,0.8)] transition-all duration-300 transform hover:scale-105"
         >
           📤 Share Results
