@@ -1,9 +1,9 @@
-import type { Player } from "@/integrations/axios/games/game.schema";
+import type { PlayWithoutGameID } from "@/integrations/axios/games/game.schema";
 import { useUserID } from "@/integrations/zustand/store/user.store";
 import { Crown } from "lucide-react";
 
 interface PlayerListInPlayProps {
-  players: Player[];
+  players: PlayWithoutGameID[];
   currentPlayerID: number | null;
 }
 

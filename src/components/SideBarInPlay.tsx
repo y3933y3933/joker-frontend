@@ -1,10 +1,10 @@
 import { Users } from "lucide-react";
 import PlayerListInPlay from "./PlayerListInPlay";
-import type { Player } from "@/integrations/axios/games/game.schema";
+import type { PlayWithoutGameID } from "@/integrations/axios/games/game.schema";
 import type { RoundStatus } from "@/types";
 
 interface SideBarInPlayProps {
-  players: Player[];
+  players: PlayWithoutGameID[];
   role: "normal" | "answer" | "question";
   roundStatus: RoundStatus;
   currentPlayer: {

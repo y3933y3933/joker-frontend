@@ -67,6 +67,7 @@ function RouteComponent() {
       },
       game_started: (msg) => {
         if (msg.type === "game_started") {
+          console.log("game start", msg.data);
           setRoundID(msg.data.roundId);
           setAnswerPlayerID(msg.data.answererID);
           setQuestionPlayerID(msg.data.questionPlayerID);

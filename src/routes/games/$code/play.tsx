@@ -86,6 +86,7 @@ function RouteComponent() {
   }, [players]);
 
   async function handlerSelectQuestion(questionId: number) {
+    console.log(roundID);
     if (!code || !roundID) return;
     await submitQuestion({ code, roundId: roundID, questionId });
   }
@@ -112,7 +113,7 @@ function RouteComponent() {
   }
 
   useEffect(() => {
-    if (roundStatus === "question") {
+    if (roundStatus === "waiting_for_question") {
       resetCardState();
     }
   }, [roundStatus]);
@@ -146,27 +147,29 @@ function RouteComponent() {
           <div className="flex-1 flex flex-col items-center justify-center p-6 space-y-8">
             <div className="text-center space-y-6 w-full max-w-4xl">
               {/* 出題 */}
-              {roundStatus === "question" && role === "question" && (
-                <>
-                  <h2 className="text-3xl font-bold text-yellow-400">
-                    請選擇題目
-                  </h2>
-                  <QuestionSection
-                    questions={questions || []}
-                    selectQuestion={handlerSelectQuestion}
-                  />
-                </>
-              )}
+              {roundStatus === "waiting_for_question" &&
+                role === "question" && (
+                  <>
+                    <h2 className="text-3xl font-bold text-yellow-400">
+                      請選擇題目
+                    </h2>
+                    <QuestionSection
+                      questions={questions || []}
+                      selectQuestion={handlerSelectQuestion}
+                    />
+                  </>
+                )}
 
               {/* 等待選題 */}
-              {roundStatus === "question" && role !== "question" && (
-                <h2 className="text-3xl font-bold text-yellow-400">
-                  {currentPlayerName} 選題中...
-                </h2>
-              )}
+              {roundStatus === "waiting_for_question" &&
+                role !== "question" && (
+                  <h2 className="text-3xl font-bold text-yellow-400">
+                    {currentPlayerName} 選題中...
+                  </h2>
+                )}
 
               {/* 作答 */}
-              {roundStatus === "answer" && role === "answer" && (
+              {roundStatus === "waiting_for_answer" && role === "answer" && (
                 <AnswerSection
                   question={question || ""}
                   options={answerOptions}
@@ -174,22 +177,22 @@ function RouteComponent() {
                 />
               )}
 
-              {roundStatus === "answer" && role !== "answer" && (
+              {roundStatus === "waiting_for_answer" && role !== "answer" && (
                 <h2 className="text-3xl font-bold text-yellow-400">
                   {currentPlayerName} 作答中...
                 </h2>
               )}
 
               {/* 抽牌 */}
-              {(roundStatus === "draw" ||
+              {(roundStatus === "waiting_for_draw" ||
                 roundStatus === "revealed" ||
-                roundStatus === "safe") &&
+                roundStatus === "done") &&
                 role === "answer" && (
                   <div className="flex-1 flex flex-col items-center justify-center space-y-8">
                     <h2 className="text-3xl font-bold text-yellow-400">
-                      {roundStatus === "draw" && "請抽牌"}
+                      {roundStatus === "waiting_for_draw" && "請抽牌"}
                       {roundStatus === "revealed" && "抽中鬼牌啦"}
-                      {roundStatus === "safe" && "你安全了！"}
+                      {roundStatus === "done" && "你安全了！"}
                     </h2>
                     <DrawCardSection
                       flippedCards={flippedCards}
@@ -200,7 +203,7 @@ function RouteComponent() {
                   </div>
                 )}
 
-              {roundStatus === "draw" && role !== "answer" && (
+              {roundStatus === "waiting_for_draw" && role !== "answer" && (
                 <>
                   <h2 className="text-3xl font-bold text-cyan-400">
                     {currentPlayerName} 抽牌中...
@@ -216,7 +219,7 @@ function RouteComponent() {
                 </>
               )}
 
-              {roundStatus === "safe" && role !== "answer" && (
+              {roundStatus === "done" && role !== "answer" && (
                 <>
                   <div className="text-8xl">🛡️</div>
                   <h2 className="text-3xl font-bold text-yellow-400">
@@ -253,7 +256,7 @@ function RouteComponent() {
               />
             )}
 
-            {(roundStatus === "revealed" || roundStatus === "safe") &&
+            {(roundStatus === "revealed" || roundStatus === "done") &&
               isHost && (
                 <Button
                   onClick={handlerNextRound}

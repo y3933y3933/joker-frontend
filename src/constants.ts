@@ -23,16 +23,3 @@ export const LevelStyle: Record<
     text: "text-neon-magenta",
   },
 };
-
-export const LevelOptions: LevelOption[] = [
-  {
-    value: "normal",
-    description: "Balanced mix of topics",
-    style: LevelStyle["normal"],
-  },
-  {
-    value: "spicy",
-    description: "Bold & revealing questions",
-    style: LevelStyle["spicy"],
-  },
-];

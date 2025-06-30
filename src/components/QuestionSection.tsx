@@ -19,6 +19,13 @@ export default function QuestionSection({
           onClick={() => selectQuestion(question.id)}
         >
           <CardContent className="p-6 text-center">
+            <div
+              className={`inline-block px-2 py-1 rounded text-xs font-bold mb-3 ${
+                question.level === "normal" ? "bg-neon-cyan" : "bg-red-400"
+              }`}
+            >
+              {question.level.toUpperCase()}
+            </div>
             <p className="text-white">{question.content}</p>
           </CardContent>
         </Card>

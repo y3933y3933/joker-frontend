@@ -32,6 +32,7 @@ export type Game = z.infer<typeof GameSchema>;
 export const QuestionSchema = z.object({
   id: z.int().positive(),
   content: z.string(),
+  level: z.literal(["normal", "spicy"]),
 });
 
 export type Question = z.infer<typeof QuestionSchema>;
