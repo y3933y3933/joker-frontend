@@ -7,7 +7,8 @@ export type WSMessage =
   | JokerRevealed
   | PlayerSafe
   | RoundStarted
-  | GameEnded;
+  | GameEnded
+  | PlayerLeft;
 
 type PlayerJoined = {
   type: "player_joined";
@@ -24,6 +25,14 @@ type GameStarted = {
     roundId: number;
     answererID: number;
     questionPlayerID: number;
+  };
+};
+
+type PlayerLeft = {
+  type: "player_left";
+  data: {
+    id: number;
+    nickname: string;
   };
 };
 

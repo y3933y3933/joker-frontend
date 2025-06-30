@@ -18,7 +18,7 @@ function RouteComponent() {
   const playerID = useUserID();
   const navigate = useNavigate();
 
-  const { addPlayer, reset: resetGame } = useGameActions();
+  const { addPlayer, reset: resetGame, removePlayer } = useGameActions();
   const {
     setRoundID,
     setQuestionPlayerID,
@@ -78,7 +78,13 @@ function RouteComponent() {
           navigate({ to: `/games/${code}/play` });
         }
       },
-
+      player_left: (msg) => {
+        if (msg.type === "player_left") {
+          console.log("leave player id ", msg.data.id);
+          removePlayer(msg.data.id);
+          toast.warning(`${msg.data.nickname} 已離開房間`);
+        }
+      },
       round_question: (msg) => {
         if (msg.type === "round_question") {
           setQuestion(msg.data.question);

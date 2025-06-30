@@ -1,18 +1,22 @@
-import GameRules from "@/components/GameRules";
 import LobbyHeader from "@/components/LobbyHeader";
 import PlayerListInLobby from "@/components/PlayerListInLobby";
 import { Button } from "@/components/ui/button";
 import { APP } from "@/constants";
 import { getPlayers } from "@/integrations/axios/games/games";
+import useLeaveGame from "@/integrations/tanstack-query/games/useLeaveGame";
 import useStartGame from "@/integrations/tanstack-query/games/useStartGame";
 import {
   useGameActions,
   useGamePlayers,
 } from "@/integrations/zustand/store/game.store";
-import { useUserIsHost } from "@/integrations/zustand/store/user.store";
-import { createFileRoute } from "@tanstack/react-router";
+import {
+  useUserID,
+  useUserIsHost,
+} from "@/integrations/zustand/store/user.store";
+import { WebSocketContext } from "@/ws/websocketProvider";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Play } from "lucide-react";
-import { useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/games/$code/lobby")({
@@ -24,16 +28,20 @@ export const Route = createFileRoute("/games/$code/lobby")({
 
 function RouteComponent() {
   const { code } = Route.useParams();
+  const playerID = useUserID();
   const isHost = useUserIsHost();
   const initialPlayers = Route.useLoaderData();
   const players = useGamePlayers();
 
-  const { mutate, isLoading } = useStartGame();
+  const { mutate: startGame, isLoading } = useStartGame();
+  const { mutate: leaveGame } = useLeaveGame();
 
   const { setPlayers } = useGameActions();
+  const websocket = useContext(WebSocketContext);
+  const navigate = useNavigate();
 
   const handleStartGame = () => {
-    mutate(code, {
+    startGame(code, {
       onSuccess: () => {
         toast.success("遊戲開始！");
       },
@@ -42,6 +50,27 @@ function RouteComponent() {
         toast.error(`無法開始遊戲：${msg}`);
       },
     });
+  };
+
+  const handleLeaveGame = () => {
+    if (!playerID) {
+      return;
+    }
+    leaveGame(
+      { code, playerID },
+      {
+        onSuccess: () => {
+          if (websocket) {
+            close();
+          }
+          navigate({ to: "/" });
+        },
+        onError: (error) => {
+          const msg = error instanceof Error ? error.message : "發生未知錯誤";
+          toast.error(`無法離開房間：${msg}`);
+        },
+      },
+    );
   };
 
   useEffect(() => {
@@ -59,7 +88,7 @@ function RouteComponent() {
 
         <div className="flex gap-4">
           <Button
-            // onClick={handleLeave}
+            onClick={handleLeaveGame}
             variant="outline"
             className="border-gray-600  bg-gray-800 text-white"
           >
