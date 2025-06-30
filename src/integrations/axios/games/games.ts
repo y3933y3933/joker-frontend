@@ -25,11 +25,6 @@ export const getPlayers = async (code: string) => {
   return PlayersSchema.parse(res.data.data);
 };
 
-export const getGame = async (code: string) => {
-  const res = await api.get(`/games/${code}`);
-  return GameSchema.parse(res.data.data);
-};
-
 export const startGame = async (code: string) => {
   await api.post(`/games/${code}/start`);
 };

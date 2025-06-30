@@ -7,7 +7,6 @@ import { getPlayers } from "@/integrations/axios/games/games";
 import useStartGame from "@/integrations/tanstack-query/games/useStartGame";
 import {
   useGameActions,
-  useGameLevel,
   useGamePlayers,
 } from "@/integrations/zustand/store/game.store";
 import { useUserIsHost } from "@/integrations/zustand/store/user.store";
@@ -25,7 +24,6 @@ export const Route = createFileRoute("/games/$code/lobby")({
 function RouteComponent() {
   const { code } = Route.useParams();
   const isHost = useUserIsHost();
-  const level = useGameLevel();
   const initialPlayers = Route.useLoaderData();
   const players = useGamePlayers();
 
@@ -40,7 +38,7 @@ function RouteComponent() {
   return (
     <div className="relative z-10 container mx-auto px-4 py-8 min-h-screen flex flex-col">
       <div className="flex-1 flex flex-col items-center justify-center space-y-8 animate-in zoom-in duration-500">
-        <LobbyHeader gameCode={code} level={level} />
+        <LobbyHeader gameCode={code} />
 
         <GameRules />
 

@@ -6,7 +6,6 @@ import { useState } from "react";
 interface AnswerSectionProps {
   question: string;
   options: string[];
-  level: Level;
 
   submitAnswer: (answer: string) => void;
 }
@@ -14,7 +13,6 @@ interface AnswerSectionProps {
 export default function AnswerSection({
   question,
   options,
-  level,
 
   submitAnswer,
 }: AnswerSectionProps) {
@@ -23,7 +21,7 @@ export default function AnswerSection({
   return (
     <>
       <Card className="p-8 bg-black/50 border-2 border-purple-400/50 w-full gap-0">
-        <div
+        {/* <div
           className={`text-xs font-bold px-3 py-1 rounded-full w-fit mb-4 ${
             level === "easy"
               ? "bg-green-600 text-green-100"
@@ -33,7 +31,7 @@ export default function AnswerSection({
           }`}
         >
           {level.toUpperCase()}
-        </div>
+        </div> */}
         <p className="text-white text-xl leading-relaxed mb-8 text-left">
           {question}
         </p>

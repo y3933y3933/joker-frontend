@@ -1,4 +1,4 @@
-export type Level = "easy" | "normal" | "spicy";
+export type Level = "normal" | "spicy";
 
 export type LevelOption = {
   value: Level;

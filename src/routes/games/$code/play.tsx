@@ -15,10 +15,7 @@ import useGetQuestions from "@/integrations/tanstack-query/games/useGetQuestions
 import useNextRound from "@/integrations/tanstack-query/games/useNextRound";
 import useSubmitAnswer from "@/integrations/tanstack-query/games/useSubmitAnswer";
 import useSubmitQuestion from "@/integrations/tanstack-query/games/useSubmitQuestion";
-import {
-  useGameLevel,
-  useGamePlayers,
-} from "@/integrations/zustand/store/game.store";
+import { useGamePlayers } from "@/integrations/zustand/store/game.store";
 import {
   useRoundAnswer,
   useRoundID,
@@ -48,7 +45,6 @@ function RouteComponent() {
   const userID = useUserID();
   const playerID = useUserID();
   const { currentPlayerID, currentPlayerName } = useRoundPlayer();
-  const level = useGameLevel();
   const answer = useRoundAnswer();
   const isHost = useUserIsHost();
   const { mutateAsync: submitQuestion } = useSubmitQuestion();
@@ -174,7 +170,6 @@ function RouteComponent() {
                 <AnswerSection
                   question={question || ""}
                   options={answerOptions}
-                  level={level}
                   submitAnswer={handlerSubmitAnswer}
                 />
               )}

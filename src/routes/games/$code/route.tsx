@@ -1,4 +1,3 @@
-import { getGame } from "@/integrations/axios/games/games";
 import { useGameActions } from "@/integrations/zustand/store/game.store";
 import { useRoundActions } from "@/integrations/zustand/store/round.store";
 import {
@@ -8,22 +7,18 @@ import {
 import { WebSocketProvider } from "@/ws/websocketProvider";
 import type { WSMessage } from "@/ws/ws.type";
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
 
 export const Route = createFileRoute("/games/$code")({
   component: RouteComponent,
-  loader: async ({ params }) => {
-    return getGame(params.code);
-  },
 });
 
 function RouteComponent() {
   const { code } = Route.useParams();
   const playerID = useUserID();
-  const game = Route.useLoaderData();
+  // const game = Route.useLoaderData();
   const navigate = useNavigate();
 
-  const { setGameLevel, addPlayer, reset: resetGame } = useGameActions();
+  const { addPlayer, reset: resetGame } = useGameActions();
   const {
     setRoundID,
     setQuestionPlayerID,
@@ -39,10 +34,6 @@ function RouteComponent() {
     setUserRoleQuestion,
     reset: resetUser,
   } = useUserActions();
-
-  useEffect(() => {
-    setGameLevel(game.level);
-  }, [game.level]);
 
   function updateUserRole({
     questionID,
@@ -70,7 +61,7 @@ function RouteComponent() {
     {
       player_joined: (msg) => {
         if (msg.type === "player_joined") {
-          addPlayer(msg.data);
+          // addPlayer(msg.data);
         }
       },
       game_started: (msg) => {

@@ -1,16 +1,12 @@
 import useClipboard from "@/hooks/useClipboard";
 import { Button } from "./ui/button";
 import { Check, Copy } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { LevelOptions, LevelStyle } from "@/constants";
-import type { Level } from "@/types";
 
 interface LobbyHeaderProps {
   gameCode: string;
-  level: Level;
 }
 
-export default function LobbyHeader({ gameCode, level }: LobbyHeaderProps) {
+export default function LobbyHeader({ gameCode }: LobbyHeaderProps) {
   const { copied, copyToClipboard } = useClipboard();
 
   return (
@@ -35,15 +31,6 @@ export default function LobbyHeader({ gameCode, level }: LobbyHeaderProps) {
             <Copy className="h-4 w-4" />
           )}
         </Button>
-
-        <div
-          className={cn(
-            "text-2xl font-mono bg-gray-800 px-4 py-2 rounded-lg border ",
-            `${LevelStyle[level].text} ${LevelStyle[level].border}`,
-          )}
-        >
-          {level}
-        </div>
       </div>
     </div>
   );
