@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 const api = axios.create({
   baseURL: "/api",
@@ -7,19 +7,19 @@ const api = axios.create({
   },
 });
 
-// api.interceptors.response.use(
-//   (response) => response,
-//   (error: AxiosError<APIErrorResponse>) => {
-//     const res = error.response;
+api.interceptors.response.use(
+  (response) => response,
+  (error: AxiosError<{ error: string }>) => {
+    const res = error.response;
 
-//     if (res?.data?.error) {
-//       // 將 error 字串轉換成 JS Error
-//       return Promise.reject(new Error(res.data.error));
-//     }
+    if (res?.data?.error) {
+      // 將 error 字串轉換成 JS Error
+      return Promise.reject(new Error(res.data.error));
+    }
 
-//     // fallback：預設錯誤物件
-//     return Promise.reject(error);
-//   },
-// );
+    // fallback：預設錯誤物件
+    return Promise.reject(error);
+  },
+);
 
 export default api;

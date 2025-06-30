@@ -20,12 +20,17 @@ function RouteComponent() {
   const { setIsHost, setUserID, setUserNickname } = useUserActions();
 
   async function handleJoin() {
-    const res = await joinGame({ nickname, code: gameCode });
-    setIsHost(res.isHost);
-    setUserID(res.id);
-    setUserNickname(res.nickname);
-    toast.success("加入房間成功");
-    navigate({ to: `/games/${gameCode}/lobby` });
+    try {
+      const res = await joinGame({ nickname, code: gameCode });
+      setIsHost(res.isHost);
+      setUserID(res.id);
+      setUserNickname(res.nickname);
+      toast.success("加入房間成功");
+      navigate({ to: `/games/${gameCode}/lobby` });
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : "發生未知錯誤";
+      toast.error("加入遊戲失敗", { description: msg });
+    }
   }
 
   return (
