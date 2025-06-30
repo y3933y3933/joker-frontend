@@ -6,12 +6,14 @@ export default function useSubmitAnswer() {
     mutationFn: ({
       code,
       answer,
-      roundId,
+      roundID,
+      playerID,
     }: {
       code: string;
       answer: string;
-      roundId: number;
-    }) => submitAnswer(code, roundId, answer),
+      roundID: number;
+      playerID: number;
+    }) => submitAnswer({ code, roundID, answer, playerID }),
   });
 
   return {

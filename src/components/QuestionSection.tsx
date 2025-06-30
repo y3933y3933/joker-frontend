@@ -38,7 +38,7 @@ export default function QuestionSection({
             <CardContent className="p-6 text-center">
               <div
                 className={`inline-block px-2 py-1 rounded text-xs font-bold mb-3 ${
-                  question.level === "normal" ? "bg-neon-cyan" : "bg-red-400"
+                  question.level === "normal" ? "bg-green-600" : "bg-red-600"
                 }`}
               >
                 {question.level.toUpperCase()}

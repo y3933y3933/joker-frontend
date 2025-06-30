@@ -1,9 +1,12 @@
-import type { RoundStatus } from "@/types";
+import type { Level, RoundStatus } from "@/types";
 import { create } from "zustand";
 
 interface RoundStore {
   id: number | null;
-  question: string | null;
+  question: {
+    content: string;
+    level: Level;
+  } | null;
   questionPlayerID: number | null;
   answerPlayerID: number | null;
   answer: string | null;
@@ -13,7 +16,7 @@ interface RoundStore {
 
 interface RoundActions {
   setRoundID: (id: number) => void;
-  setQuestion: (content: string) => void;
+  setQuestion: (question: { level: Level; content: string }) => void;
   setQuestionPlayerID: (id: number) => void;
   setAnswerPlayerID: (id: number) => void;
   setAnswer: (answer: string) => void;
@@ -32,7 +35,7 @@ const useRoundStore = create<RoundStore>((set) => ({
     setRoundID: (id: number) => {
       set({ id });
     },
-    setQuestion: (question: string) => {
+    setQuestion: (question: { level: Level; content: string }) => {
       set({ question });
     },
     setQuestionPlayerID: (questionPlayerID: number) => {

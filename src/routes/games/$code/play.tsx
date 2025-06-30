@@ -54,7 +54,11 @@ function RouteComponent() {
     useNextRound();
   const { mutateAsync: endGame, isLoading: endGameLoading } = useEndGame();
 
-  const { data: questions } = useGetQuestions(code, roundID);
+  const { data: questions } = useGetQuestions(
+    code,
+    roundID,
+    role === "question",
+  );
   const { mutateAsync: drawCard } = useDrawCard();
 
   const {
@@ -95,8 +99,8 @@ function RouteComponent() {
   }
 
   async function handlerSubmitAnswer(answer: string) {
-    if (!code || !roundID) return;
-    await submitAnswer({ code, roundId: roundID, answer });
+    if (!code || !roundID || !playerID) return;
+    await submitAnswer({ code, roundID, answer, playerID });
   }
 
   async function handlerNextRound() {
@@ -175,7 +179,7 @@ function RouteComponent() {
               {/* 作答 */}
               {roundStatus === "waiting_for_answer" && role === "answer" && (
                 <AnswerSection
-                  question={question || ""}
+                  question={question}
                   options={answerOptions}
                   submitAnswer={handlerSubmitAnswer}
                 />
@@ -241,7 +245,7 @@ function RouteComponent() {
                   </h2>
                   <Card className="p-8 bg-black/50 border-2 border-purple-400/50 w-full gap-0">
                     <p className="text-white text-xl leading-relaxed mb-8 text-left">
-                      {question}
+                      {question?.content}
                     </p>
                   </Card>
                 </>

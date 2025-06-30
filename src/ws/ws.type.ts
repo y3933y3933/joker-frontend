@@ -1,3 +1,5 @@
+import type { Level } from "@/types";
+
 export type WSMessage =
   | PlayerJoined
   | GameStarted
@@ -48,7 +50,8 @@ type HostTransferred = {
 type RoundQuestion = {
   type: "round_question";
   data: {
-    question: string;
+    level: Level;
+    content: string;
   };
 };
 

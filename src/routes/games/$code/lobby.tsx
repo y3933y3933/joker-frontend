@@ -56,6 +56,7 @@ function RouteComponent() {
     if (!playerID) {
       return;
     }
+    console.log("leave game");
     leaveGame(
       { code, playerID },
       {

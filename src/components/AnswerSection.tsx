@@ -4,7 +4,10 @@ import { Card } from "./ui/card";
 import { useState } from "react";
 
 interface AnswerSectionProps {
-  question: string;
+  question: {
+    level: Level;
+    content: string;
+  } | null;
   options: string[];
 
   submitAnswer: (answer: string) => void;
@@ -16,31 +19,30 @@ export default function AnswerSection({
 
   submitAnswer,
 }: AnswerSectionProps) {
+  if (question === null) return;
   const [answer, setAnswer] = useState("");
 
   return (
     <>
       <Card className="p-8 bg-black/50 border-2 border-purple-400/50 w-full gap-0">
-        {/* <div
+        <div
           className={`text-xs font-bold px-3 py-1 rounded-full w-fit mb-4 ${
-            level === "easy"
+            question.level === "normal"
               ? "bg-green-600 text-green-100"
-              : level === "normal"
-                ? "bg-yellow-600 text-yellow-100"
-                : "bg-red-600 text-red-100"
+              : "bg-red-600 text-red-100"
           }`}
         >
-          {level.toUpperCase()}
-        </div> */}
+          {question.level.toUpperCase()}
+        </div>
         <p className="text-white text-xl leading-relaxed mb-8 text-left">
-          {question}
+          {question.content}
         </p>
 
         <div className="space-y-4">
           <h4 className="text-lg font-medium text-cyan-400 mb-4 text-left">
             SELECT A PLAYER:
           </h4>
-          <div className="space-y-3 grid grid-cols-1 md:grid-cols-3">
+          <div className=" grid grid-cols-1 md:grid-cols-3 gap-4">
             {options.map((player) => (
               <label
                 key={player}

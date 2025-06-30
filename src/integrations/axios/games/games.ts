@@ -57,12 +57,24 @@ export const submitQuestion = async ({
   return res.data;
 };
 
-export const submitAnswer = async (
-  code: string,
-  roundID: number,
-  answer: string,
-) => {
-  await api.post(`/games/${code}/rounds/${roundID}/answer`, { answer });
+export const submitAnswer = async ({
+  code,
+  roundID,
+  answer,
+  playerID,
+}: {
+  code: string;
+  roundID: number;
+  answer: string;
+  playerID: number;
+}) => {
+  await api.post(
+    `/games/${code}/rounds/${roundID}/answer`,
+    { answer },
+    {
+      headers: { "X-Player-ID": playerID },
+    },
+  );
 };
 
 export const drawCard = async ({

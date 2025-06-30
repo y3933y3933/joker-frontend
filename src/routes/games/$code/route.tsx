@@ -67,7 +67,6 @@ function RouteComponent() {
       },
       game_started: (msg) => {
         if (msg.type === "game_started") {
-          console.log("game start", msg.data);
           setRoundID(msg.data.roundID);
           setAnswerPlayerID(msg.data.answererID);
           setQuestionPlayerID(msg.data.questionPlayerID);
@@ -92,7 +91,7 @@ function RouteComponent() {
       },
       round_question: (msg) => {
         if (msg.type === "round_question") {
-          setQuestion(msg.data.question);
+          setQuestion(msg.data);
         }
       },
       answer_time: (_) => {
@@ -106,7 +105,7 @@ function RouteComponent() {
       },
       joker_revealed: (msg) => {
         if (msg.type === "joker_revealed") {
-          setQuestion(msg.data.question);
+          // setQuestion(msg.data.question);
           setRoundStatus("revealed");
         }
       },
@@ -123,7 +122,7 @@ function RouteComponent() {
             answerID: msg.data.answererId,
           });
           setRoundStatus("waiting_for_question");
-          setQuestion("");
+          // setQuestion("");
           setAnswer("");
         }
       },
