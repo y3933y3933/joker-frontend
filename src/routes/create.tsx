@@ -1,11 +1,8 @@
-import LevelRadio from "@/components/LevelRadio";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { LevelOptions } from "@/constants";
 import { useCreateAndJoinGame } from "@/integrations/tanstack-query/games/useCreateAndJoinGame";
 import { useUserActions } from "@/integrations/zustand/store/user.store";
-import type { Level } from "@/types";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -16,7 +13,6 @@ export const Route = createFileRoute("/create")({
 
 function RouteComponent() {
   const [nickname, setNickname] = useState("");
-  const [level, setLevel] = useState<Level>("easy");
   const navigate = useNavigate();
 
   const { createAndJoin, isLoading } = useCreateAndJoinGame();
@@ -24,7 +20,7 @@ function RouteComponent() {
 
   async function createGame() {
     try {
-      const { game, joined } = await createAndJoin(level, nickname);
+      const { game, joined } = await createAndJoin(nickname);
       updateUserStore(joined);
       toast.success("建立遊戲成功");
       navigate({ to: `/games/${game.code}/lobby` });
@@ -75,19 +71,6 @@ function RouteComponent() {
               />
             </div>
 
-            <div className="flex flex-col space-y-2">
-              <label className="text-sm font-medium text-cyan-400">Level</label>
-              <div className="space-y-3">
-                {LevelOptions.map((option) => (
-                  <LevelRadio
-                    key={option.value}
-                    option={option}
-                    selectedLevel={level}
-                    onChange={setLevel}
-                  />
-                ))}
-              </div>
-            </div>
             <div className="flex gap-3">
               <Button
                 variant="outline"

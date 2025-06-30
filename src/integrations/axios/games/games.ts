@@ -10,8 +10,8 @@ import {
   QuestionsSchema,
 } from "./game.schema";
 
-export const createGame = async (level: Level) => {
-  const res = await api.post("/games", { level });
+export const createGame = async () => {
+  const res = await api.post("/games");
   return CreateGameResponseSchema.parse(res.data.data);
 };
 

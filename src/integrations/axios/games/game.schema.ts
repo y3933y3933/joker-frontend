@@ -4,6 +4,7 @@ export const PlayerSchema = z.object({
   id: z.int().positive(),
   nickname: z.string(),
   isHost: z.boolean(),
+  gameID: z.int().positive(),
 });
 
 export type Player = z.infer<typeof PlayerSchema>;
@@ -11,7 +12,7 @@ export type Player = z.infer<typeof PlayerSchema>;
 export const CreateGameResponseSchema = z.object({
   id: z.int().positive(),
   code: z.string(),
-  level: z.literal(["easy", "normal", "spicy"]),
+  status: z.literal(["waiting", "playing", "ended"]),
 });
 
 export type CreateGameResponse = z.infer<typeof CreateGameResponseSchema>;
