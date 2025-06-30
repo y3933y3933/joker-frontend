@@ -8,7 +8,8 @@ export type WSMessage =
   | PlayerSafe
   | RoundStarted
   | GameEnded
-  | PlayerLeft;
+  | PlayerLeft
+  | HostTransferred;
 
 type PlayerJoined = {
   type: "player_joined";
@@ -30,6 +31,14 @@ type GameStarted = {
 
 type PlayerLeft = {
   type: "player_left";
+  data: {
+    id: number;
+    nickname: string;
+  };
+};
+
+type HostTransferred = {
+  type: "host_transferred";
   data: {
     id: number;
     nickname: string;

@@ -80,9 +80,13 @@ function RouteComponent() {
       },
       player_left: (msg) => {
         if (msg.type === "player_left") {
-          console.log("leave player id ", msg.data.id);
           removePlayer(msg.data.id);
           toast.warning(`${msg.data.nickname} 已離開房間`);
+        }
+      },
+      host_transferred: (msg) => {
+        if (msg.type === "host_transferred") {
+          toast.warning(`房間主持人已變更為 ${msg.data.nickname}`);
         }
       },
       round_question: (msg) => {
