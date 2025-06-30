@@ -3,7 +3,7 @@ import type { Level, LevelOption } from "./types";
 export const APP = {
   NAME: "Joker",
   DESCRIPTION:
-    " 回合制爆料遊戲，每回合只有一人知道題目，按下抽牌後才知道命運！抽到鬼牌就得公開說出答案，否則就能偷偷藏住秘密。",
+    "回合制爆料遊戲，每回合只有一人知道題目，按下抽牌後才知道命運！抽到鬼牌就得公開題目。",
   MAX_PLAYER_NUM: 8,
   MIN_PLAYER_NUM: 2,
 } as const;
