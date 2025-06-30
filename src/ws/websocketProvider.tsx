@@ -30,6 +30,7 @@ export function WebSocketProvider({
 
   useEffect(() => {
     if (!code || !playerID) return;
+
     const socket = new WebSocket(
       `ws://localhost:8080/ws/games/${code}?player_id=${playerID}`,
     );
@@ -37,6 +38,7 @@ export function WebSocketProvider({
     socketRef.current = socket;
 
     socket.onmessage = (event) => {
+      console.log("event", event);
       try {
         const message = JSON.parse(event.data);
         onMessage(message);
@@ -58,10 +60,12 @@ export function WebSocketProvider({
     };
 
     return () => {
-      socket.close();
+      // 只在 unmount 時關閉，不在依賴變動時關
+      if (socketRef.current === socket) {
+        socket.close();
+      }
     };
-  }, [playerID, code]);
-
+  }, []);
   return (
     <WebSocketContext.Provider value={{ close }}>
       {children}
