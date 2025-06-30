@@ -105,24 +105,24 @@ function RouteComponent() {
       },
       joker_revealed: (msg) => {
         if (msg.type === "joker_revealed") {
-          // setQuestion(msg.data.question);
+          setQuestion(msg.data);
           setRoundStatus("revealed");
         }
       },
       player_safe: (_) => {
         setRoundStatus("done");
       },
-      round_started: (msg) => {
-        if (msg.type === "round_started") {
-          setRoundID(msg.data.roundId);
-          setAnswerPlayerID(msg.data.answererId);
-          setQuestionPlayerID(msg.data.questionerId);
+      next_round_started: (msg) => {
+        if (msg.type === "next_round_started") {
+          setRoundID(msg.data.roundID);
+          setAnswerPlayerID(msg.data.answererID);
+          setQuestionPlayerID(msg.data.questionPlayerID);
           updateUserRole({
-            questionID: msg.data.questionerId,
-            answerID: msg.data.answererId,
+            questionID: msg.data.questionPlayerID,
+            answerID: msg.data.answererID,
           });
           setRoundStatus("waiting_for_question");
-          // setQuestion("");
+          setQuestion(null);
           setAnswer("");
         }
       },

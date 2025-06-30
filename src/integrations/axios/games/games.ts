@@ -88,26 +88,32 @@ export const drawCard = async ({
   playerId: number;
   index: number;
 }) => {
-  const res = await api.post(`/games/${code}/rounds/${roundId}/draw`, {
-    index,
-    playerId,
-  });
+  const res = await api.post(
+    `/games/${code}/rounds/${roundId}/draw`,
+    {
+      index,
+    },
+    {
+      headers: { "X-Player-ID": playerId },
+    },
+  );
   return DrawCardResSchema.parse(res.data.data);
 };
 
 export const nextRound = async ({
   code,
-  hostId,
-  currentRoundId,
+  playerID,
 }: {
   code: string;
-  hostId: number;
-  currentRoundId: number;
+  playerID: number;
 }) => {
-  await api.post(`/games/${code}/rounds/next`, {
-    hostId,
-    currentRoundId,
-  });
+  await api.post(
+    `/games/${code}/rounds/next`,
+    {},
+    {
+      headers: { "X-Player-ID": playerID },
+    },
+  );
 };
 
 export const endGame = async ({

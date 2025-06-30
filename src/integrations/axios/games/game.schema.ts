@@ -40,7 +40,7 @@ export type Question = z.infer<typeof QuestionSchema>;
 export const QuestionsSchema = z.array(QuestionSchema);
 
 export const DrawCardResSchema = z.object({
-  isJoker: z.boolean(),
+  joker: z.boolean(),
 });
 
 export const PlayerSummarySchema = z.object({

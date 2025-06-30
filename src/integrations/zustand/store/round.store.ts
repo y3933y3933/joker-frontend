@@ -16,7 +16,7 @@ interface RoundStore {
 
 interface RoundActions {
   setRoundID: (id: number) => void;
-  setQuestion: (question: { level: Level; content: string }) => void;
+  setQuestion: (question: { level: Level; content: string } | null) => void;
   setQuestionPlayerID: (id: number) => void;
   setAnswerPlayerID: (id: number) => void;
   setAnswer: (answer: string) => void;
@@ -35,7 +35,7 @@ const useRoundStore = create<RoundStore>((set) => ({
     setRoundID: (id: number) => {
       set({ id });
     },
-    setQuestion: (question: { level: Level; content: string }) => {
+    setQuestion: (question: { level: Level; content: string } | null) => {
       set({ question });
     },
     setQuestionPlayerID: (questionPlayerID: number) => {

@@ -29,6 +29,7 @@ import {
 } from "@/integrations/zustand/store/user.store";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/games/$code/play")({
   component: RouteComponent,
@@ -80,7 +81,7 @@ function RouteComponent() {
         index,
       });
 
-      return data.isJoker ? "joker" : "safe";
+      return data.joker ? "joker" : "safe";
     },
   });
 
@@ -92,7 +93,7 @@ function RouteComponent() {
 
   async function handlerSelectQuestion(questionID: number) {
     if (!code || !roundID || !playerID) {
-      console.error("參數有誤");
+      console.error("參數有誤", code, roundID, playerID);
       return;
     }
     await submitQuestion({ code, roundID, questionID, playerID });
@@ -100,7 +101,13 @@ function RouteComponent() {
 
   async function handlerSubmitAnswer(answer: string) {
     if (!code || !roundID || !playerID) return;
-    await submitAnswer({ code, roundID, answer, playerID });
+    try {
+      await submitAnswer({ code, roundID, answer, playerID });
+    } catch (error) {
+      const msg =
+        error instanceof Error ? error.message : "Something went wrong";
+      toast.error("送出答案失敗", { description: msg });
+    }
   }
 
   async function handlerNextRound() {
@@ -108,7 +115,7 @@ function RouteComponent() {
       console.error("參數有誤");
       return;
     }
-    await nextRound({ code, currentRoundId: roundID, hostId: playerID });
+    await nextRound({ code, playerID });
   }
 
   async function handlerEndGame() {
@@ -236,7 +243,7 @@ function RouteComponent() {
                 </>
               )}
 
-              {roundStatus === "revealed" && role !== "answer" && (
+              {roundStatus === "revealed" && role !== "answer" && question && (
                 <>
                   <div className="text-8xl animate-bounce">🃏</div>
 
@@ -244,8 +251,17 @@ function RouteComponent() {
                     {currentPlayerName} 抽到鬼牌啦！來看看題目是：
                   </h2>
                   <Card className="p-8 bg-black/50 border-2 border-purple-400/50 w-full gap-0">
+                    <div
+                      className={`text-xs font-bold px-3 py-1 rounded-full w-fit mb-4 ${
+                        question.level === "normal"
+                          ? "bg-green-600 text-green-100"
+                          : "bg-red-600 text-red-100"
+                      }`}
+                    >
+                      {question.level.toUpperCase()}
+                    </div>
                     <p className="text-white text-xl leading-relaxed mb-8 text-left">
-                      {question?.content}
+                      {question.content}
                     </p>
                   </Card>
                 </>

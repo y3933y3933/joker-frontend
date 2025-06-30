@@ -35,6 +35,8 @@ export function WebSocketProvider({
       `ws://localhost:8080/ws/games/${code}?player_id=${playerID}`,
     );
 
+    console.log("useEffect", code, playerID);
+
     socketRef.current = socket;
 
     socket.onmessage = (event) => {
@@ -60,12 +62,12 @@ export function WebSocketProvider({
     };
 
     return () => {
-      // 只在 unmount 時關閉，不在依賴變動時關
+      console.log("closing socket", socket.readyState);
       if (socketRef.current === socket) {
         socket.close();
       }
     };
-  }, []);
+  }, [code, playerID]);
   return (
     <WebSocketContext.Provider value={{ close }}>
       {children}

@@ -8,7 +8,7 @@ export type WSMessage =
   | AnswerSubmitted
   | JokerRevealed
   | PlayerSafe
-  | RoundStarted
+  | NextRoundStarted
   | GameEnded
   | PlayerLeft
   | HostTransferred;
@@ -62,7 +62,6 @@ type AnswerTime = {
 type AnswerSubmitted = {
   type: "answer_submitted";
   data: {
-    roundId: number;
     answer: string;
   };
 };
@@ -70,7 +69,8 @@ type AnswerSubmitted = {
 type JokerRevealed = {
   type: "joker_revealed";
   data: {
-    question: string;
+    content: string;
+    level: Level;
   };
 };
 
@@ -78,12 +78,12 @@ type PlayerSafe = {
   type: "player_safe";
 };
 
-type RoundStarted = {
-  type: "round_started";
+type NextRoundStarted = {
+  type: "next_round_started";
   data: {
-    roundId: number;
-    answererId: number;
-    questionerId: number;
+    roundID: number;
+    answererID: number;
+    questionPlayerID: number;
   };
 };
 
