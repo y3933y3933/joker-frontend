@@ -1,10 +1,8 @@
-import PlayerSummaryCard from "@/components/PlayerSummaryCard";
-import RoundSummaryCard from "@/components/RoundSummaryCard";
-import SummaryAchievementCard from "@/components/SummaryAchievementCard";
-import SummaryQACard from "@/components/SummaryQACard";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { getGameSummary } from "@/integrations/axios/games/games";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/games/$code/summary")({
   component: RouteComponent,
@@ -14,117 +12,184 @@ export const Route = createFileRoute("/games/$code/summary")({
 });
 
 function RouteComponent() {
-  const { game, players, highlights } = Route.useLoaderData();
+  const {
+    totalRounds,
+    jokerCards,
+    players: playerStats,
+  } = Route.useLoaderData();
 
-  // function handleShare() {
+  const [animatedStats, setAnimatedStats] = useState({
+    totalRounds: 0,
+    jokerCards: 0,
+  });
 
-  //   if (navigator.share) {
-  //     navigator.share({
-  //       title: "Joker Game Neural Analysis",
-  //       text: `Just completed a cyberpunk Joker Game session! ${game.totalJokerCards} secrets were decrypted! 🃏⚡`,
-  //       url: window.location.href,
-  //     });
-  //   } else {
-  //     navigator.clipboard.writeText(
-  //       `Just completed a cyberpunk Joker Game session! ${game.totalJokerCards} secrets were decrypted! 🃏⚡ ${window.location.href}`,
-  //     );
-  //     alert("Neural data copied to clipboard! 📋");
-  //   }
-  // }
+  // Animate stats on mount
+  useEffect(() => {
+    const animateNumbers = () => {
+      let roundsCount = 0;
+      let jokerCount = 0;
+
+      const interval = setInterval(() => {
+        if (roundsCount < totalRounds) {
+          roundsCount++;
+          setAnimatedStats((prev) => ({ ...prev, totalRounds: roundsCount }));
+        }
+        if (jokerCount < jokerCards) {
+          jokerCount++;
+          setAnimatedStats((prev) => ({ ...prev, jokerCards: jokerCount }));
+        }
+
+        if (roundsCount >= totalRounds && jokerCount >= jokerCards) {
+          clearInterval(interval);
+        }
+      }, 150);
+    };
+
+    setTimeout(animateNumbers, 500);
+  }, [totalRounds, jokerCards]);
+
+  // Calculate achievements
+  const luckiestPlayer = playerStats.reduce((prev, current) =>
+    prev.jokerCardsDrawn < current.jokerCardsDrawn ? prev : current,
+  );
+  const unluckiestPlayer = playerStats.reduce((prev, current) =>
+    prev.jokerCardsDrawn > current.jokerCardsDrawn ? prev : current,
+  );
+
   return (
-    <div className="flex-1 flex flex-col items-center justify-start space-y-8 max-w-6xl mx-auto py-8 relative overflow-hidden cyber-grid">
-      {/*  Header */}
+    <div className="flex-1 flex flex-col items-center justify-start space-y-8 max-w-5xl mx-auto py-8">
+      {/* Simple Header */}
       <div className="text-center space-y-4 mb-8">
-        <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-cyan-400 via-magenta-500 to-yellow-400 bg-clip-text text-transparent neon-flicker">
-          遊戲結束
+        <h1 className="text-5xl font-bold bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
+          GAME COMPLETE
         </h1>
-        <div className="h-2 w-96 mx-auto bg-gradient-to-r from-cyan-400 via-magenta-500 to-yellow-400 rounded-full animate-pulse shadow-[0_0_20px_rgba(34,211,238,0.5)]" />
+        <div className="h-1 w-48 mx-auto bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full" />
       </div>
 
-      {/* Cyberpunk Stats Panel */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl mb-8">
-        <RoundSummaryCard title="總回合數" content={game.totalRounds} />
-        <RoundSummaryCard
-          title="鬼牌被抽出"
-          content={`🃏 ${game.totalJokerCards}`}
-        />
+      {/* Game Summary Stats */}
+      <div className="grid grid-cols-2 gap-6 w-full max-w-2xl mb-8">
+        <Card className="p-6 bg-black/80 border-2 border-cyan-400/50 shadow-[0_0_20px_rgba(34,211,238,0.3)] text-center">
+          <h3 className="text-lg font-bold text-cyan-400 mb-2">Total Rounds</h3>
+          <div className="text-4xl font-bold text-white">
+            {animatedStats.totalRounds}
+          </div>
+        </Card>
+
+        <Card className="p-6 bg-black/80 border-2 border-red-400/50 shadow-[0_0_20px_rgba(239,68,68,0.3)] text-center">
+          <h3 className="text-lg font-bold text-red-400 mb-2">
+            Secrets Revealed
+          </h3>
+          <div className="text-4xl font-bold text-white">
+            {animatedStats.jokerCards}
+          </div>
+        </Card>
       </div>
 
-      {/* Cyberpunk Player Performance Grid */}
-      <div className="w-full max-w-5xl mb-8">
-        <h2 className="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-cyan-400 to-magenta-400 bg-clip-text text-transparent font-mono">
-          {">"} 玩家行為記錄
+      {/* Player Performance Chart */}
+      <Card className="p-6 bg-black/80 border-2 border-purple-400/50 shadow-[0_0_20px_rgba(168,85,247,0.3)] w-full">
+        <h2 className="text-2xl font-bold text-purple-400 mb-6 text-center">
+          Player Performance
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {players.map((player) => (
-            <PlayerSummaryCard key={player.playerId} {...player} />
-          ))}
-        </div>
-      </div>
 
-      {/* Cyberpunk Achievement Badges */}
-      <div className="w-full max-w-4xl mb-8">
-        <h2 className="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-yellow-400 to-cyan-400 bg-clip-text text-transparent font-mono">
-          {">"} 成就解鎖
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <SummaryAchievementCard
-            icon="👑"
-            title="幸運之神"
-            playerName={highlights.luckiestPlayer.nickname}
-            content={`JOKERS: ${highlights.luckiestPlayer.jokerCardsDrawn}`}
-          />
-
-          <SummaryAchievementCard
-            icon="💀"
-            title="倒霉鬼"
-            playerName={highlights.unluckiestPlayer.nickname}
-            content={`JOKERS: ${highlights.unluckiestPlayer.jokerCardsDrawn}`}
-          />
-        </div>
-      </div>
-
-      {/* Cyberpunk Q&A Section */}
-      {highlights.bestQAs && highlights.bestQAs.length > 0 && (
-        <div className="w-full max-w-5xl mb-8">
-          <h2 className="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-magenta-400 to-cyan-400 bg-clip-text text-transparent font-mono">
-            {">"} 問答回顧
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {highlights.bestQAs.map((qa, index) => (
-              <SummaryQACard
-                key={`${qa.question}_${index}`}
-                question={qa.question}
-                answer={qa.answer}
-              />
+        {/* Joker Cards Chart */}
+        <div className="mb-8">
+          <h3 className="text-lg font-bold text-red-400 mb-4">
+            Joker Cards Drawn
+          </h3>
+          <div className="space-y-3">
+            {playerStats.map((player) => (
+              <div key={player.id} className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2 w-32">
+                  {/* <span className="text-xl">{player.avatar}</span> */}
+                  {/* ${player.isCurrentPlayer ? "text-yellow-400" : "text-white"} */}
+                  <span className={`text-sm font-medium text-yellow-400`}>
+                    {player.nickname}
+                  </span>
+                </div>
+                <div className="flex-1 bg-gray-800 rounded-full h-6 relative overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-red-400 to-red-600 rounded-full transition-all duration-1000 ease-out"
+                    style={{ width: `${(player.jokerCardsDrawn / 3) * 100}%` }}
+                  />
+                  <span className="absolute inset-0 flex items-center justify-center text-white text-sm font-bold">
+                    {player.jokerCardsDrawn}
+                  </span>
+                </div>
+              </div>
             ))}
           </div>
         </div>
-      )}
+      </Card>
 
-      {/* Cyberpunk CTA Buttons */}
-      <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 w-full max-w-2xl">
+      {/* Simple Achievements */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
+        <Card className="p-6 bg-black/80 border-2 border-green-400/50 shadow-[0_0_20px_rgba(34,197,94,0.3)] text-center">
+          <div className="text-4xl mb-3">🍀</div>
+          <h3 className="text-xl font-bold text-green-400 mb-2">
+            Luckiest Player
+          </h3>
+          <div className="text-2xl font-bold text-white mb-1">
+            {luckiestPlayer.nickname}
+          </div>
+          <div className="text-green-300 text-sm">
+            Only {luckiestPlayer.jokerCardsDrawn} joker cards!
+          </div>
+        </Card>
+
+        <Card className="p-6 bg-black/80 border-2 border-red-400/50 shadow-[0_0_20px_rgba(239,68,68,0.3)] text-center">
+          <div className="text-4xl mb-3">💀</div>
+          <h3 className="text-xl font-bold text-red-400 mb-2">Most Exposed</h3>
+          <div className="text-2xl font-bold text-white mb-1">
+            {unluckiestPlayer.nickname}
+          </div>
+          <div className="text-red-300 text-sm">
+            {unluckiestPlayer.jokerCardsDrawn} secrets revealed!
+          </div>
+        </Card>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 w-full max-w-2xl mt-8">
         <Button
           // onClick={onPlayAgain}
-          className="flex-1 py-6 text-xl font-mono bg-gradient-to-r from-cyan-500 to-magenta-600 hover:from-cyan-400 hover:to-magenta-500 border-2 border-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.5)] hover:shadow-[0_0_30px_rgba(34,211,238,0.8)] transition-all duration-300 transform hover:scale-105"
-          asChild
+          className="flex-1 py-4 text-lg bg-gradient-to-r from-green-500 to-cyan-500 hover:from-green-400 hover:to-cyan-400 border-2 border-green-400 shadow-[0_0_20px_rgba(34,197,94,0.5)] hover:shadow-[0_0_30px_rgba(34,197,94,0.8)] transition-all duration-300 transform hover:scale-105"
         >
-          <Link to="/create">🔄 再來一局</Link>
+          🔄 Play Again
         </Button>
 
         <Button
-          asChild
-          className="flex-1 py-6 text-xl font-mono bg-gradient-to-r from-magenta-500 to-yellow-500 hover:from-magenta-400 hover:to-yellow-400 border-2 border-magenta-400 shadow-[0_0_20px_rgba(236,72,153,0.5)] hover:shadow-[0_0_30px_rgba(236,72,153,0.8)] transition-all duration-300 transform hover:scale-105"
+          // onClick={onBackToLanding}
+          className="flex-1 py-4 text-lg bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-400 hover:to-pink-400 border-2 border-purple-400 shadow-[0_0_20px_rgba(168,85,247,0.5)] hover:shadow-[0_0_30px_rgba(168,85,247,0.8)] transition-all duration-300 transform hover:scale-105"
         >
-          <Link to="/">🏠 回到大廳</Link>
+          🏠 Back to Menu
         </Button>
 
-        {/* <Button
-          onClick={handleShare}
-          className="flex-1 py-6 text-xl font-mono bg-gradient-to-r from-yellow-500 to-cyan-500 hover:from-yellow-400 hover:to-cyan-400 border-2 border-yellow-400 shadow-[0_0_20px_rgba(255,255,0,0.5)] hover:shadow-[0_0_30px_rgba(255,255,0,0.8)] transition-all duration-300 transform hover:scale-105"
+        <Button
+          onClick={() => {
+            // Mock share functionality
+            if (navigator.share) {
+              navigator.share({
+                title: "Joker Game Results",
+                text: `Just played Joker Game! ${jokerCards} secrets were revealed! 🃏`,
+                url: window.location.href,
+              });
+            } else {
+              // Fallback for browsers that don't support Web Share API
+              navigator.clipboard.writeText(
+                `Just played Joker Game! ${jokerCards} secrets were revealed! 🃏 ${window.location.href}`,
+              );
+              alert("Results copied to clipboard! 📋");
+            }
+          }}
+          className="flex-1 py-4 text-lg bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 border-2 border-yellow-400 shadow-[0_0_20px_rgba(255,255,0,0.5)] hover:shadow-[0_0_30px_rgba(255,255,0,0.8)] transition-all duration-300 transform hover:scale-105"
         >
-          📡 分享
-        </Button> */}
+          📤 Share Results
+        </Button>
+      </div>
+
+      {/* Simple Footer */}
+      <div className="text-center mt-8">
+        <p className="text-gray-400">Thanks for playing! 🎮</p>
       </div>
     </div>
   );
