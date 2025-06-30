@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useAnimatedStats } from "@/hooks/useAnimatedStats";
 import { getGameSummary } from "@/integrations/axios/games/games";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/games/$code/summary")({
   component: RouteComponent,
@@ -18,35 +18,7 @@ function RouteComponent() {
     players: playerStats,
   } = Route.useLoaderData();
 
-  const [animatedStats, setAnimatedStats] = useState({
-    totalRounds: 0,
-    jokerCards: 0,
-  });
-
-  // Animate stats on mount
-  useEffect(() => {
-    const animateNumbers = () => {
-      let roundsCount = 0;
-      let jokerCount = 0;
-
-      const interval = setInterval(() => {
-        if (roundsCount < totalRounds) {
-          roundsCount++;
-          setAnimatedStats((prev) => ({ ...prev, totalRounds: roundsCount }));
-        }
-        if (jokerCount < jokerCards) {
-          jokerCount++;
-          setAnimatedStats((prev) => ({ ...prev, jokerCards: jokerCount }));
-        }
-
-        if (roundsCount >= totalRounds && jokerCount >= jokerCards) {
-          clearInterval(interval);
-        }
-      }, 150);
-    };
-
-    setTimeout(animateNumbers, 500);
-  }, [totalRounds, jokerCards]);
+  const animatedStats = useAnimatedStats({ totalRounds, jokerCards });
 
   // Calculate achievements
   const luckiestPlayer = playerStats.reduce((prev, current) =>
