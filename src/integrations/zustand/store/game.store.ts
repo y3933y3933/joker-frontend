@@ -12,6 +12,7 @@ interface GameActions {
   setPlayers: (players: Player[]) => void;
   addPlayer: (player: PlayWithoutGameID) => void;
   removePlayer: (id: number) => void;
+  setHost: (id: number) => void;
   reset: () => void;
 }
 
@@ -30,7 +31,14 @@ const useGameStore = create<GameStore>((set) => ({
       set((state) => ({
         players: state.players.filter((p) => p.id !== id),
       })),
-
+    setHost: (id: number) => {
+      set((state) => ({
+        players: state.players.map((p) => ({
+          ...p,
+          isHost: p.id === id,
+        })),
+      }));
+    },
     reset: () => {
       set({ players: [] });
     },

@@ -18,7 +18,12 @@ function RouteComponent() {
   const playerID = useUserID();
   const navigate = useNavigate();
 
-  const { addPlayer, reset: resetGame, removePlayer } = useGameActions();
+  const {
+    addPlayer,
+    reset: resetGame,
+    removePlayer,
+    setHost,
+  } = useGameActions();
   const {
     setRoundID,
     setQuestionPlayerID,
@@ -86,6 +91,7 @@ function RouteComponent() {
       },
       host_transferred: (msg) => {
         if (msg.type === "host_transferred") {
+          setHost(msg.data.id);
           toast.warning(`房間主持人已變更為 ${msg.data.nickname}`);
         }
       },

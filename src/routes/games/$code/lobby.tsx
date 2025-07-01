@@ -3,7 +3,6 @@ import PlayerListInLobby from "@/components/PlayerListInLobby";
 import { Button } from "@/components/ui/button";
 import { APP } from "@/constants";
 import { getPlayers } from "@/integrations/axios/games/games";
-import useLeaveGame from "@/integrations/tanstack-query/games/useLeaveGame";
 import useStartGame from "@/integrations/tanstack-query/games/useStartGame";
 import {
   useGameActions,
@@ -34,7 +33,6 @@ function RouteComponent() {
   const players = useGamePlayers();
 
   const { mutate: startGame, isLoading } = useStartGame();
-  const { mutate: leaveGame } = useLeaveGame();
 
   const { setPlayers } = useGameActions();
   const websocket = useContext(WebSocketContext);
@@ -53,25 +51,10 @@ function RouteComponent() {
   };
 
   const handleLeaveGame = () => {
-    if (!playerID) {
-      return;
+    if (websocket) {
+      close();
     }
-    console.log("leave game");
-    leaveGame(
-      { code, playerID },
-      {
-        onSuccess: () => {
-          if (websocket) {
-            close();
-          }
-          navigate({ to: "/" });
-        },
-        onError: (error) => {
-          const msg = error instanceof Error ? error.message : "發生未知錯誤";
-          toast.error(`無法離開房間：${msg}`);
-        },
-      },
-    );
+    navigate({ to: "/" });
   };
 
   useEffect(() => {
