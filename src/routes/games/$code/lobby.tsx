@@ -13,7 +13,7 @@ import {
   useUserIsHost,
 } from "@/integrations/zustand/store/user.store";
 import { WebSocketContext } from "@/ws/websocketProvider";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Play } from "lucide-react";
 import { useContext, useEffect } from "react";
 import { toast } from "sonner";
@@ -27,7 +27,6 @@ export const Route = createFileRoute("/games/$code/lobby")({
 
 function RouteComponent() {
   const { code } = Route.useParams();
-  const playerID = useUserID();
   const isHost = useUserIsHost();
   const initialPlayers = Route.useLoaderData();
   const players = useGamePlayers();
@@ -35,7 +34,6 @@ function RouteComponent() {
   const { mutate: startGame, isLoading } = useStartGame();
 
   const { setPlayers } = useGameActions();
-  const websocket = useContext(WebSocketContext);
   const navigate = useNavigate();
 
   const handleStartGame = () => {
@@ -48,13 +46,6 @@ function RouteComponent() {
         toast.error(`無法開始遊戲：${msg}`);
       },
     });
-  };
-
-  const handleLeaveGame = () => {
-    if (websocket) {
-      close();
-    }
-    navigate({ to: "/" });
   };
 
   useEffect(() => {
@@ -72,11 +63,11 @@ function RouteComponent() {
 
         <div className="flex gap-4">
           <Button
-            onClick={handleLeaveGame}
             variant="outline"
+            asChild
             className="border-gray-600  bg-gray-800 text-white"
           >
-            離開房間
+            <Link to="/">離開房間</Link>
           </Button>
 
           {isHost && (
