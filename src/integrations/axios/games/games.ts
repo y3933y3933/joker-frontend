@@ -1,9 +1,7 @@
-import type { Level } from "@/types";
 import api from "../axios-instance";
 import {
   CreateGameResponseSchema,
   DrawCardResSchema,
-  GameSchema,
   GameSummaryResponseSchema,
   PlayerSchema,
   PlayersSchema,

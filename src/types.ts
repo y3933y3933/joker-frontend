@@ -18,3 +18,5 @@ export type RoundStatus =
   | "waiting_for_draw"
   | "revealed"
   | "done";
+
+export type FeedbackType = "feature" | "issue" | "other";

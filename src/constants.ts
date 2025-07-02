@@ -1,4 +1,4 @@
-import type { Level, LevelOption } from "./types";
+import type { FeedbackType, Level, LevelOption } from "./types";
 
 export const APP = {
   NAME: "Joker",
@@ -23,3 +23,21 @@ export const LevelStyle: Record<
     text: "text-neon-magenta",
   },
 };
+
+export const FeedbackTypeOptions: Array<{
+  label: string;
+  value: FeedbackType;
+}> = [
+  {
+    label: "功能需求",
+    value: "feature",
+  },
+  {
+    label: "問題回報",
+    value: "issue",
+  },
+  {
+    label: "其他",
+    value: "other",
+  },
+];
