@@ -3,6 +3,7 @@ import PlayerListInLobby from "@/components/PlayerListInLobby";
 import { Button } from "@/components/ui/button";
 import { APP } from "@/constants";
 import { getPlayers } from "@/integrations/axios/games/games";
+import useLeaveGame from "@/integrations/tanstack-query/games/useLeaveGame";
 import useStartGame from "@/integrations/tanstack-query/games/useStartGame";
 import {
   useGameActions,
@@ -12,10 +13,9 @@ import {
   useUserID,
   useUserIsHost,
 } from "@/integrations/zustand/store/user.store";
-import { WebSocketContext } from "@/ws/websocketProvider";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Play } from "lucide-react";
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/games/$code/lobby")({
@@ -33,9 +33,9 @@ function RouteComponent() {
   const players = useGamePlayers();
 
   const { mutate: startGame, isLoading } = useStartGame();
+  const { mutate: leaveGame } = useLeaveGame();
 
   const { setPlayers } = useGameActions();
-  const websocket = useContext(WebSocketContext);
   const navigate = useNavigate();
 
   const handleStartGame = () => {
@@ -51,10 +51,21 @@ function RouteComponent() {
   };
 
   const handleLeaveGame = () => {
-    if (websocket) {
-      close();
+    if (!playerID) {
+      return;
     }
-    navigate({ to: "/" });
+    leaveGame(
+      { code, playerID },
+      {
+        onSuccess: () => {
+          navigate({ to: "/" });
+        },
+        onError: (error) => {
+          const msg = error instanceof Error ? error.message : "發生未知錯誤";
+          toast.error(`無法離開房間：${msg}`);
+        },
+      },
+    );
   };
 
   useEffect(() => {

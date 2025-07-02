@@ -136,3 +136,14 @@ export const getGameSummary = async (code: string) => {
   const res = await api.get(`/games/${code}/summary`);
   return GameSummaryResponseSchema.parse(res.data.data);
 };
+
+export const leaveGame = async (code: string, playerID: number) => {
+  const res = await api.post(
+    `/games/${code}/players/leave`,
+    {},
+    {
+      headers: { "X-Player-ID": playerID },
+    },
+  );
+  return res.data.data;
+};
