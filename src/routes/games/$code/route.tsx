@@ -120,16 +120,7 @@ function RouteComponent() {
       },
       next_round_started: (msg) => {
         if (msg.type === "next_round_started") {
-          setRoundID(msg.data.roundID);
-          setAnswerPlayerID(msg.data.answererID);
-          setQuestionPlayerID(msg.data.questionPlayerID);
-          updateUserRole({
-            questionID: msg.data.questionPlayerID,
-            answerID: msg.data.answererID,
-          });
-          setRoundStatus("waiting_for_question");
-          setQuestion(null);
-          setAnswer("");
+          resetNewRound(msg.data);
         }
       },
 
@@ -141,7 +132,40 @@ function RouteComponent() {
           reset();
         }
       },
+      round_skipped: (msg) => {
+        if (msg.type === "round_skipped") {
+          toast.error("跳過當前回合", { description: msg.data.reason });
+
+          resetNewRound({
+            roundID: msg.data.roundID,
+            answererID: msg.data.answererID,
+            questionPlayerID: msg.data.questionPlayerID,
+          });
+        }
+      },
     };
+
+  function resetNewRound({
+    roundID,
+    answererID,
+    questionPlayerID,
+  }: {
+    roundID: number;
+    answererID: number;
+    questionPlayerID: number;
+  }) {
+    setRoundID(roundID);
+    setAnswerPlayerID(answererID);
+    setQuestionPlayerID(questionPlayerID);
+    updateUserRole({
+      questionID: questionPlayerID,
+      answerID: answererID,
+    });
+    setRoundStatus("waiting_for_question");
+    setQuestion(null);
+    setAnswer("");
+  }
+
   return (
     <WebSocketProvider
       code={code}
