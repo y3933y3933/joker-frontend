@@ -51,21 +51,7 @@ function RouteComponent() {
   };
 
   const handleLeaveGame = () => {
-    if (!playerID) {
-      return;
-    }
-    leaveGame(
-      { code, playerID },
-      {
-        onSuccess: () => {
-          navigate({ to: "/" });
-        },
-        onError: (error) => {
-          const msg = error instanceof Error ? error.message : "發生未知錯誤";
-          toast.error(`無法離開房間：${msg}`);
-        },
-      },
-    );
+    navigate({ to: "/" });
   };
 
   useEffect(() => {
