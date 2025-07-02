@@ -1,5 +1,11 @@
 import { useState } from "react";
 import { ArrowRightIcon, Gamepad2, Zap } from "lucide-react";
+import step1Img from "../assets/images/rules-1.jpeg";
+import step2Img from "../assets/images/rules-2.jpeg";
+import step3Img from "../assets/images/rules-3.jpeg";
+import step4Img from "../assets/images/rules-4.jpeg";
+import step5Img from "../assets/images/rules-5.jpeg";
+import step6Img from "../assets/images/rules-6.jpeg";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -19,31 +25,37 @@ const stepContent = [
     title: "遊戲目標",
     description:
       "Joker 是一款社交問答遊戲，透過匿名題目與玩家互動，創造爆笑又出其不意的回答情境。",
+    img: step1Img,
   },
   {
-    title: "題目與角色指派",
+    title: "遊戲大廳",
     description:
-      "每一輪會隨機指定一位玩家作為題目選擇者，並由他挑選一位玩家擔任回答者。",
+      "玩家可以透過創建房間或加入房間進入大廳，由房主開始遊戲，最少 3 人，最多 8 人。",
+    img: step2Img,
   },
   {
     title: "提問階段",
     description:
-      "題目選擇者從題庫中選擇一題提問，例如：「你覺得誰最戀愛腦？」將題目私下發送給回答者。",
+      "每一輪會依照順序指定一位玩家作為題目選擇者，玩家需要從題庫中選擇一題提問，例如：「你覺得誰最戀愛腦？」將題目私下發送給回答者。",
+    img: step3Img,
   },
   {
     title: "回答階段",
     description:
-      "回答者從除了自己以外的玩家中，選擇一位作為回答對象，並提交答案。所有人將看到這個答案，但不知道題目是什麼。",
+      "每一輪會依照順序指定一位玩家作為回答對象，回答者需要提交答案。所有人將看到這個答案，但不知道題目是什麼。",
+    img: step4Img,
   },
   {
     title: "抽牌事件",
     description:
       "回答者接著抽一張牌。如果抽中鬼牌，題目會公開給所有玩家；若未抽中，題目則保持隱密，只留下令人猜想的答案。",
+    img: step5Img,
   },
   {
     title: "持續進行",
     description:
-      "遊戲依此流程輪流進行，玩家可以透過觀察、猜測與笑聲，享受這場幽默又刺激的問答體驗。",
+      "房主可以選擇進行下一回合或結束遊戲，若結束遊戲則會顯示這次遊戲的結果。",
+    img: step6Img,
   },
 ];
 
@@ -74,10 +86,10 @@ export default function GameRuleButton() {
         <div className="p-2">
           <img
             className="w-full rounded-md"
-            src="https://picsum.photos/seed/picsum/382/216"
+            src={stepContent[step - 1].img}
             width={382}
             height={216}
-            alt="dialog"
+            alt="image"
           />
         </div>
         <div className="space-y-6 px-6 pt-3 pb-6">
