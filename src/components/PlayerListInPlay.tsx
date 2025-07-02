@@ -1,6 +1,7 @@
 import type { PlayWithoutGameID } from "@/integrations/axios/games/game.schema";
 import { useUserID } from "@/integrations/zustand/store/user.store";
 import { Crown } from "lucide-react";
+import PlayerAvatar from "./PlayerAvatar";
 
 interface PlayerListInPlayProps {
   players: PlayWithoutGameID[];
@@ -29,16 +30,10 @@ export default function PlayerListInPlay({
             <div className="absolute -left-1 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-cyan-400 rounded-full animate-pulse" />
           )}
 
-          <div
-            className={`w-12 h-12 rounded-full flex items-center justify-center text-black font-bold text-lg border-2 transition-all duration-300 ${
-              player.id === currentPlayerID
-                ? "border-cyan-400 shadow-lg shadow-cyan-400/50"
-                : "border-gray-600"
-            }`}
-            // style={{ backgroundColor: player.avatar }}
-          >
-            {player.nickname.charAt(0).toUpperCase()}
-          </div>
+          <PlayerAvatar
+            name={player.nickname}
+            isOnline={player.status === "online"}
+          />
 
           <div className="flex-1">
             <span

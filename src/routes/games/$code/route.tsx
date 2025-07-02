@@ -23,6 +23,7 @@ function RouteComponent() {
     reset: resetGame,
     removePlayer,
     setHost,
+    setPlayerOffline,
   } = useGameActions();
   const {
     setRoundID,
@@ -66,7 +67,7 @@ function RouteComponent() {
     {
       player_joined: (msg) => {
         if (msg.type === "player_joined") {
-          addPlayer(msg.data);
+          addPlayer({ ...msg.data, status: "online" });
           toast.success(`${msg.data.nickname} 加入遊戲`);
         }
       },
@@ -134,13 +135,19 @@ function RouteComponent() {
       },
       round_skipped: (msg) => {
         if (msg.type === "round_skipped") {
-          toast.error("跳過當前回合", { description: msg.data.reason });
+          toast.error("跳過當前回合");
 
           resetNewRound({
             roundID: msg.data.roundID,
             answererID: msg.data.answererID,
             questionPlayerID: msg.data.questionPlayerID,
           });
+        }
+      },
+      player_disconnected: (msg) => {
+        if (msg.type === "player_disconnected") {
+          setPlayerOffline(msg.data.id);
+          toast.warning(`${msg.data.nickname} 斷線`);
         }
       },
     };

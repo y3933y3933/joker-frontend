@@ -2,6 +2,7 @@ import { Crown, User2Icon, Users } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
 import { APP } from "@/constants";
 import type { PlayWithoutGameID } from "@/integrations/axios/games/game.schema";
+import PlayerAvatar from "./PlayerAvatar";
 
 interface PlayerListInLobbyProps {
   players: PlayWithoutGameID[];
@@ -26,6 +27,7 @@ export default function PlayerListInLobby({ players }: PlayerListInLobbyProps) {
                 key={player.id}
                 isHost={player.isHost}
                 nickname={player.nickname}
+                isOnline={player.status === "online"}
               />
             ))}
 
@@ -62,18 +64,15 @@ function EmptySlot() {
 function PlayerCard({
   isHost,
   nickname,
+  isOnline,
 }: {
   isHost: boolean;
   nickname: string;
+  isOnline: boolean;
 }) {
   return (
     <div className="flex items-center gap-3 p-3 bg-black/30 rounded-lg border border-gray-700/50 ">
-      <div
-        className="w-10 h-10 rounded-full flex items-center justify-center text-black font-bold text-sm"
-        style={{ backgroundColor: "rgba(255,255,255,0.1)" }}
-      >
-        {/* {avatar} */}
-      </div>
+      <PlayerAvatar name={nickname} isOnline={isOnline} />
       <span className="flex-1 text-white font-medium">{nickname}</span>
       {isHost && <Crown className="h-4 w-4 text-yellow-400" />}
     </div>

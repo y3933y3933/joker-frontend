@@ -12,7 +12,8 @@ export type WSMessage =
   | GameEnded
   | PlayerLeft
   | HostTransferred
-  | RoundSkipped;
+  | RoundSkipped
+  | PlayerDisconnected;
 
 type PlayerJoined = {
   type: "player_joined";
@@ -102,5 +103,13 @@ type RoundSkipped = {
     roundID: number;
     answererID: number;
     questionPlayerID: number;
+  };
+};
+
+type PlayerDisconnected = {
+  type: "player_disconnected";
+  data: {
+    id: number;
+    nickname: string;
   };
 };

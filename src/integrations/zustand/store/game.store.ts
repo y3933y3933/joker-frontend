@@ -13,6 +13,7 @@ interface GameActions {
   addPlayer: (player: PlayWithoutGameID) => void;
   removePlayer: (id: number) => void;
   setHost: (id: number) => void;
+  setPlayerOffline: (id: number) => void;
   reset: () => void;
 }
 
@@ -36,6 +37,14 @@ const useGameStore = create<GameStore>((set) => ({
         players: state.players.map((p) => ({
           ...p,
           isHost: p.id === id,
+        })),
+      }));
+    },
+    setPlayerOffline: (id: number) => {
+      set((state) => ({
+        players: state.players.map((p) => ({
+          ...p,
+          status: p.id === id ? "disconnected" : "online",
         })),
       }));
     },

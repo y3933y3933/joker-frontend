@@ -5,6 +5,7 @@ export const PlayerSchema = z.object({
   nickname: z.string(),
   isHost: z.boolean(),
   gameID: z.int().positive(),
+  status: z.literal(["online", "disconnected"]),
 });
 
 export type Player = z.infer<typeof PlayerSchema>;
