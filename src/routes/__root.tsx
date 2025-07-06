@@ -16,9 +16,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       <div className="min-h-screen bg-black text-white overflow-hidden relative">
         <Outlet />
       </div>
-      {/* <TanStackRouterDevtools /> */}
+      <TanStackRouterDevtools />
 
-      {/* <TanStackQueryLayout /> */}
+      <TanStackQueryLayout />
       <Toaster richColors />
     </>
   ),

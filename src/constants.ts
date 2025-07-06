@@ -1,4 +1,4 @@
-import type { FeedbackType, Level, LevelOption } from "./types";
+import type { FeedbackType, Level } from "./types";
 
 export const APP = {
   NAME: "Joker",

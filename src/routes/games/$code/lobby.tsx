@@ -3,16 +3,12 @@ import PlayerListInLobby from "@/components/PlayerListInLobby";
 import { Button } from "@/components/ui/button";
 import { APP } from "@/constants";
 import { getPlayers } from "@/integrations/axios/games/games";
-import useLeaveGame from "@/integrations/tanstack-query/games/useLeaveGame";
 import useStartGame from "@/integrations/tanstack-query/games/useStartGame";
 import {
   useGameActions,
   useGamePlayers,
 } from "@/integrations/zustand/store/game.store";
-import {
-  useUserID,
-  useUserIsHost,
-} from "@/integrations/zustand/store/user.store";
+import { useUserIsHost } from "@/integrations/zustand/store/user.store";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Play } from "lucide-react";
 import { useEffect } from "react";
@@ -27,13 +23,11 @@ export const Route = createFileRoute("/games/$code/lobby")({
 
 function RouteComponent() {
   const { code } = Route.useParams();
-  const playerID = useUserID();
   const isHost = useUserIsHost();
   const initialPlayers = Route.useLoaderData();
   const players = useGamePlayers();
 
   const { mutate: startGame, isLoading } = useStartGame();
-  const { mutate: leaveGame } = useLeaveGame();
 
   const { setPlayers } = useGameActions();
   const navigate = useNavigate();

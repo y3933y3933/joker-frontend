@@ -1,10 +1,9 @@
 import Feedback from "@/components/Feedback";
 import GameRuleButton from "@/components/GameRuleButton";
-import GameRuleModal from "@/components/GameRuleButton";
 import { Button } from "@/components/ui/button";
 import { APP } from "@/constants";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { AlertCircle, Crown, SendIcon, Users, Zap } from "lucide-react";
+import { Crown, Users } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: App,

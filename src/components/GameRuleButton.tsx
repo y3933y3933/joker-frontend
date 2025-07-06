@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowRightIcon, Gamepad2, Zap } from "lucide-react";
+import { ArrowRightIcon, Gamepad2 } from "lucide-react";
 import step1Img from "../assets/images/rules-1.jpeg";
 import step2Img from "../assets/images/rules-2.jpeg";
 import step3Img from "../assets/images/rules-3.jpeg";

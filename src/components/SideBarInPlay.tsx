@@ -15,8 +15,7 @@ interface SideBarInPlayProps {
 
 export default function SideBarInPlay({
   players,
-  role,
-  roundStatus,
+
   currentPlayer,
 }: SideBarInPlayProps) {
   return (

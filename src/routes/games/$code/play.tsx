@@ -1,9 +1,7 @@
 import AnswerSection from "@/components/AnswerSection";
 import DrawCardSection from "@/components/DrawCardSection";
 import EndGameButton from "@/components/EndGameButton";
-import JokerCard from "@/components/JokerCard";
 import QuestionSection from "@/components/QuestionSection";
-import SafeCard from "@/components/SafeCard";
 import SideBarInPlay from "@/components/SideBarInPlay";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
