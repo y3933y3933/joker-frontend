@@ -1,6 +1,11 @@
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  Outlet,
+  useLocation,
+} from "@tanstack/react-router";
 import {
   GamepadIcon,
   X,
@@ -20,11 +25,18 @@ function RouteComponent() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const navigationItems = [
-    { name: "Dashboard", icon: Home, active: true },
-    { name: "Questions", icon: MessageSquare, active: false },
-    { name: "Game Rooms", icon: GamepadIcon, active: false },
-    { name: "Feedback", icon: BarChart3, active: false },
+    { name: "Dashboard", icon: Home, href: "/admin/dashboard" },
+    { name: "Questions", icon: MessageSquare, href: "/admin/questions" },
+    { name: "Game Rooms", icon: GamepadIcon, href: "/admin/game-rooms" },
+    { name: "Feedback", icon: BarChart3, href: "/admin/feedback" },
   ];
+
+  const location = useLocation();
+
+  // 判斷當前路由是否活躍
+  const isActive = (href: string) => {
+    return location.pathname === href;
+  };
 
   return (
     <div className="min-h-screen bg-gray-900 text-gray-100">
@@ -77,20 +89,24 @@ function RouteComponent() {
         >
           <div className="flex flex-col h-full pt-16 lg:pt-0">
             <nav className="flex-1 px-4 py-6 space-y-2">
-              {navigationItems.map((item) => (
-                <Button
-                  key={item.name}
-                  variant={item.active ? "secondary" : "ghost"}
-                  className={`w-full justify-start text-left ${
-                    item.active
-                      ? "bg-blue-600 text-white hover:bg-blue-700"
-                      : "text-gray-300 hover:text-white hover:bg-gray-700"
-                  }`}
-                >
-                  <item.icon className="h-5 w-5 mr-3" />
-                  {item.name}
-                </Button>
-              ))}
+              {navigationItems.map((item) => {
+                const active = isActive(item.href);
+                return (
+                  <Link
+                    key={item.name}
+                    to={item.href}
+                    className={`flex items-center w-full px-3 py-2 rounded-md text-left transition-colors ${
+                      active
+                        ? "bg-blue-600 text-white hover:bg-blue-700"
+                        : "text-gray-300 hover:text-white hover:bg-gray-700"
+                    }`}
+                    onClick={() => setSidebarOpen(false)} // 關閉側邊欄 (mobile)
+                  >
+                    <item.icon className="h-5 w-5 mr-3" />
+                    {item.name}
+                  </Link>
+                );
+              })}
             </nav>
           </div>
         </aside>
