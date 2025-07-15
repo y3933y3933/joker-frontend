@@ -79,7 +79,7 @@ function RouteComponent() {
         </div>
       </header>
 
-      <div className="flex">
+      <div className="flex min-h-[calc(100vh-4rem)]">
         {/* Sidebar */}
         <aside
           className={`
