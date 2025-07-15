@@ -14,6 +14,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as CreateRouteImport } from './routes/create'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as AdminLayoutRouteImport } from './routes/admin/_layout'
 import { Route as GamesCodeRouteRouteImport } from './routes/games/$code/route'
 import { Route as GamesCodeSummaryRouteImport } from './routes/games/$code/summary'
@@ -45,6 +46,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminLayoutRoute = AdminLayoutRouteImport.update({
   id: '/_layout',
@@ -97,6 +103,7 @@ export interface FileRoutesByFullPath {
   '/join': typeof JoinRoute
   '/games/$code': typeof GamesCodeRouteRouteWithChildren
   '/admin': typeof AdminLayoutRouteWithChildren
+  '/admin/login': typeof AdminLoginRoute
   '/admin/dashboard': typeof AdminLayoutDashboardRoute
   '/admin/feedback': typeof AdminLayoutFeedbackRoute
   '/admin/game-rooms': typeof AdminLayoutGameRoomsRoute
@@ -111,6 +118,7 @@ export interface FileRoutesByTo {
   '/join': typeof JoinRoute
   '/games/$code': typeof GamesCodeRouteRouteWithChildren
   '/admin': typeof AdminLayoutRouteWithChildren
+  '/admin/login': typeof AdminLoginRoute
   '/admin/dashboard': typeof AdminLayoutDashboardRoute
   '/admin/feedback': typeof AdminLayoutFeedbackRoute
   '/admin/game-rooms': typeof AdminLayoutGameRoomsRoute
@@ -127,6 +135,7 @@ export interface FileRoutesById {
   '/games/$code': typeof GamesCodeRouteRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
   '/admin/_layout': typeof AdminLayoutRouteWithChildren
+  '/admin/login': typeof AdminLoginRoute
   '/admin/_layout/dashboard': typeof AdminLayoutDashboardRoute
   '/admin/_layout/feedback': typeof AdminLayoutFeedbackRoute
   '/admin/_layout/game-rooms': typeof AdminLayoutGameRoomsRoute
@@ -143,6 +152,7 @@ export interface FileRouteTypes {
     | '/join'
     | '/games/$code'
     | '/admin'
+    | '/admin/login'
     | '/admin/dashboard'
     | '/admin/feedback'
     | '/admin/game-rooms'
@@ -157,6 +167,7 @@ export interface FileRouteTypes {
     | '/join'
     | '/games/$code'
     | '/admin'
+    | '/admin/login'
     | '/admin/dashboard'
     | '/admin/feedback'
     | '/admin/game-rooms'
@@ -172,6 +183,7 @@ export interface FileRouteTypes {
     | '/games/$code'
     | '/admin'
     | '/admin/_layout'
+    | '/admin/login'
     | '/admin/_layout/dashboard'
     | '/admin/_layout/feedback'
     | '/admin/_layout/game-rooms'
@@ -218,6 +230,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/_layout': {
       id: '/admin/_layout'
@@ -321,10 +340,12 @@ const AdminLayoutRouteWithChildren = AdminLayoutRoute._addFileChildren(
 
 interface AdminRouteChildren {
   AdminLayoutRoute: typeof AdminLayoutRouteWithChildren
+  AdminLoginRoute: typeof AdminLoginRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminLayoutRoute: AdminLayoutRouteWithChildren,
+  AdminLoginRoute: AdminLoginRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
