@@ -1,9 +1,17 @@
+import GameCodeInput from "@/components/GameCodeInput";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
 import useJoinGame from "@/integrations/tanstack-query/games/useJoinGame";
 import { useUserActions } from "@/integrations/zustand/store/user.store";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -59,16 +67,12 @@ function RouteComponent() {
                 />
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2 flex flex-col">
                 <label className="flex flex-col text-sm font-medium text-pink-400">
                   Room Code
                 </label>
-                <Input
-                  value={gameCode}
-                  onChange={(e) => setGameCode(e.target.value.toUpperCase())}
-                  placeholder="Enter room code"
-                  className="bg-black/50 border-pink-500/50 text-white placeholder-gray-500 focus:border-pink-400 focus:ring-pink-400/20 font-mono"
-                />
+
+                <GameCodeInput value={gameCode} onChange={setGameCode} />
               </div>
 
               <div className="flex gap-3">
@@ -81,7 +85,12 @@ function RouteComponent() {
                   </Link>
                 </Button>
                 <Button
-                  disabled={!nickname.trim() || !gameCode.trim() || isLoading}
+                  disabled={
+                    !nickname.trim() ||
+                    !gameCode.trim() ||
+                    gameCode.length < 6 ||
+                    isLoading
+                  }
                   onClick={handleJoin}
                   className="flex-1 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-400 hover:to-purple-400 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
