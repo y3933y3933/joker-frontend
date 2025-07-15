@@ -8,15 +8,25 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as CreateRouteImport } from './routes/create'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminPathlessLayoutRouteImport } from './routes/admin/_pathlessLayout'
 import { Route as GamesCodeRouteRouteImport } from './routes/games/$code/route'
 import { Route as GamesCodeSummaryRouteImport } from './routes/games/$code/summary'
 import { Route as GamesCodePlayRouteImport } from './routes/games/$code/play'
 import { Route as GamesCodeLobbyRouteImport } from './routes/games/$code/lobby'
 
+const AdminRouteImport = createFileRoute('/admin')()
+
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const JoinRoute = JoinRouteImport.update({
   id: '/join',
   path: '/join',
@@ -31,6 +41,10 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminPathlessLayoutRoute = AdminPathlessLayoutRouteImport.update({
+  id: '/_pathlessLayout',
+  getParentRoute: () => AdminRoute,
 } as any)
 const GamesCodeRouteRoute = GamesCodeRouteRouteImport.update({
   id: '/games/$code',
@@ -58,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/create': typeof CreateRoute
   '/join': typeof JoinRoute
   '/games/$code': typeof GamesCodeRouteRouteWithChildren
+  '/admin': typeof AdminPathlessLayoutRoute
   '/games/$code/lobby': typeof GamesCodeLobbyRoute
   '/games/$code/play': typeof GamesCodePlayRoute
   '/games/$code/summary': typeof GamesCodeSummaryRoute
@@ -67,6 +82,7 @@ export interface FileRoutesByTo {
   '/create': typeof CreateRoute
   '/join': typeof JoinRoute
   '/games/$code': typeof GamesCodeRouteRouteWithChildren
+  '/admin': typeof AdminPathlessLayoutRoute
   '/games/$code/lobby': typeof GamesCodeLobbyRoute
   '/games/$code/play': typeof GamesCodePlayRoute
   '/games/$code/summary': typeof GamesCodeSummaryRoute
@@ -77,6 +93,8 @@ export interface FileRoutesById {
   '/create': typeof CreateRoute
   '/join': typeof JoinRoute
   '/games/$code': typeof GamesCodeRouteRouteWithChildren
+  '/admin': typeof AdminRouteWithChildren
+  '/admin/_pathlessLayout': typeof AdminPathlessLayoutRoute
   '/games/$code/lobby': typeof GamesCodeLobbyRoute
   '/games/$code/play': typeof GamesCodePlayRoute
   '/games/$code/summary': typeof GamesCodeSummaryRoute
@@ -88,6 +106,7 @@ export interface FileRouteTypes {
     | '/create'
     | '/join'
     | '/games/$code'
+    | '/admin'
     | '/games/$code/lobby'
     | '/games/$code/play'
     | '/games/$code/summary'
@@ -97,6 +116,7 @@ export interface FileRouteTypes {
     | '/create'
     | '/join'
     | '/games/$code'
+    | '/admin'
     | '/games/$code/lobby'
     | '/games/$code/play'
     | '/games/$code/summary'
@@ -106,6 +126,8 @@ export interface FileRouteTypes {
     | '/create'
     | '/join'
     | '/games/$code'
+    | '/admin'
+    | '/admin/_pathlessLayout'
     | '/games/$code/lobby'
     | '/games/$code/play'
     | '/games/$code/summary'
@@ -116,10 +138,18 @@ export interface RootRouteChildren {
   CreateRoute: typeof CreateRoute
   JoinRoute: typeof JoinRoute
   GamesCodeRouteRoute: typeof GamesCodeRouteRouteWithChildren
+  AdminRoute: typeof AdminRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/join': {
       id: '/join'
       path: '/join'
@@ -140,6 +170,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/_pathlessLayout': {
+      id: '/admin/_pathlessLayout'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminPathlessLayoutRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/games/$code': {
       id: '/games/$code'
@@ -188,11 +225,22 @@ const GamesCodeRouteRouteWithChildren = GamesCodeRouteRoute._addFileChildren(
   GamesCodeRouteRouteChildren,
 )
 
+interface AdminRouteChildren {
+  AdminPathlessLayoutRoute: typeof AdminPathlessLayoutRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminPathlessLayoutRoute: AdminPathlessLayoutRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CreateRoute: CreateRoute,
   JoinRoute: JoinRoute,
   GamesCodeRouteRoute: GamesCodeRouteRouteWithChildren,
+  AdminRoute: AdminRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

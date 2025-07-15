@@ -11,7 +11,7 @@ export const Route = createFileRoute("/")({
 
 function App() {
   return (
-    <div>
+    <div className="min-h-screen bg-black text-white overflow-hidden relative">
       {/* Animated background */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-black to-cyan-900/20" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(0,255,255,0.1),transparent_50%)]" />

@@ -13,9 +13,7 @@ interface MyRouterContext {
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <>
-      <div className="min-h-screen bg-black text-white overflow-hidden relative">
-        <Outlet />
-      </div>
+      <Outlet />
       <TanStackRouterDevtools />
 
       <TanStackQueryLayout />
