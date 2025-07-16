@@ -1,16 +1,35 @@
 import axios, { AxiosError } from "axios";
 
 const api = axios.create({
-  baseURL: "/api",
+  baseURL: import.meta.env.PROD ? "localhost:4000/api" : "/api",
+  timeout: 10000,
   headers: {
     "Content-Type": "application/json",
   },
 });
 
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
+
 api.interceptors.response.use(
   (response) => response,
   (error: AxiosError<{ error: string }>) => {
     const res = error.response;
+
+    if (error.response?.status === 401) {
+      localStorage.removeItem("token");
+      window.location.href = "/admin/login";
+    }
 
     if (res?.data?.error) {
       // 將 error 字串轉換成 JS Error
