@@ -7,17 +7,17 @@ import {
   useLocation,
 } from "@tanstack/react-router";
 import {
+  Home,
+  MessageSquare,
   GamepadIcon,
+  BarChart3,
   X,
   Menu,
-  MessageSquare,
-  BarChart3,
-  Home,
   LogOut,
 } from "lucide-react";
 import { useState } from "react";
 
-export const Route = createFileRoute("/admin/_layout")({
+export const Route = createFileRoute("/admin/_authenticated")({
   component: RouteComponent,
 });
 

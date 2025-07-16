@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { createFileRoute } from "@tanstack/react-router";
 import { Users, GamepadIcon, Activity, MessageSquare } from "lucide-react";
 
-export const Route = createFileRoute("/admin/_layout/dashboard")({
+export const Route = createFileRoute("/admin/_authenticated/dashboard")({
   component: RouteComponent,
 });
 

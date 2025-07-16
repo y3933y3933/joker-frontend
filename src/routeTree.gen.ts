@@ -15,15 +15,15 @@ import { Route as JoinRouteImport } from './routes/join'
 import { Route as CreateRouteImport } from './routes/create'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminLoginRouteImport } from './routes/admin/login'
-import { Route as AdminLayoutRouteImport } from './routes/admin/_layout'
+import { Route as AdminAuthenticatedRouteImport } from './routes/admin/_authenticated'
 import { Route as GamesCodeRouteRouteImport } from './routes/games/$code/route'
 import { Route as GamesCodeSummaryRouteImport } from './routes/games/$code/summary'
 import { Route as GamesCodePlayRouteImport } from './routes/games/$code/play'
 import { Route as GamesCodeLobbyRouteImport } from './routes/games/$code/lobby'
-import { Route as AdminLayoutQuestionsRouteImport } from './routes/admin/_layout.questions'
-import { Route as AdminLayoutGameRoomsRouteImport } from './routes/admin/_layout.game-rooms'
-import { Route as AdminLayoutFeedbackRouteImport } from './routes/admin/_layout.feedback'
-import { Route as AdminLayoutDashboardRouteImport } from './routes/admin/_layout.dashboard'
+import { Route as AdminAuthenticatedQuestionsRouteImport } from './routes/admin/_authenticated/questions'
+import { Route as AdminAuthenticatedGameRoomsRouteImport } from './routes/admin/_authenticated/game-rooms'
+import { Route as AdminAuthenticatedFeedbackRouteImport } from './routes/admin/_authenticated/feedback'
+import { Route as AdminAuthenticatedDashboardRouteImport } from './routes/admin/_authenticated/dashboard'
 
 const AdminRouteImport = createFileRoute('/admin')()
 
@@ -52,8 +52,8 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
   path: '/login',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminLayoutRoute = AdminLayoutRouteImport.update({
-  id: '/_layout',
+const AdminAuthenticatedRoute = AdminAuthenticatedRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => AdminRoute,
 } as any)
 const GamesCodeRouteRoute = GamesCodeRouteRouteImport.update({
@@ -76,38 +76,42 @@ const GamesCodeLobbyRoute = GamesCodeLobbyRouteImport.update({
   path: '/lobby',
   getParentRoute: () => GamesCodeRouteRoute,
 } as any)
-const AdminLayoutQuestionsRoute = AdminLayoutQuestionsRouteImport.update({
-  id: '/questions',
-  path: '/questions',
-  getParentRoute: () => AdminLayoutRoute,
-} as any)
-const AdminLayoutGameRoomsRoute = AdminLayoutGameRoomsRouteImport.update({
-  id: '/game-rooms',
-  path: '/game-rooms',
-  getParentRoute: () => AdminLayoutRoute,
-} as any)
-const AdminLayoutFeedbackRoute = AdminLayoutFeedbackRouteImport.update({
-  id: '/feedback',
-  path: '/feedback',
-  getParentRoute: () => AdminLayoutRoute,
-} as any)
-const AdminLayoutDashboardRoute = AdminLayoutDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AdminLayoutRoute,
-} as any)
+const AdminAuthenticatedQuestionsRoute =
+  AdminAuthenticatedQuestionsRouteImport.update({
+    id: '/questions',
+    path: '/questions',
+    getParentRoute: () => AdminAuthenticatedRoute,
+  } as any)
+const AdminAuthenticatedGameRoomsRoute =
+  AdminAuthenticatedGameRoomsRouteImport.update({
+    id: '/game-rooms',
+    path: '/game-rooms',
+    getParentRoute: () => AdminAuthenticatedRoute,
+  } as any)
+const AdminAuthenticatedFeedbackRoute =
+  AdminAuthenticatedFeedbackRouteImport.update({
+    id: '/feedback',
+    path: '/feedback',
+    getParentRoute: () => AdminAuthenticatedRoute,
+  } as any)
+const AdminAuthenticatedDashboardRoute =
+  AdminAuthenticatedDashboardRouteImport.update({
+    id: '/dashboard',
+    path: '/dashboard',
+    getParentRoute: () => AdminAuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/create': typeof CreateRoute
   '/join': typeof JoinRoute
   '/games/$code': typeof GamesCodeRouteRouteWithChildren
-  '/admin': typeof AdminLayoutRouteWithChildren
+  '/admin': typeof AdminAuthenticatedRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
-  '/admin/dashboard': typeof AdminLayoutDashboardRoute
-  '/admin/feedback': typeof AdminLayoutFeedbackRoute
-  '/admin/game-rooms': typeof AdminLayoutGameRoomsRoute
-  '/admin/questions': typeof AdminLayoutQuestionsRoute
+  '/admin/dashboard': typeof AdminAuthenticatedDashboardRoute
+  '/admin/feedback': typeof AdminAuthenticatedFeedbackRoute
+  '/admin/game-rooms': typeof AdminAuthenticatedGameRoomsRoute
+  '/admin/questions': typeof AdminAuthenticatedQuestionsRoute
   '/games/$code/lobby': typeof GamesCodeLobbyRoute
   '/games/$code/play': typeof GamesCodePlayRoute
   '/games/$code/summary': typeof GamesCodeSummaryRoute
@@ -117,12 +121,12 @@ export interface FileRoutesByTo {
   '/create': typeof CreateRoute
   '/join': typeof JoinRoute
   '/games/$code': typeof GamesCodeRouteRouteWithChildren
-  '/admin': typeof AdminLayoutRouteWithChildren
+  '/admin': typeof AdminAuthenticatedRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
-  '/admin/dashboard': typeof AdminLayoutDashboardRoute
-  '/admin/feedback': typeof AdminLayoutFeedbackRoute
-  '/admin/game-rooms': typeof AdminLayoutGameRoomsRoute
-  '/admin/questions': typeof AdminLayoutQuestionsRoute
+  '/admin/dashboard': typeof AdminAuthenticatedDashboardRoute
+  '/admin/feedback': typeof AdminAuthenticatedFeedbackRoute
+  '/admin/game-rooms': typeof AdminAuthenticatedGameRoomsRoute
+  '/admin/questions': typeof AdminAuthenticatedQuestionsRoute
   '/games/$code/lobby': typeof GamesCodeLobbyRoute
   '/games/$code/play': typeof GamesCodePlayRoute
   '/games/$code/summary': typeof GamesCodeSummaryRoute
@@ -134,12 +138,12 @@ export interface FileRoutesById {
   '/join': typeof JoinRoute
   '/games/$code': typeof GamesCodeRouteRouteWithChildren
   '/admin': typeof AdminRouteWithChildren
-  '/admin/_layout': typeof AdminLayoutRouteWithChildren
+  '/admin/_authenticated': typeof AdminAuthenticatedRouteWithChildren
   '/admin/login': typeof AdminLoginRoute
-  '/admin/_layout/dashboard': typeof AdminLayoutDashboardRoute
-  '/admin/_layout/feedback': typeof AdminLayoutFeedbackRoute
-  '/admin/_layout/game-rooms': typeof AdminLayoutGameRoomsRoute
-  '/admin/_layout/questions': typeof AdminLayoutQuestionsRoute
+  '/admin/_authenticated/dashboard': typeof AdminAuthenticatedDashboardRoute
+  '/admin/_authenticated/feedback': typeof AdminAuthenticatedFeedbackRoute
+  '/admin/_authenticated/game-rooms': typeof AdminAuthenticatedGameRoomsRoute
+  '/admin/_authenticated/questions': typeof AdminAuthenticatedQuestionsRoute
   '/games/$code/lobby': typeof GamesCodeLobbyRoute
   '/games/$code/play': typeof GamesCodePlayRoute
   '/games/$code/summary': typeof GamesCodeSummaryRoute
@@ -182,12 +186,12 @@ export interface FileRouteTypes {
     | '/join'
     | '/games/$code'
     | '/admin'
-    | '/admin/_layout'
+    | '/admin/_authenticated'
     | '/admin/login'
-    | '/admin/_layout/dashboard'
-    | '/admin/_layout/feedback'
-    | '/admin/_layout/game-rooms'
-    | '/admin/_layout/questions'
+    | '/admin/_authenticated/dashboard'
+    | '/admin/_authenticated/feedback'
+    | '/admin/_authenticated/game-rooms'
+    | '/admin/_authenticated/questions'
     | '/games/$code/lobby'
     | '/games/$code/play'
     | '/games/$code/summary'
@@ -238,11 +242,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/_layout': {
-      id: '/admin/_layout'
+    '/admin/_authenticated': {
+      id: '/admin/_authenticated'
       path: '/admin'
       fullPath: '/admin'
-      preLoaderRoute: typeof AdminLayoutRouteImport
+      preLoaderRoute: typeof AdminAuthenticatedRouteImport
       parentRoute: typeof AdminRoute
     }
     '/games/$code': {
@@ -273,33 +277,33 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GamesCodeLobbyRouteImport
       parentRoute: typeof GamesCodeRouteRoute
     }
-    '/admin/_layout/questions': {
-      id: '/admin/_layout/questions'
+    '/admin/_authenticated/questions': {
+      id: '/admin/_authenticated/questions'
       path: '/questions'
       fullPath: '/admin/questions'
-      preLoaderRoute: typeof AdminLayoutQuestionsRouteImport
-      parentRoute: typeof AdminLayoutRoute
+      preLoaderRoute: typeof AdminAuthenticatedQuestionsRouteImport
+      parentRoute: typeof AdminAuthenticatedRoute
     }
-    '/admin/_layout/game-rooms': {
-      id: '/admin/_layout/game-rooms'
+    '/admin/_authenticated/game-rooms': {
+      id: '/admin/_authenticated/game-rooms'
       path: '/game-rooms'
       fullPath: '/admin/game-rooms'
-      preLoaderRoute: typeof AdminLayoutGameRoomsRouteImport
-      parentRoute: typeof AdminLayoutRoute
+      preLoaderRoute: typeof AdminAuthenticatedGameRoomsRouteImport
+      parentRoute: typeof AdminAuthenticatedRoute
     }
-    '/admin/_layout/feedback': {
-      id: '/admin/_layout/feedback'
+    '/admin/_authenticated/feedback': {
+      id: '/admin/_authenticated/feedback'
       path: '/feedback'
       fullPath: '/admin/feedback'
-      preLoaderRoute: typeof AdminLayoutFeedbackRouteImport
-      parentRoute: typeof AdminLayoutRoute
+      preLoaderRoute: typeof AdminAuthenticatedFeedbackRouteImport
+      parentRoute: typeof AdminAuthenticatedRoute
     }
-    '/admin/_layout/dashboard': {
-      id: '/admin/_layout/dashboard'
+    '/admin/_authenticated/dashboard': {
+      id: '/admin/_authenticated/dashboard'
       path: '/dashboard'
       fullPath: '/admin/dashboard'
-      preLoaderRoute: typeof AdminLayoutDashboardRouteImport
-      parentRoute: typeof AdminLayoutRoute
+      preLoaderRoute: typeof AdminAuthenticatedDashboardRouteImport
+      parentRoute: typeof AdminAuthenticatedRoute
     }
   }
 }
@@ -320,31 +324,30 @@ const GamesCodeRouteRouteWithChildren = GamesCodeRouteRoute._addFileChildren(
   GamesCodeRouteRouteChildren,
 )
 
-interface AdminLayoutRouteChildren {
-  AdminLayoutDashboardRoute: typeof AdminLayoutDashboardRoute
-  AdminLayoutFeedbackRoute: typeof AdminLayoutFeedbackRoute
-  AdminLayoutGameRoomsRoute: typeof AdminLayoutGameRoomsRoute
-  AdminLayoutQuestionsRoute: typeof AdminLayoutQuestionsRoute
+interface AdminAuthenticatedRouteChildren {
+  AdminAuthenticatedDashboardRoute: typeof AdminAuthenticatedDashboardRoute
+  AdminAuthenticatedFeedbackRoute: typeof AdminAuthenticatedFeedbackRoute
+  AdminAuthenticatedGameRoomsRoute: typeof AdminAuthenticatedGameRoomsRoute
+  AdminAuthenticatedQuestionsRoute: typeof AdminAuthenticatedQuestionsRoute
 }
 
-const AdminLayoutRouteChildren: AdminLayoutRouteChildren = {
-  AdminLayoutDashboardRoute: AdminLayoutDashboardRoute,
-  AdminLayoutFeedbackRoute: AdminLayoutFeedbackRoute,
-  AdminLayoutGameRoomsRoute: AdminLayoutGameRoomsRoute,
-  AdminLayoutQuestionsRoute: AdminLayoutQuestionsRoute,
+const AdminAuthenticatedRouteChildren: AdminAuthenticatedRouteChildren = {
+  AdminAuthenticatedDashboardRoute: AdminAuthenticatedDashboardRoute,
+  AdminAuthenticatedFeedbackRoute: AdminAuthenticatedFeedbackRoute,
+  AdminAuthenticatedGameRoomsRoute: AdminAuthenticatedGameRoomsRoute,
+  AdminAuthenticatedQuestionsRoute: AdminAuthenticatedQuestionsRoute,
 }
 
-const AdminLayoutRouteWithChildren = AdminLayoutRoute._addFileChildren(
-  AdminLayoutRouteChildren,
-)
+const AdminAuthenticatedRouteWithChildren =
+  AdminAuthenticatedRoute._addFileChildren(AdminAuthenticatedRouteChildren)
 
 interface AdminRouteChildren {
-  AdminLayoutRoute: typeof AdminLayoutRouteWithChildren
+  AdminAuthenticatedRoute: typeof AdminAuthenticatedRouteWithChildren
   AdminLoginRoute: typeof AdminLoginRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
-  AdminLayoutRoute: AdminLayoutRouteWithChildren,
+  AdminAuthenticatedRoute: AdminAuthenticatedRouteWithChildren,
   AdminLoginRoute: AdminLoginRoute,
 }
 
