@@ -7,6 +7,7 @@ import {
   Outlet,
   redirect,
   useLocation,
+  useNavigate,
 } from "@tanstack/react-router";
 import {
   Home,
@@ -43,6 +44,7 @@ export const Route = createFileRoute("/admin/_authenticated")({
 function RouteComponent() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const user = Route.useLoaderData();
+  const navigate = useNavigate();
 
   const navigationItems = [
     { name: "Dashboard", icon: Home, href: "/admin/dashboard" },
@@ -56,6 +58,11 @@ function RouteComponent() {
   // 判斷當前路由是否活躍
   const isActive = (href: string) => {
     return location.pathname === href;
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    navigate({ to: "/admin/login" });
   };
 
   return (
@@ -85,13 +92,14 @@ function RouteComponent() {
               alt="Admin"
             />
             <AvatarFallback className="bg-blue-600 text-white">
-              {user.username}
+              {user.username.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <Button
             variant="ghost"
             size="sm"
             className="text-gray-300 hover:text-white hover:bg-gray-700"
+            onClick={logout}
           >
             <LogOut className="h-4 w-4 mr-2" />
             Logout
