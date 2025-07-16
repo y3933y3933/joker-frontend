@@ -1,16 +1,9 @@
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { getDashboardData } from "@/integrations/axios/admin/admin";
 import useGetDashboard from "@/integrations/tanstack-query/admin/useGetDashboard";
 import { createFileRoute } from "@tanstack/react-router";
-import {
-  Users,
-  GamepadIcon,
-  Activity,
-  MessageSquare,
-  RefreshCw,
-} from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/admin/_authenticated/dashboard")({

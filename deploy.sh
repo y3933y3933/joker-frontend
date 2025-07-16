@@ -15,7 +15,7 @@ echo "📤 Uploading frontend to VPS..."
 rsync -rP --delete dist/ $VPS_USER@$VPS_IP:$VPS_FRONTEND_PATH
 
 # === 3. Reload Caddy ===
-echo "🔁 Reloading Caddy on VPS..."
-ssh $VPS_USER@$VPS_IP "sudo systemctl reload caddy"
+# echo "🔁 Reloading Caddy on VPS..."
+# ssh $VPS_USER@$VPS_IP "sudo systemctl reload caddy"
 
 echo "✅ Deploy complete! Visit: https://$DOMAIN"

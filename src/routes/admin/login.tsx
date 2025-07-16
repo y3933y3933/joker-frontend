@@ -8,7 +8,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import useLogin from "@/integrations/tanstack-query/admin/useLogin";
 import { toast } from "sonner";
-import { useAdminActions } from "@/integrations/zustand/store/admin.store";
 
 export const Route = createFileRoute("/admin/login")({
   component: RouteComponent,

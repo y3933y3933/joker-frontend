@@ -2,16 +2,10 @@ import GameCodeInput from "@/components/GameCodeInput";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSeparator,
-  InputOTPSlot,
-} from "@/components/ui/input-otp";
+
 import useJoinGame from "@/integrations/tanstack-query/games/useJoinGame";
 import { useUserActions } from "@/integrations/zustand/store/user.store";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { useState } from "react";
 import { toast } from "sonner";
 
