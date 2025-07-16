@@ -10,3 +10,10 @@ export const AdminUserSchema = z.object({
   id: z.int().positive(),
   username: z.string(),
 });
+
+export const DashboardSchema = z.object({
+  gamesTodayCount: z.int(),
+  activeRoomsCount: z.int(),
+  feedbackOneMonthCount: z.int(),
+  livePlayerCount: z.int(),
+});

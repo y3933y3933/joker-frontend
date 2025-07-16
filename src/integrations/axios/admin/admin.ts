@@ -1,5 +1,9 @@
 import api from "../axios-instance";
-import { AdminUserSchema, LoginResponseSchema } from "./admin.schema";
+import {
+  AdminUserSchema,
+  DashboardSchema,
+  LoginResponseSchema,
+} from "./admin.schema";
 
 export const login = async ({
   username,
@@ -15,4 +19,9 @@ export const login = async ({
 export const getUser = async () => {
   const res = await api.get("/admin/users");
   return AdminUserSchema.parse(res.data.data);
+};
+
+export const getDashboardData = async () => {
+  const res = await api.get("/admin/dashboard");
+  return DashboardSchema.parse(res.data.data);
 };

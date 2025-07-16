@@ -1,43 +1,30 @@
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { getDashboardData } from "@/integrations/axios/admin/admin";
+import useGetDashboard from "@/integrations/tanstack-query/admin/useGetDashboard";
 import { createFileRoute } from "@tanstack/react-router";
-import { Users, GamepadIcon, Activity, MessageSquare } from "lucide-react";
+import {
+  Users,
+  GamepadIcon,
+  Activity,
+  MessageSquare,
+  RefreshCw,
+} from "lucide-react";
+import { useState } from "react";
 
 export const Route = createFileRoute("/admin/_authenticated/dashboard")({
   component: RouteComponent,
+  // loader: async () => {
+  //   const res = await getDashboardData();
+  //   return transformDashboardStats(res);
+  // },
 });
 
 function RouteComponent() {
-  const stats = [
-    {
-      title: "Live Players",
-      value: "2,847",
-      change: "+12%",
-      icon: Users,
-      color: "text-blue-400",
-    },
-    {
-      title: "Games Today",
-      value: "156",
-      change: "+8%",
-      icon: GamepadIcon,
-      color: "text-green-400",
-    },
-    {
-      title: "Active Rooms",
-      value: "23",
-      change: "+3%",
-      icon: Activity,
-      color: "text-purple-400",
-    },
-    {
-      title: "Recent Feedback",
-      value: "89",
-      change: "+15%",
-      icon: MessageSquare,
-      color: "text-orange-400",
-    },
-  ];
+  const [lastUpdated, setLastUpdated] = useState(new Date());
+
+  const { data: stats, isLoading, refetch } = useGetDashboard();
 
   const recentFeedback = [
     {
@@ -73,11 +60,35 @@ function RouteComponent() {
       rating: 5,
     },
   ];
+
+  async function handleRefresh() {
+    await refetch();
+    setLastUpdated(new Date());
+  }
   return (
     <div className="p-6 space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-white">Dashboard</h1>
+        <div className="flex items-center gap-4 mt-4 sm:mt-0">
+          <span className="text-sm text-gray-400">
+            Last Updated: {lastUpdated.toLocaleTimeString()}
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            className="border-gray-600 text-gray-300 hover:bg-gray-700 bg-transparent"
+            onClick={handleRefresh}
+            disabled={isLoading}
+          >
+            <RefreshCw className="h-4 w-4 mr-2" />
+            Refresh
+          </Button>
+        </div>
+      </div>
+
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => (
+        {stats?.map((stat, index) => (
           <Card key={index} className="bg-gray-800 border-gray-700">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium text-gray-300">
@@ -87,9 +98,9 @@ function RouteComponent() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">{stat.value}</div>
-              <p className="text-xs text-green-400 mt-1">
+              {/* <p className="text-xs text-green-400 mt-1">
                 {stat.change} from last month
-              </p>
+              </p> */}
             </CardContent>
           </Card>
         ))}
