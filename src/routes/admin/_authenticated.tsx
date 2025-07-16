@@ -1,9 +1,11 @@
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { getUser } from "@/integrations/axios/admin/admin";
 import {
   createFileRoute,
   Link,
   Outlet,
+  redirect,
   useLocation,
 } from "@tanstack/react-router";
 import {
@@ -19,10 +21,28 @@ import { useState } from "react";
 
 export const Route = createFileRoute("/admin/_authenticated")({
   component: RouteComponent,
+  beforeLoad: async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      throw redirect({
+        to: "/admin/login",
+      });
+    }
+
+    try {
+      await getUser();
+    } catch (_) {
+      throw redirect({
+        to: "/admin/login",
+      });
+    }
+  },
+  loader: () => getUser(),
 });
 
 function RouteComponent() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const user = Route.useLoaderData();
 
   const navigationItems = [
     { name: "Dashboard", icon: Home, href: "/admin/dashboard" },
@@ -65,7 +85,7 @@ function RouteComponent() {
               alt="Admin"
             />
             <AvatarFallback className="bg-blue-600 text-white">
-              JA
+              {user.username}
             </AvatarFallback>
           </Avatar>
           <Button

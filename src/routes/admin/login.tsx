@@ -1,5 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router"
-import type React from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { useState } from "react";
 import { Eye, EyeOff, Gamepad2Icon as GameController2 } from "lucide-react";
@@ -7,38 +6,35 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import useLogin from "@/integrations/tanstack-query/admin/useLogin";
+import { toast } from "sonner";
+import { useAdminActions } from "@/integrations/zustand/store/admin.store";
 
 export const Route = createFileRoute("/admin/login")({
   component: RouteComponent,
 });
 
-interface RouteComponentProps {
-  onLogin: (username: string, password: string) => void;
-}
-
-export function RouteComponent({ onLogin }: RouteComponentProps) {
+export function RouteComponent() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+
+  const { mutateAsync: login, isLoading } = useLogin();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setIsLoading(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Simple validation - in real app, this would be server-side
-    if (username === "admin" && password === "password") {
-      onLogin(username, password);
-    } else {
-      setError("Invalid username or password");
+    try {
+      const res = await login({ username, password });
+      localStorage.setItem("token", res.token);
+      navigate({ to: "/admin/dashboard" });
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : "發生未知錯誤";
+      toast.error("登入失敗", {
+        description: msg,
+      });
     }
-
-    setIsLoading(false);
   };
 
   return (
@@ -105,11 +101,11 @@ export function RouteComponent({ onLogin }: RouteComponentProps) {
                 </div>
               </div>
 
-              {error && (
+              {/* {error && (
                 <div className="text-red-400 text-sm text-center bg-red-900/20 border border-red-800 rounded p-2">
                   {error}
                 </div>
-              )}
+              )} */}
 
               <Button
                 type="submit"

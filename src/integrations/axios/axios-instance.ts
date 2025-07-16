@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 
 const api = axios.create({
-  baseURL: import.meta.env.PROD ? "localhost:4000/api" : "/api",
+  baseURL: import.meta.env.PROD ? "https://joker.jienian.tw/api" : "/api",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
@@ -28,7 +28,7 @@ api.interceptors.response.use(
 
     if (error.response?.status === 401) {
       localStorage.removeItem("token");
-      window.location.href = "/admin/login";
+      // window.location.href = "/admin/login";
     }
 
     if (res?.data?.error) {

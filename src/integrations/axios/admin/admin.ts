@@ -1,7 +1,7 @@
 import api from "../axios-instance";
 import { AdminUserSchema, LoginResponseSchema } from "./admin.schema";
 
-export const Login = async ({
+export const login = async ({
   username,
   password,
 }: {
@@ -9,10 +9,10 @@ export const Login = async ({
   password: string;
 }) => {
   const res = await api.post("/admin/login", { username, password });
-  return LoginResponseSchema.parse(res.data);
+  return LoginResponseSchema.parse(res.data.data);
 };
 
-export const GetUser = async () => {
+export const getUser = async () => {
   const res = await api.get("/admin/users");
-  return AdminUserSchema.parse(res.data);
+  return AdminUserSchema.parse(res.data.data);
 };
