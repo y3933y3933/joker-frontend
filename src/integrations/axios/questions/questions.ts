@@ -47,11 +47,15 @@ export const createQuestion = async (data: {
   return QuestionSchema.parse(res.data.data);
 };
 
-export const updateQuestion = async (
-  id: number,
-  data: { level: "normal" | "spicy"; content: string },
-) => {
-  const res = await api.put(`/admin/questions/${id}`, data);
+export const updateQuestion = async (data: {
+  level: "normal" | "spicy";
+  content: string;
+  id: number;
+}) => {
+  const res = await api.patch(`/admin/questions/${data.id}`, {
+    level: data.level,
+    content: data.content,
+  });
   return QuestionSchema.parse(res.data.data);
 };
 
