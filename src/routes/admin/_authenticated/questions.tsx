@@ -1,4 +1,5 @@
 import AddQuestionModal from "@/components/AddQuestionModal";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 import { Pagination } from "@/components/Pagination";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,10 +16,12 @@ import {
 } from "@/components/ui/table";
 import { useQuestionsFilter } from "@/hooks/useQuestionsFilters";
 import { useCreateQuestion } from "@/integrations/tanstack-query/questions/useCreateQuestion";
+import { useDeleteQuestion } from "@/integrations/tanstack-query/questions/useDeleteQuestion";
 import useGetPaginatedQuestions from "@/integrations/tanstack-query/questions/useGetPaginatedQuestions";
 import { createFileRoute } from "@tanstack/react-router";
 import { Edit, Plus, Search, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/_authenticated/questions")({
   component: RouteComponent,
@@ -37,8 +40,11 @@ function RouteComponent() {
   const { data } = useGetPaginatedQuestions(queryParams);
 
   const [addQuestionOpen, setAddQuestionOpen] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deleteQuestionId, setDeleteQuestionId] = useState<number | null>(null); // ✅ 記錄具體 ID
 
   const { mutateAsync: createQuestion } = useCreateQuestion();
+  const { mutateAsync: deleteQuestion } = useDeleteQuestion();
 
   const getTypeColor = (type: string) => {
     switch (type) {
@@ -48,6 +54,20 @@ function RouteComponent() {
         return "bg-purple-900 text-purple-300 border-purple-700";
       default:
         return "bg-gray-700 text-gray-300 border-gray-600";
+    }
+  };
+
+  const handleDelete = async (id: number | null) => {
+    if (id === null) return;
+    try {
+      await deleteQuestion(id);
+      toast.success("刪除問題成功");
+    } catch (error) {
+      console.error(error);
+      toast.error("刪除問題失敗");
+    } finally {
+      setDeleteConfirmOpen(false);
+      setDeleteQuestionId(null);
     }
   };
 
@@ -62,18 +82,6 @@ function RouteComponent() {
           <Plus className="h-4 w-4 mr-2" />
           Add Question
         </Button>
-        <AddQuestionModal
-          isOpen={addQuestionOpen}
-          onClose={() => {
-            setAddQuestionOpen(false);
-          }}
-          onAdd={async (question) => {
-            await createQuestion({
-              level: question.type,
-              content: question.text,
-            });
-          }}
-        />
       </div>
 
       <Card className="bg-gray-800 border-gray-700">
@@ -145,6 +153,10 @@ function RouteComponent() {
                           variant="outline"
                           size="sm"
                           className="border-gray-600 text-red-400 hover:bg-gray-700 hover:text-red-300 bg-transparent"
+                          onClick={() => {
+                            setDeleteQuestionId(question.id);
+                            setDeleteConfirmOpen(true);
+                          }}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -167,6 +179,26 @@ function RouteComponent() {
           )}
         </CardContent>
       </Card>
+
+      <AddQuestionModal
+        isOpen={addQuestionOpen}
+        onClose={() => {
+          setAddQuestionOpen(false);
+        }}
+        onAdd={async (question) => {
+          await createQuestion({
+            level: question.type,
+            content: question.text,
+          });
+        }}
+      />
+
+      <ConfirmDialog
+        isOpen={deleteConfirmOpen}
+        onClose={() => setDeleteConfirmOpen(false)}
+        onConfirm={() => handleDelete(deleteQuestionId)}
+        title="確定要刪除這筆資料？"
+      />
     </div>
   );
 }

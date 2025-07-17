@@ -8,7 +8,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -48,6 +47,8 @@ const AddQuestionModal = ({
         text: questionText.trim(),
         type: questionType,
       });
+
+      toast.success("新增問題成功");
 
       // 🎉 只有成功時才執行這些
       setQuestionText("");
