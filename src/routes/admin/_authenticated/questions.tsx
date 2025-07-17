@@ -1,3 +1,4 @@
+import { Pagination } from "@/components/Pagination";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
@@ -11,85 +12,33 @@ import {
   TableRow,
   Table,
 } from "@/components/ui/table";
+import { useQuestionsFilter } from "@/hooks/useQuestionsFilters";
+import useGetPaginatedQuestions from "@/integrations/tanstack-query/questions/useGetPaginatedQuestions";
 import { createFileRoute } from "@tanstack/react-router";
-import { Edit, Filter, Plus, Search, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
-
-const questions = [
-  {
-    id: 1,
-    text: "What's your favorite childhood memory?",
-    type: "icebreaker",
-    createdAt: "2024-01-15",
-  },
-  {
-    id: 2,
-    text: "If you could have dinner with anyone, who would it be?",
-    type: "general",
-    createdAt: "2024-01-14",
-  },
-  {
-    id: 3,
-    text: "What's the most adventurous thing you've ever done?",
-    type: "personal",
-    createdAt: "2024-01-13",
-  },
-  {
-    id: 4,
-    text: "What's your biggest fear?",
-    type: "deep",
-    createdAt: "2024-01-12",
-  },
-  {
-    id: 5,
-    text: "If you could live anywhere in the world, where would it be?",
-    type: "general",
-    createdAt: "2024-01-11",
-  },
-];
+import { Edit, Plus, Search, Trash2 } from "lucide-react";
 
 export const Route = createFileRoute("/admin/_authenticated/questions")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [typeFilter, setTypeFilter] = useState("all");
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
-
-  const filteredQuestions = questions.filter((question) => {
-    const matchesSearch = question.text
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    const matchesType = typeFilter === "all" || question.type === typeFilter;
-    return matchesSearch && matchesType;
-  });
-
-  // Add pagination logic after filteredQuestions
-  const totalPages = Math.ceil(filteredQuestions.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedQuestions = filteredQuestions.slice(
-    startIndex,
-    startIndex + itemsPerPage,
-  );
-
-  // Reset to page 1 when filters change
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm, typeFilter]);
+  const {
+    searchTerm,
+    setSearchTerm,
+    setTypeFilter,
+    typeFilter,
+    queryParams,
+    currentPage,
+    goToPage,
+  } = useQuestionsFilter();
+  const { data } = useGetPaginatedQuestions(queryParams);
 
   const getTypeColor = (type: string) => {
     switch (type) {
-      case "icebreaker":
-        return "bg-blue-900 text-blue-300 border-blue-700";
-      case "general":
+      case "normal":
         return "bg-green-900 text-green-300 border-green-700";
-      case "personal":
+      case "spicy":
         return "bg-purple-900 text-purple-300 border-purple-700";
-      case "deep":
-        return "bg-orange-900 text-orange-300 border-orange-700";
       default:
         return "bg-gray-700 text-gray-300 border-gray-600";
     }
@@ -120,7 +69,9 @@ function RouteComponent() {
             <SelectNative
               id="type-filter"
               value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
+              onChange={(e) =>
+                setTypeFilter(e.target.value as "all" | "normal" | "spicy")
+              }
               className="w-full sm:w-48 bg-gray-700 border-gray-600 text-white"
             >
               <option value="all">all</option>
@@ -143,17 +94,17 @@ function RouteComponent() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {paginatedQuestions.map((question) => (
+                {data?.questions.map((question) => (
                   <TableRow
                     key={question.id}
                     className="border-gray-700 hover:bg-gray-700/50"
                   >
                     <TableCell className="max-w-md text-white">
-                      <p className="truncate">{question.text}</p>
+                      <p className="truncate">{question.content}</p>
                     </TableCell>
                     <TableCell>
-                      <Badge className={getTypeColor(question.type)}>
-                        {question.type}
+                      <Badge className={getTypeColor(question.level)}>
+                        {question.level}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-gray-300">
@@ -182,15 +133,16 @@ function RouteComponent() {
               </TableBody>
             </Table>
           </div>
-          {/* {totalPages > 1 && (
+
+          {data && data.totalCount !== undefined && data.totalCount > 0 && (
             <div className="mt-4">
               <Pagination
                 currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
+                totalPages={data.lastPage || 1}
+                onPageChange={goToPage}
               />
             </div>
-          )} */}
+          )}
         </CardContent>
       </Card>
     </div>
