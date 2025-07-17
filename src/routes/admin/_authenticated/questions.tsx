@@ -1,3 +1,4 @@
+import AddQuestionModal from "@/components/AddQuestionModal";
 import { Pagination } from "@/components/Pagination";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,9 +14,11 @@ import {
   Table,
 } from "@/components/ui/table";
 import { useQuestionsFilter } from "@/hooks/useQuestionsFilters";
+import { useCreateQuestion } from "@/integrations/tanstack-query/questions/useCreateQuestion";
 import useGetPaginatedQuestions from "@/integrations/tanstack-query/questions/useGetPaginatedQuestions";
 import { createFileRoute } from "@tanstack/react-router";
 import { Edit, Plus, Search, Trash2 } from "lucide-react";
+import { useState } from "react";
 
 export const Route = createFileRoute("/admin/_authenticated/questions")({
   component: RouteComponent,
@@ -33,6 +36,10 @@ function RouteComponent() {
   } = useQuestionsFilter();
   const { data } = useGetPaginatedQuestions(queryParams);
 
+  const [addQuestionOpen, setAddQuestionOpen] = useState(false);
+
+  const { mutateAsync: createQuestion } = useCreateQuestion();
+
   const getTypeColor = (type: string) => {
     switch (type) {
       case "normal":
@@ -48,10 +55,25 @@ function RouteComponent() {
     <div className="p-6 space-y-6 bg-gray-900 ">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <h1 className="text-2xl font-bold text-white">Questions Management</h1>
-        <Button className="bg-blue-600 hover:bg-blue-700">
+        <Button
+          className="bg-blue-600 hover:bg-blue-700"
+          onClick={() => setAddQuestionOpen(!addQuestionOpen)}
+        >
           <Plus className="h-4 w-4 mr-2" />
           Add Question
         </Button>
+        <AddQuestionModal
+          isOpen={addQuestionOpen}
+          onClose={() => {
+            setAddQuestionOpen(false);
+          }}
+          onAdd={async (question) => {
+            await createQuestion({
+              level: question.type,
+              content: question.text,
+            });
+          }}
+        />
       </div>
 
       <Card className="bg-gray-800 border-gray-700">

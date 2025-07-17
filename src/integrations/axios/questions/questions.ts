@@ -36,7 +36,7 @@ export const getPaginatedQuestions = async (filters?: QuestionFilters) => {
 
 export const getQuestionById = async (id: number) => {
   const res = await api.get(`/admin/questions/${id}`);
-  return QuestionSchema.parse(res.data);
+  return QuestionSchema.parse(res.data.data);
 };
 
 export const createQuestion = async (data: {
@@ -44,7 +44,7 @@ export const createQuestion = async (data: {
   content: string;
 }) => {
   const res = await api.post("/admin/questions", data);
-  return QuestionSchema.parse(res.data);
+  return QuestionSchema.parse(res.data.data);
 };
 
 export const updateQuestion = async (
@@ -52,7 +52,7 @@ export const updateQuestion = async (
   data: { level: "normal" | "spicy"; content: string },
 ) => {
   const res = await api.put(`/admin/questions/${id}`, data);
-  return QuestionSchema.parse(res.data);
+  return QuestionSchema.parse(res.data.data);
 };
 
 export const deleteQuestion = async (id: number) => {
