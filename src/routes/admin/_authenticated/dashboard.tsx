@@ -1,4 +1,3 @@
-import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import useGetDashboard from "@/integrations/tanstack-query/admin/useGetDashboard";
@@ -14,41 +13,6 @@ function RouteComponent() {
   const [lastUpdated, setLastUpdated] = useState(new Date());
 
   const { data: stats, isLoading, refetch } = useGetDashboard();
-
-  const recentFeedback = [
-    {
-      id: 1,
-      user: "Alex Chen",
-      avatar: "/placeholder.svg?height=32&width=32",
-      comment: "Great game experience! The new features are amazing...",
-      timestamp: "2 minutes ago",
-      rating: 5,
-    },
-    {
-      id: 2,
-      user: "Sarah Johnson",
-      avatar: "/placeholder.svg?height=32&width=32",
-      comment: "Love the updated UI, much more intuitive now...",
-      timestamp: "15 minutes ago",
-      rating: 4,
-    },
-    {
-      id: 3,
-      user: "Mike Rodriguez",
-      avatar: "/placeholder.svg?height=32&width=32",
-      comment: "Could use some improvements in the matchmaking...",
-      timestamp: "1 hour ago",
-      rating: 3,
-    },
-    {
-      id: 4,
-      user: "Emma Wilson",
-      avatar: "/placeholder.svg?height=32&width=32",
-      comment: "Fantastic multiplayer experience! Keep it up...",
-      timestamp: "2 hours ago",
-      rating: 5,
-    },
-  ];
 
   async function handleRefresh() {
     await refetch();

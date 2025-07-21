@@ -1,6 +1,5 @@
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { getUser } from "@/integrations/axios/admin/admin";
 import useGetUser from "@/integrations/tanstack-query/admin/useGetUser";
 import { isAuthenticated } from "@/lib/auth";
 import {
@@ -48,7 +47,7 @@ const navigationItems = [
 
 function RouteComponent() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { data: user, isLoading } = useGetUser();
+  const { data: user } = useGetUser();
   const navigate = useNavigate();
 
   const location = useLocation();

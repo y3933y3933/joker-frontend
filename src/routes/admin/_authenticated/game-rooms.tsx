@@ -24,8 +24,8 @@ import type { AdminGame } from "@/integrations/axios/games/game.schema";
 import useEndGameByAdmin from "@/integrations/tanstack-query/games/useEndGameByAdmin";
 import useGetPaginatedGames from "@/integrations/tanstack-query/games/useGetPaginatedGames";
 import { createFileRoute } from "@tanstack/react-router";
-import { Search, Filter, Eye, Square } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Search, Filter, Square } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/_authenticated/game-rooms")({
