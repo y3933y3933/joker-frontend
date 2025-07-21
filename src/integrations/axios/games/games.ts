@@ -1,5 +1,7 @@
 import api from "../axios-instance";
 import {
+  AdminGameFilter,
+  AdminGameListResponseSchema,
   CreateGameResponseSchema,
   DrawCardResSchema,
   GameSummaryResponseSchema,
@@ -143,5 +145,24 @@ export const leaveGame = async (code: string, playerID: number) => {
       headers: { "X-Player-ID": playerID },
     },
   );
+  return res.data.data;
+};
+
+export const getPaginatedGame = async (filters?: AdminGameFilter) => {
+  const params = new URLSearchParams();
+  if (filters?.code) {
+    params.append("code", filters.code);
+  }
+
+  if (filters?.status) {
+    params.append("status", filters.status);
+  }
+
+  const res = await api.get(`/admin/games?${params.toString()}`);
+  return AdminGameListResponseSchema.parse(res.data.data);
+};
+
+export const endGameByAdmin = async (code: string) => {
+  const res = await api.post(`/admin/games/end`, { code });
   return res.data.data;
 };

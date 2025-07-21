@@ -179,7 +179,9 @@ function RouteComponent() {
       playerID={playerID}
       onMessage={(msg) => handleMessageMap[msg.type](msg)}
     >
-      <Outlet />
+      <div className="min-h-screen bg-black text-white overflow-hidden relative">
+        <Outlet />
+      </div>
     </WebSocketProvider>
   );
 }

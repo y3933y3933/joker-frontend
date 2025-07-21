@@ -64,3 +64,36 @@ export const GameSummaryResponseSchema = z.object({
 });
 
 export type GameSummary = z.infer<typeof GameSummaryResponseSchema>;
+
+export const AdminGameSchema = z.object({
+  id: z.int().positive(),
+  code: z.string(),
+  status: z.union([
+    z.literal("waiting"),
+    z.literal("playing"),
+    z.literal("ended"),
+  ]),
+  playerCount: z.int(),
+  createdAt: z.iso.datetime({ offset: true }).transform((dateStr) => {
+    return new Date(dateStr).toLocaleString("zh-TW");
+  }),
+});
+
+export const AdminGameListResponseSchema = z.object({
+  games: z.array(AdminGameSchema),
+  totalCount: z.number().optional(),
+  currentPage: z.number().optional(),
+  pageSize: z.number().optional(),
+  firstPage: z.number().optional(),
+  lastPage: z.number().optional(),
+});
+
+export const AdminGameFilter = z.object({
+  code: z.string().optional(),
+  status: z
+    .union([z.literal("waiting"), z.literal("playing"), z.literal("ended")])
+    .optional(),
+});
+
+export type AdminGameFilter = z.infer<typeof AdminGameFilter>;
+export type AdminGame = z.infer<typeof AdminGameSchema>;
