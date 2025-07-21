@@ -8,10 +8,6 @@ import { useState } from "react";
 
 export const Route = createFileRoute("/admin/_authenticated/dashboard")({
   component: RouteComponent,
-  // loader: async () => {
-  //   const res = await getDashboardData();
-  //   return transformDashboardStats(res);
-  // },
 });
 
 function RouteComponent() {
@@ -80,7 +76,7 @@ function RouteComponent() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {stats?.map((stat, index) => (
           <Card key={index} className="bg-gray-800 border-gray-700">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -91,66 +87,10 @@ function RouteComponent() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-white">{stat.value}</div>
-              {/* <p className="text-xs text-green-400 mt-1">
-                {stat.change} from last month
-              </p> */}
             </CardContent>
           </Card>
         ))}
       </div>
-
-      {/* Recent Feedback */}
-      <Card className="bg-gray-800 border-gray-700">
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold text-white">
-            Recent Feedback
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {recentFeedback.map((feedback) => (
-              <div
-                key={feedback.id}
-                className="flex items-start space-x-4 p-4 rounded-lg bg-gray-700/50 hover:bg-gray-700 transition-colors"
-              >
-                <Avatar className="h-10 w-10">
-                  <AvatarImage
-                    src={feedback.avatar || "/placeholder.svg"}
-                    alt={feedback.user}
-                  />
-                  <AvatarFallback className="bg-blue-600 text-white">
-                    {feedback.user
-                      .split(" ")
-                      .map((n) => n[0])
-                      .join("")}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-white">
-                      {feedback.user}
-                    </p>
-                    <div className="flex items-center space-x-2">
-                      {/* <Badge
-                              variant="outline"
-                              className="text-xs border-gray-600 text-gray-300"
-                            >
-                              {"★".repeat(feedback.rating)}
-                            </Badge> */}
-                      <span className="text-xs text-gray-400">
-                        {feedback.timestamp}
-                      </span>
-                    </div>
-                  </div>
-                  <p className="text-sm text-gray-300 mt-1 truncate">
-                    {feedback.comment}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }

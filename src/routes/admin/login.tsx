@@ -109,11 +109,11 @@ export function RouteComponent() {
               </Button>
             </form>
 
-            <div className="mt-6 text-center">
+            {/* <div className="mt-6 text-center">
               <p className="text-sm text-gray-400">
                 Demo credentials: admin / password
               </p>
-            </div>
+            </div> */}
           </CardContent>
         </Card>
       </div>
