@@ -1,6 +1,8 @@
 import { AvatarImage, AvatarFallback, Avatar } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { getUser } from "@/integrations/axios/admin/admin";
+import useGetUser from "@/integrations/tanstack-query/admin/useGetUser";
+import { isAuthenticated } from "@/lib/auth";
 import {
   createFileRoute,
   Link,
@@ -22,36 +24,32 @@ import { useState } from "react";
 
 export const Route = createFileRoute("/admin/_authenticated")({
   component: RouteComponent,
-  beforeLoad: async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+  beforeLoad: async ({ location }) => {
+    if (!isAuthenticated()) {
       throw redirect({
         to: "/admin/login",
-      });
-    }
-
-    try {
-      await getUser();
-    } catch (_) {
-      throw redirect({
-        to: "/admin/login",
+        search: {
+          // 用於登入後導回原頁
+          redirect: location.href,
+        },
       });
     }
   },
-  loader: () => getUser(),
+
+  // loader: () => getUser(),
 });
+
+const navigationItems = [
+  { name: "Dashboard", icon: Home, href: "/admin/dashboard" },
+  { name: "Questions", icon: MessageSquare, href: "/admin/questions" },
+  { name: "Game Rooms", icon: GamepadIcon, href: "/admin/game-rooms" },
+  { name: "Feedback", icon: BarChart3, href: "/admin/feedback" },
+];
 
 function RouteComponent() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const user = Route.useLoaderData();
+  const { data: user, isLoading } = useGetUser();
   const navigate = useNavigate();
-
-  const navigationItems = [
-    { name: "Dashboard", icon: Home, href: "/admin/dashboard" },
-    { name: "Questions", icon: MessageSquare, href: "/admin/questions" },
-    { name: "Game Rooms", icon: GamepadIcon, href: "/admin/game-rooms" },
-    { name: "Feedback", icon: BarChart3, href: "/admin/feedback" },
-  ];
 
   const location = useLocation();
 
@@ -92,7 +90,7 @@ function RouteComponent() {
               alt="Admin"
             />
             <AvatarFallback className="bg-blue-600 text-white">
-              {user.username.slice(0, 2).toUpperCase()}
+              {user && user.username.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
           <Button
