@@ -73,10 +73,15 @@ export function RouteComponent() {
     feedbackId: number,
     reviewStatus: "new" | "reviewed",
   ) {
+    let updatedReviewStatus: "new" | "reviewed" =
+      reviewStatus === "new" ? "reviewed" : "new";
     try {
-      await updateFeedbackReviewStatus({ id: feedbackId, reviewStatus });
+      await updateFeedbackReviewStatus({
+        id: feedbackId,
+        reviewStatus: updatedReviewStatus,
+      });
       toast.success(
-        `Feedback ${reviewStatus === "reviewed" ? "marked as reviewed" : "marked as new"} successfully!`,
+        `Feedback ${updatedReviewStatus === "reviewed" ? "marked as reviewed" : "marked as new"} successfully!`,
       );
       setSelectedFeedback(null);
       setIsUpdateOpen(false);
@@ -267,8 +272,8 @@ export function RouteComponent() {
                       }
                     >
                       {selectedFeedback.reviewStatus === "new"
-                        ? "Mark as New"
-                        : "Mark as Reviewed"}
+                        ? "Mark as Reviewed"
+                        : "Mark as New"}
                     </Button>
                   </div>
                 </div>
